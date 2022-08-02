@@ -1,6 +1,6 @@
-package com.clone.ohouse.shop.order.domain.access;
+package com.clone.ohouse.shop.product.domain.access;
 
-import com.clone.ohouse.shop.order.domain.entity.ItemCategoryCode;
+import com.clone.ohouse.shop.product.domain.entity.ItemCategoryCode;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

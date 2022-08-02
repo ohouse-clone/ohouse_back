@@ -1,10 +1,8 @@
 package com.clone.ohouse.shop.product.domain.access;
 
 
-import com.clone.ohouse.shop.order.domain.access.ItemCategoryCodeRepository;
-import com.clone.ohouse.shop.order.domain.access.ItemRepository;
-import com.clone.ohouse.shop.order.domain.entity.Item;
-import com.clone.ohouse.shop.order.domain.entity.ItemCategoryCode;
+import com.clone.ohouse.shop.product.domain.entity.Item;
+import com.clone.ohouse.shop.product.domain.entity.ItemCategoryCode;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

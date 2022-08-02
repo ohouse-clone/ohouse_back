@@ -1,4 +1,4 @@
-package com.clone.ohouse.shop.order.domain.entity;
+package com.clone.ohouse.shop.product.domain.entity;
 
 import lombok.Builder;
 import lombok.Getter;
