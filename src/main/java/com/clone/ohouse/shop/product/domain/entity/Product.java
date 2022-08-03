@@ -45,14 +45,14 @@ public class Product {
 
 
     public void update(Item item, String productName, Integer stock, Integer price, Integer rateDiscount, String size, String color, Character optional_yn) {
-        this.item = item;
-        this.productName = productName;
-        this.price = price;
-        this.stock = stock;
-        this.rateDiscount = rateDiscount;
-        this.size = size;
-        this.color = color;
-        this.optionalYn = optional_yn;
+        if(item != null) this.item = item;
+        if(productName != null) this.productName = productName;
+        if(price != null) this.price = price;
+        if(stock != null) this.stock = stock;
+        if(rateDiscount != null) this.rateDiscount = rateDiscount;
+        if(size != null) this.size = size;
+        if(color != null) this.color = color;
+        if(optional_yn != null) this.optionalYn = optional_yn;
     }
 
 }
