@@ -1,5 +1,7 @@
 package com.clone.ohouse.shop.product.domain.entity;
 
+import com.clone.ohouse.shop.order.domain.entity.Order;
+import com.clone.ohouse.shop.order.domain.entity.OrderedProduct;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -53,6 +55,19 @@ public class Product {
         if(size != null) this.size = size;
         if(color != null) this.color = color;
         if(optional_yn != null) this.optionalYn = optional_yn;
+    }
+
+    public void returnAmount(Integer count) throws Exception{
+        if(count <= 0) throw new RuntimeException("물품의 0이하의 수량을 되돌려 줄 수 없습니다.");
+        this.stock += count;
+    }
+
+    public OrderedProduct makeOrderedProduct(Order order, Integer price, Integer amount) throws Exception{
+        if(amount > this.stock) throw new RuntimeException("재고보다 많이 주문할 수 없습니다");
+
+        this.stock -= amount;
+
+        return new OrderedProduct(this, order, price, amount);
     }
 
 }
