@@ -13,6 +13,7 @@ import com.clone.ohouse.shop.product.domain.access.ProductRepository;
 import com.clone.ohouse.shop.product.domain.entity.Product;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,14 +23,13 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-@NoArgsConstructor
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Transactional
 @Service
 public class OrderService {
-    private OrderedProductRepository orderedProductRepository;
-    private OrderRepository orderRepository;
-    private ProductRepository productRepository;
+    private final OrderedProductRepository orderedProductRepository;
+    private final OrderRepository orderRepository;
+    private final ProductRepository productRepository;
 
     @Transactional
     public Long order(Long userSeq, OrderRequestDto orderRequestDto, Delivery delivery) throws Exception{
@@ -73,10 +73,10 @@ public class OrderService {
         }
     }
 
-    @Transactional
-    public List<Order> findAllOrders(User user){
-        return orderRepository.findByUser(user);
-    }
+//    @Transactional
+//    public List<Order> findAllOrders(User user){
+//        return orderRepository.findByUser(user);
+//    }
 
     @Transactional
     public List<OrderedProduct> findAllOrderedProduct(User user, Long orderSeq){

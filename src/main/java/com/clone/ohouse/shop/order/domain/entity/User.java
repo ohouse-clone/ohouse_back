@@ -11,9 +11,9 @@ import javax.persistence.Id;
 //Temperary Mockup user class
 @Getter
 @NoArgsConstructor
-@Entity
+//@Entity
 public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userSeq;
 }

@@ -19,11 +19,12 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderSeq;
 
-    @ManyToOne
-    @JoinColumn(name = "user_seq")
+//    @ManyToOne
+//    @JoinColumn(name = "user_seq")
+    @Transient
     private User user;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "delivery_seq")
     private Delivery delivery;
 
@@ -59,7 +60,7 @@ public class Order {
     }
 
     public Integer getTotalPrice(){
-        Integer total = 0;
+        int total = 0;
         for(var orderedProduct: orderedProducts){
             total += orderedProduct.getPrice();
         }
