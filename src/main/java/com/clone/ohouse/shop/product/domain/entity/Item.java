@@ -15,7 +15,7 @@ public class Item {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "category_code")
+    @JoinColumn(name = "category_id")
     private ItemCategoryCode categoryCode;
 
     @Column(length = 45, nullable = false)

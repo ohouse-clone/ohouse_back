@@ -25,7 +25,7 @@ public class Order {
     private User user;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "delivery_seq")
+    @JoinColumn(name = "delivery_id")
     private Delivery delivery;
 
     @Enumerated(EnumType.STRING)

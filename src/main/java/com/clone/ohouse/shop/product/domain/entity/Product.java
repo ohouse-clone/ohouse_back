@@ -17,7 +17,7 @@ public class Product {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "item_seq")
+    @JoinColumn(name = "item_id")
     private Item item;
 
     @Column(length = 45)
