@@ -14,7 +14,7 @@ import javax.persistence.*;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long productSeq;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "item_seq")

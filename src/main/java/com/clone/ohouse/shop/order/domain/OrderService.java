@@ -41,7 +41,7 @@ public class OrderService {
 
         List<Pair<Product, OrderedProductDto>> list = new ArrayList<>();
         for(var obj : orderRequestDto.getOrderList()){
-            Optional<Product> product = productRepository.findById(obj.getProductSeq());
+            Optional<Product> product = productRepository.findById(obj.getProductId());
 
             Product findProduct = product.orElseThrow(() -> new RuntimeException("존재하지 않는 상품을 주문합니다."));
             list.add(Pair.of(findProduct, obj));
@@ -51,7 +51,7 @@ public class OrderService {
 
         //create order
         Order order = Order.makeOrder(user, deliveryMock, list);
-        Long orderSeq = orderRepository.save(order).getOrderSeq();
+        Long orderSeq = orderRepository.save(order).getId();
 
         //create orderedProduct
         for(var obj : order.getOrderedProducts()){

@@ -75,7 +75,7 @@ public class ItemCategoryCodeRepositoryTest {
         ItemCategoryCode save4 = itemCategoryCodeRepository.save(code4);
         ItemCategoryCode save5 = itemCategoryCodeRepository.save(code5);
 
-        Optional<ItemCategoryCode> byId = itemCategoryCodeRepository.findById(code1.getCategorySeq());
+        Optional<ItemCategoryCode> byId = itemCategoryCodeRepository.findById(code1.getId());
 
         Assertions.assertThat(code1.getCategoryDetail()).isEqualTo(byId.orElseThrow(() -> new NoSuchElementException("해당 내용이 없습니다.")).getCategoryDetail());
     }

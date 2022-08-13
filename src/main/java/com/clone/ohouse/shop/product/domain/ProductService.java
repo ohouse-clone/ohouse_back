@@ -21,7 +21,7 @@ public class ProductService {
 
     @Transactional
     public Long save(ProductSaveRequestDto requestDto) {
-        return productRepository.save(requestDto.toEntity()).getProductSeq();
+        return productRepository.save(requestDto.toEntity()).getId();
     }
 
 

@@ -160,7 +160,7 @@ public class ProductRepositoryTest {
 
         //when
         List<Product> all = productRepository.findAll();
-        Long productId = all.get(0).getProductSeq();
+        Long productId = all.get(0).getId();
 
         productRepository.delete(saved);
 
@@ -201,7 +201,7 @@ public class ProductRepositoryTest {
         productRepository.save(saved);
 
         //then
-        Optional<Product> findId = productRepository.findById(saved.getProductSeq());
+        Optional<Product> findId = productRepository.findById(saved.getId());
         Assertions.assertThat(findId.orElseThrow(() -> new Exception("Fail to find")).getProductName()).isEqualTo(changedName);
     }
 }

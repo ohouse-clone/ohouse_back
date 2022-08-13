@@ -12,7 +12,7 @@ import javax.persistence.*;
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long itemSeq;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "category_code")

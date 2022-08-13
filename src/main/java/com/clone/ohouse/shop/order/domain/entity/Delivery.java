@@ -10,7 +10,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 public class Delivery {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long deliverySeq;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
 
     @Column(length = 30) private String senderName;
     @Column(length = 30) private String receipentName;

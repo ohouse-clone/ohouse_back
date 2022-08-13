@@ -13,7 +13,7 @@ public class ItemCategoryCode {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long categorySeq;
+    private Long id;
 
     @Column(nullable = false, length = 50)
     private String categoryDetail;

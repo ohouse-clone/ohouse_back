@@ -120,12 +120,12 @@ public class OrderServiceTest {
 
     private OrderRequestDto createOrderRquestDto(Integer orderedProductPrice1, Integer orderedProductPrice2){
         OrderedProductDto orderedProductDto1 = new OrderedProductDto();
-        orderedProductDto1.setProductSeq(product.getProductSeq());
+        orderedProductDto1.setProductId(product.getId());
         orderedProductDto1.setAdjustedPrice(orderedProductPrice1);
         orderedProductDto1.setAmount(10);
 
         OrderedProductDto orderedProductDto2 = new OrderedProductDto();
-        orderedProductDto2.setProductSeq(product.getProductSeq());
+        orderedProductDto2.setProductId(product.getId());
         orderedProductDto2.setAdjustedPrice(orderedProductPrice2);
         orderedProductDto2.setAmount(20);
 

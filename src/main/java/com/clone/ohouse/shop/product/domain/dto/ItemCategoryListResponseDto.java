@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 public class ItemCategoryListResponseDto {
-    private final Long categorySeq;
+    private final Long categoryId;
     private final String categoryDetail;
     private final String category1;
     private final String category2;
@@ -13,7 +13,7 @@ public class ItemCategoryListResponseDto {
     private final String category4;
 
     public ItemCategoryListResponseDto(ItemCategoryCode entity) {
-        this.categorySeq = entity.getCategorySeq();
+        this.categoryId = entity.getId();
         this.categoryDetail = entity.getCategoryDetail();
         this.category1 = entity.getCategory1();
         this.category2 = entity.getCategory2();

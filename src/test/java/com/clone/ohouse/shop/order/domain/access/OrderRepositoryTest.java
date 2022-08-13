@@ -53,11 +53,11 @@ public class OrderRepositoryTest {
         Order savedOrder = orderRepository.save(new Order());
 
         //then
-        Optional<Order> byId = orderRepository.findById(savedOrder.getOrderSeq());
+        Optional<Order> byId = orderRepository.findById(savedOrder.getId());
 
-        Assertions.assertThat(byId.get().getOrderSeq()).isEqualTo(savedOrder.getOrderSeq());
+        Assertions.assertThat(byId.get().getId()).isEqualTo(savedOrder.getId());
 
-        savedOrderId = byId.get().getOrderSeq();
+        savedOrderId = byId.get().getId();
     }
 
     @Test

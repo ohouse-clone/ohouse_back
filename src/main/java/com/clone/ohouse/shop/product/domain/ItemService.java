@@ -21,7 +21,7 @@ public class ItemService {
 
     @Transactional
     public Long save(ItemSaveRequestDto requestDto){
-        return itemRepository.save(requestDto.toEntity()).getItemSeq();
+        return itemRepository.save(requestDto.toEntity()).getId();
     }
 
     @Transactional

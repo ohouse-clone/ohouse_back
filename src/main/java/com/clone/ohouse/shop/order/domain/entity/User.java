@@ -15,5 +15,5 @@ import javax.persistence.Id;
 public class User {
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userSeq;
+    private Long id;
 }
