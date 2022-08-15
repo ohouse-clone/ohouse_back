@@ -2,6 +2,7 @@ package com.clone.ohouse.shop.board.domain.entity;
 
 import com.clone.ohouse.shop.BaseTimeEntity;
 import com.clone.ohouse.shop.product.domain.entity.Product;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -30,12 +31,13 @@ public class ProductBoard extends BaseTimeEntity {
     @Column(length = 45)
     private String modifiedUser;
 
-    private boolean is_delete = false;
+    private boolean isDeleted = false;
     private Integer hit = 0;
 
     @OneToMany(mappedBy = "productBoard")
     private List<Product> productList = new ArrayList<>();
 
+    @Builder
     public ProductBoard(String title, byte[] content, String author, String modifiedUser) {
         this.title = title;
         this.content = content;
