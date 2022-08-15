@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 public class ProductAllListResponseDto {
-    private final Long productSeq;
+    private final Long productId;
     private final Item item;
     private final String productName;
     private final Integer price;
@@ -16,7 +16,7 @@ public class ProductAllListResponseDto {
     private final String color;
 
     public ProductAllListResponseDto(Product entity) {
-        this.productSeq = entity.getProductSeq();
+        this.productId = entity.getId();
         this.item = entity.getItem();
         this.productName = entity.getProductName();
         this.price = entity.getPrice();

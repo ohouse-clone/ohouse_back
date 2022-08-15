@@ -1,4 +1,4 @@
-package com.clone.ohouse.shop.order.domain.entity;
+package com.clone.ohouse.shop;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;

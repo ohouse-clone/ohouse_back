@@ -12,10 +12,10 @@ import javax.persistence.*;
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long itemSeq;
+    private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "category_code")
+    @JoinColumn(name = "category_id")
     private ItemCategoryCode categoryCode;
 
     @Column(length = 45, nullable = false)

@@ -1,5 +1,6 @@
 package com.clone.ohouse.shop.product.domain.entity;
 
+import com.clone.ohouse.shop.board.domain.entity.ProductBoard;
 import com.clone.ohouse.shop.order.domain.entity.Order;
 import com.clone.ohouse.shop.order.domain.entity.OrderedProduct;
 import lombok.Builder;
@@ -14,10 +15,10 @@ import javax.persistence.*;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long productSeq;
+    private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "item_seq")
+    @JoinColumn(name = "item_id")
     private Item item;
 
     @Column(length = 45)
@@ -31,10 +32,12 @@ public class Product {
     @Column(length = 30)
     private String color;
 
-    private Character optionalYn;
+    @ManyToOne
+    @JoinColumn(name = "product_board_id")
+    private ProductBoard productBoard;
 
     @Builder
-    public Product(Item item, String productName, Integer price, Integer stock, Integer rateDiscount, String size, String color, Character optionalYn) {
+    public Product(Item item, String productName, Integer price, Integer stock, Integer rateDiscount, String size, String color) {
         this.item = item;
         this.productName = productName;
         this.price = price;
@@ -42,11 +45,10 @@ public class Product {
         this.rateDiscount = rateDiscount;
         this.size = size;
         this.color = color;
-        this.optionalYn = optionalYn;
     }
 
 
-    public void update(Item item, String productName, Integer stock, Integer price, Integer rateDiscount, String size, String color, Character optional_yn) {
+    public void update(Item item, String productName, Integer stock, Integer price, Integer rateDiscount, String size, String color) {
         if(item != null) this.item = item;
         if(productName != null) this.productName = productName;
         if(price != null) this.price = price;
@@ -54,7 +56,6 @@ public class Product {
         if(rateDiscount != null) this.rateDiscount = rateDiscount;
         if(size != null) this.size = size;
         if(color != null) this.color = color;
-        if(optional_yn != null) this.optionalYn = optional_yn;
     }
 
     public void returnAmount(Integer count) throws Exception{

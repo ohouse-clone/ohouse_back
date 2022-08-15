@@ -125,7 +125,7 @@ public class ItemRepositoryTest {
         item.setName("한샘침대");
         itemRepository.save(item);
 
-        Optional<Item> itemForCompare = itemRepository.findById(savedItem.getItemSeq());
+        Optional<Item> itemForCompare = itemRepository.findById(savedItem.getId());
 
         //then
         Assertions.assertThat(itemForCompare.orElseThrow(()->new Exception("Fail to find 등록된 한샘침대")).getName()).isEqualTo(item.getName());

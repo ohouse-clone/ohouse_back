@@ -21,7 +21,7 @@ public class ProductService {
 
     @Transactional
     public Long save(ProductSaveRequestDto requestDto) {
-        return productRepository.save(requestDto.toEntity()).getProductSeq();
+        return productRepository.save(requestDto.toEntity()).getId();
     }
 
 
@@ -38,8 +38,7 @@ public class ProductService {
                 requestDto.getPrice(),
                 requestDto.getRateDiscount(),
                 requestDto.getSize(),
-                requestDto.getColor(),
-                requestDto.getOptionalYn());
+                requestDto.getColor());
 
         return seq;
     }

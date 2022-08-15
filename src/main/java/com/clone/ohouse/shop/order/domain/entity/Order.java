@@ -17,14 +17,15 @@ import java.util.List;
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long orderSeq;
+    private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_seq")
+//    @ManyToOne
+//    @JoinColumn(name = "user_seq")
+    @Transient
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "delivery_seq")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "delivery_id")
     private Delivery delivery;
 
     @Enumerated(EnumType.STRING)
@@ -59,7 +60,7 @@ public class Order {
     }
 
     public Integer getTotalPrice(){
-        Integer total = 0;
+        int total = 0;
         for(var orderedProduct: orderedProducts){
             total += orderedProduct.getPrice();
         }
