@@ -196,8 +196,7 @@ public class ProductRepositoryTest {
                 saved.getStock(), saved.getPrice(),
                 saved.getRateDiscount(),
                 saved.getSize(),
-                saved.getColor(),
-                saved.getOptionalYn());
+                saved.getColor());
         productRepository.save(saved);
 
         //then
