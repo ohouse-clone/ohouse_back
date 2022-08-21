@@ -1,6 +1,7 @@
-package com.clone.ohouse.dto;
+package com.clone.ohouse.community.dto;
 
-import com.clone.ohouse.entity.User;
+import com.clone.ohouse.community.entity.User;
+
 import lombok.*;
 
 @NoArgsConstructor
@@ -13,7 +14,7 @@ public class UserDto {
     private String email;
     private String password;
     private String nickname;
-    private int phone;
+    private String phone;
     private String birthday;
 
     public User toEntity(){
@@ -28,7 +29,7 @@ public class UserDto {
     }
 
     @Builder
-    public UserDto(String email, String password, String nickname, int phone, String birthday) {
+    public UserDto(String email, String password, String nickname, String phone, String birthday) {
 
         this.email = email;
         this.password = password;
