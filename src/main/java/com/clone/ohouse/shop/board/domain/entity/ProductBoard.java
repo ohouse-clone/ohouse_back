@@ -14,7 +14,8 @@ import java.util.List;
 @Getter
 @Entity
 public class ProductBoard extends BaseTimeEntity {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private boolean isActive = false;
@@ -34,7 +35,7 @@ public class ProductBoard extends BaseTimeEntity {
     private boolean isDeleted = false;
     private Integer hit = 0;
 
-    @OneToMany(mappedBy = "productBoard")
+    @OneToMany(mappedBy = "productBoard", fetch = FetchType.LAZY)
     private List<Product> productList = new ArrayList<>();
 
     @Builder
@@ -43,6 +44,14 @@ public class ProductBoard extends BaseTimeEntity {
         this.content = content;
         this.author = author;
         this.modifiedUser = modifiedUser;
+    }
+
+    public void update(boolean isActive, String title, byte[] content, String modifiedUser, boolean isDeleted) {
+        this.isActive = isActive;
+        this.isDeleted = isDeleted;
+        if (title != null) this.title = title;
+        if (modifiedUser != null) this.modifiedUser = modifiedUser;
+        if (content != null) this.content = content;
     }
 
 }
