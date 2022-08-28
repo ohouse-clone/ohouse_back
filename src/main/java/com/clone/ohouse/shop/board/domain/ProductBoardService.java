@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.charset.StandardCharsets;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -33,7 +34,7 @@ public class ProductBoardService {
     @Transactional
     public Long update(Long id, ProductBoardUpdateRequestDto dto){
         ProductBoard entity = productBoardRepository.findById(id).orElseThrow(() -> new NoSuchElementException("찾으려는 게시글이 없음"));
-        entity.update(dto.isActive(), dto.getTitle(), dto.getContent(), dto.getModifiedUser(), dto.isDeleted());
+        entity.update(dto.isActive(), dto.getTitle(), dto.getContent().getBytes(StandardCharsets.UTF_8), dto.getModifiedUser(), dto.isDeleted());
 
         return productBoardRepository.save(entity).getId();
     }
