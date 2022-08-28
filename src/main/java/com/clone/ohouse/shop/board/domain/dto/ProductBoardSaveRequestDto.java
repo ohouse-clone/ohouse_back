@@ -1,17 +1,21 @@
 package com.clone.ohouse.shop.board.domain.dto;
 
 import com.clone.ohouse.shop.board.domain.entity.ProductBoard;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
+
+import java.nio.charset.StandardCharsets;
 
 @Getter
 public class ProductBoardSaveRequestDto {
     private String title;
-    private byte[] content;
+    private String content;
     private String author;
     private String modifiedUser;
 
-    public ProductBoardSaveRequestDto(String title, byte[] content, String author, String modifiedUser) {
+    public ProductBoardSaveRequestDto(String title, String content, String author, String modifiedUser) {
         this.title = title;
         this.content = content;
         this.author = author;
@@ -21,9 +25,10 @@ public class ProductBoardSaveRequestDto {
     public ProductBoard toEntity(){
         return ProductBoard.builder()
                 .title(title)
-                .content(content)
+                .content(content.getBytes(StandardCharsets.UTF_8))
                 .author(author)
                 .modifiedUser(modifiedUser)
                 .build();
     }
+
 }
