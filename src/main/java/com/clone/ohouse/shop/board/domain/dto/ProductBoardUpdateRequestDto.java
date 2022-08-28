@@ -3,8 +3,10 @@ package com.clone.ohouse.shop.board.domain.dto;
 import com.clone.ohouse.shop.board.domain.entity.ProductBoard;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@NoArgsConstructor
 @Getter
 @Setter
 public class ProductBoardUpdateRequestDto {
