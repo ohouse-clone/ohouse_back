@@ -5,7 +5,6 @@ import com.clone.ohouse.shop.board.domain.entity.ProductBoard;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
@@ -14,7 +13,7 @@ public class ProductBoardResponseDto {
     private Long id;
     private boolean isActive;
     private String title;
-    private String content;
+    private byte[] content;
     private String author;
     private String modifiedUser;
     private boolean isDeleted;
@@ -26,7 +25,7 @@ public class ProductBoardResponseDto {
         this.id = entity.getId();
         this.isActive = entity.isActive();
         this.title = entity.getTitle();
-        this.content = new String(entity.getContent(), StandardCharsets.UTF_8);
+        this.content = entity.getContent();
         this.author = entity.getAuthor();
         this.modifiedUser = entity.getModifiedUser();
         this.isDeleted = entity.isDeleted();
