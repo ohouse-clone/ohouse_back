@@ -4,10 +4,12 @@ import com.clone.ohouse.shop.board.domain.entity.ProductBoard;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.nio.charset.StandardCharsets;
 
+@NoArgsConstructor
 @Getter
 public class ProductBoardSaveRequestDto {
     private String title;
