@@ -18,7 +18,7 @@ public class ProductBoardApiController {
     }
 
     @PutMapping("/store/productions/{id}")
-    public Long update(@PathVariable Long id, ProductBoardUpdateRequestDto updateRequestDto){
+    public Long update(@PathVariable Long id, @RequestBody ProductBoardUpdateRequestDto updateRequestDto){
         return boardService.update(id, updateRequestDto);
     }
 
