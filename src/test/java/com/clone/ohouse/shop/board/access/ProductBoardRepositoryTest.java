@@ -1,4 +1,4 @@
-package com.clone.ohouse.shop.board.domain.access;
+package com.clone.ohouse.shop.board.access;
 
 import com.clone.ohouse.shop.board.domain.access.ProductBoardRepository;
 import com.clone.ohouse.shop.board.domain.entity.ProductBoard;
