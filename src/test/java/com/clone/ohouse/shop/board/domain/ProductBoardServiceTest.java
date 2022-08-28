@@ -51,7 +51,7 @@ public class ProductBoardServiceTest {
     void update(){
         //given
         String title = "불행한 마을";
-        byte[] content = "내용 없음".getBytes(StandardCharsets.UTF_8);
+        String content = "내용 없음";
         String modifiedUser = "쿼터";
 
         ProductBoardSaveRequestDto dto = createProductBoardSaveRequest();
@@ -71,7 +71,7 @@ public class ProductBoardServiceTest {
         ProductBoard productBoard = productBoardRepository.findById(savedId).orElseThrow(() -> new NoSuchElementException("찾으려는 판매글이 없습니다."));
 
         Assertions.assertThat(productBoard.getTitle()).isEqualTo(title);
-        Assertions.assertThat(productBoard.getContent()).isEqualTo(content);
+        Assertions.assertThat(new String(productBoard.getContent(), StandardCharsets.UTF_8)).isEqualTo(content);
         Assertions.assertThat(productBoard.getModifiedUser()).isEqualTo(modifiedUser);
     }
 
@@ -105,7 +105,7 @@ public class ProductBoardServiceTest {
 
     private ProductBoardSaveRequestDto createProductBoardSaveRequest(){
         String title = "행복한 마을";
-        byte[] content = ("One of the early announcements out of Google I/O 2017's keynote was the launch of google.ai, with which Google aims to \"bring the benefits of AI to everyone\". Google.ai is a collection of products and teams across Alphabet with a focus on AI.\n" +
+        String content = "One of the early announcements out of Google I/O 2017's keynote was the launch of google.ai, with which Google aims to \"bring the benefits of AI to everyone\". Google.ai is a collection of products and teams across Alphabet with a focus on AI.\n" +
                 "\n" +
                 "\n" +
                 "\n" +
@@ -116,8 +116,7 @@ public class ProductBoardServiceTest {
                 "Not everything in Google.ai is new and potentially life-saving. Google.ai also powers a feature we've already seen and loved: Google auto-draw.\n" +
                 "\n" +
                 "Stay tuned to more out of Google I/O from Android Central!\n" +
-                "\n"
-        ).getBytes(StandardCharsets.UTF_8);
+                "\n";
         String author = "고순무";
         String modifiedUser = "고순무";
 
