@@ -68,7 +68,7 @@ class ProductBoardApiControllerTest {
         String content = "klasdfjlkj34t42363gjerwovm";
         String author = "JJH";
         String modifiedUser = null;
-        ProductBoardSaveRequestDto saveRequestDto = new ProductBoardSaveRequestDto(title, content, author, modifiedUser);
+        ProductBoardSaveRequestDto saveRequestDto = new ProductBoardSaveRequestDto(title, content, author);
 
         //when
         mvc.perform(MockMvcRequestBuilders.post(url)
@@ -94,7 +94,7 @@ class ProductBoardApiControllerTest {
         String author = "JJH";
         String modifiedUser = null;
 
-        ProductBoardSaveRequestDto saveRequestDto = new ProductBoardSaveRequestDto(title, content, author, modifiedUser);
+        ProductBoardSaveRequestDto saveRequestDto = new ProductBoardSaveRequestDto(title, content, author);
         Long savedId = boardService.save(saveRequestDto);
 
         String title2 = "제목없음";
@@ -130,7 +130,7 @@ class ProductBoardApiControllerTest {
         String author = "JJH";
         String modifiedUser = null;
 
-        ProductBoardSaveRequestDto saveRequestDto = new ProductBoardSaveRequestDto(title, content, author, modifiedUser);
+        ProductBoardSaveRequestDto saveRequestDto = new ProductBoardSaveRequestDto(title, content, author);
         Long savedId = boardService.save(saveRequestDto);
 
         //when && then
@@ -151,7 +151,7 @@ class ProductBoardApiControllerTest {
         String author = "JJH";
         String modifiedUser = null;
 
-        ProductBoardSaveRequestDto saveRequestDto = new ProductBoardSaveRequestDto(title, content, author, modifiedUser);
+        ProductBoardSaveRequestDto saveRequestDto = new ProductBoardSaveRequestDto(title, content, author);
         Long savedId = boardService.save(saveRequestDto);
 
         //when

@@ -118,9 +118,8 @@ public class ProductBoardServiceTest {
                 "Stay tuned to more out of Google I/O from Android Central!\n" +
                 "\n";
         String author = "고순무";
-        String modifiedUser = "고순무";
 
-        return new ProductBoardSaveRequestDto(title, content, author, modifiedUser);
+        return new ProductBoardSaveRequestDto(title, content, author);
     }
 
 }
