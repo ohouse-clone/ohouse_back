@@ -29,6 +29,7 @@ public class ProductBoardApiController {
 
     @DeleteMapping("/store/productions/{id}")
     public Long delete(@PathVariable Long id){
+        System.out.println("Call delete");
         return boardService.delete(id);
     }
 
