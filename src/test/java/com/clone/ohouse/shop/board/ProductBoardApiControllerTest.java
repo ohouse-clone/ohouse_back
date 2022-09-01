@@ -74,7 +74,7 @@ class ProductBoardApiControllerTest {
         mvc.perform(MockMvcRequestBuilders.post(url)
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .content(new ObjectMapper().writeValueAsString(saveRequestDto)))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isCreated());
 
         //then
         List<ProductBoard> all = productBoardRepository.findAll();
@@ -156,7 +156,7 @@ class ProductBoardApiControllerTest {
 
         //when
         mvc.perform(MockMvcRequestBuilders.delete(url + String.valueOf(savedId)))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
 
         Assertions.assertThat(productBoardRepository.count()).isEqualTo(0);
     }
