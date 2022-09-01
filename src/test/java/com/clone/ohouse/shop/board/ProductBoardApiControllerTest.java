@@ -68,13 +68,13 @@ class ProductBoardApiControllerTest {
         String content = "klasdfjlkj34t42363gjerwovm";
         String author = "JJH";
         String modifiedUser = null;
-        ProductBoardSaveRequestDto saveRequestDto = new ProductBoardSaveRequestDto(title, content, author, modifiedUser);
+        ProductBoardSaveRequestDto saveRequestDto = new ProductBoardSaveRequestDto(title, content, author);
 
         //when
         mvc.perform(MockMvcRequestBuilders.post(url)
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .content(new ObjectMapper().writeValueAsString(saveRequestDto)))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isCreated());
 
         //then
         List<ProductBoard> all = productBoardRepository.findAll();
@@ -94,7 +94,7 @@ class ProductBoardApiControllerTest {
         String author = "JJH";
         String modifiedUser = null;
 
-        ProductBoardSaveRequestDto saveRequestDto = new ProductBoardSaveRequestDto(title, content, author, modifiedUser);
+        ProductBoardSaveRequestDto saveRequestDto = new ProductBoardSaveRequestDto(title, content, author);
         Long savedId = boardService.save(saveRequestDto);
 
         String title2 = "제목없음";
@@ -130,7 +130,7 @@ class ProductBoardApiControllerTest {
         String author = "JJH";
         String modifiedUser = null;
 
-        ProductBoardSaveRequestDto saveRequestDto = new ProductBoardSaveRequestDto(title, content, author, modifiedUser);
+        ProductBoardSaveRequestDto saveRequestDto = new ProductBoardSaveRequestDto(title, content, author);
         Long savedId = boardService.save(saveRequestDto);
 
         //when && then
@@ -151,12 +151,12 @@ class ProductBoardApiControllerTest {
         String author = "JJH";
         String modifiedUser = null;
 
-        ProductBoardSaveRequestDto saveRequestDto = new ProductBoardSaveRequestDto(title, content, author, modifiedUser);
+        ProductBoardSaveRequestDto saveRequestDto = new ProductBoardSaveRequestDto(title, content, author);
         Long savedId = boardService.save(saveRequestDto);
 
         //when
         mvc.perform(MockMvcRequestBuilders.delete(url + String.valueOf(savedId)))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
 
         Assertions.assertThat(productBoardRepository.count()).isEqualTo(0);
     }
