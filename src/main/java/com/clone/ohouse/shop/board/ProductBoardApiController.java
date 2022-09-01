@@ -61,8 +61,10 @@ public class ProductBoardApiController {
     @ApiImplicitParam(name = "id", value = "제품 게시글의 id (제품 id X)")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/store/productions/{id}")
-    public void delete(@PathVariable Long id) {
-        boardService.delete(id);
+
+    public Long delete(@PathVariable Long id){
+        System.out.println("Call delete");
+        return boardService.delete(id);
     }
 
 }
