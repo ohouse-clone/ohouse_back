@@ -27,35 +27,29 @@ public class Product {
     private Integer stock;
     private Integer rateDiscount;
 
-    @Column(length = 30)
-    private String size;
-    @Column(length = 30)
-    private String color;
+
 
     @ManyToOne
     @JoinColumn(name = "product_board_id")
     private ProductBoard productBoard;
 
     @Builder
-    public Product(Item item, String productName, Integer price, Integer stock, Integer rateDiscount, String size, String color) {
+    public Product(Item item, String productName, Integer price, Integer stock, Integer rateDiscount) {
         this.item = item;
         this.productName = productName;
         this.price = price;
         this.stock = stock;
         this.rateDiscount = rateDiscount;
-        this.size = size;
-        this.color = color;
     }
 
 
-    public void update(Item item, String productName, Integer stock, Integer price, Integer rateDiscount, String size, String color) {
+    public void update(Item item, String productName, Integer stock, Integer price, Integer rateDiscount) {
         if(item != null) this.item = item;
         if(productName != null) this.productName = productName;
         if(price != null) this.price = price;
         if(stock != null) this.stock = stock;
         if(rateDiscount != null) this.rateDiscount = rateDiscount;
-        if(size != null) this.size = size;
-        if(color != null) this.color = color;
+
     }
 
     public void returnAmount(Integer count) throws Exception{

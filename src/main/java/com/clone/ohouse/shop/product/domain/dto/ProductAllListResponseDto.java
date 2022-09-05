@@ -12,8 +12,6 @@ public class ProductAllListResponseDto {
     private final Integer price;
     private final Integer stock;
     private final Integer rateDiscount;
-    private final String size;
-    private final String color;
 
     public ProductAllListResponseDto(Product entity) {
         this.productId = entity.getId();
@@ -22,7 +20,5 @@ public class ProductAllListResponseDto {
         this.price = entity.getPrice();
         this.stock = entity.getStock();
         this.rateDiscount = entity.getRateDiscount();
-        this.size = entity.getSize();
-        this.color = entity.getColor();
     }
 }

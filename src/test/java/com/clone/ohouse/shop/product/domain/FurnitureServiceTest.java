@@ -1,10 +1,11 @@
 package com.clone.ohouse.shop.product.domain;
 
 import com.clone.ohouse.shop.product.domain.access.ItemCategoryCodeRepository;
-import com.clone.ohouse.shop.product.domain.access.ItemRepository;
-import com.clone.ohouse.shop.product.domain.dto.ItemAllListResponseDto;
-import com.clone.ohouse.shop.product.domain.dto.ItemSaveRequestDto;
-import com.clone.ohouse.shop.product.domain.dto.ItemUpdateRequestDto;
+import com.clone.ohouse.shop.product.domain.access.FurnitureRepository;
+import com.clone.ohouse.shop.product.domain.dto.FurnitureAllListResponseDto;
+import com.clone.ohouse.shop.product.domain.dto.FurnitureSaveRequestDto;
+import com.clone.ohouse.shop.product.domain.dto.FurnitureUpdateRequestDto;
+import com.clone.ohouse.shop.product.domain.entity.Furniture;
 import com.clone.ohouse.shop.product.domain.entity.Item;
 import com.clone.ohouse.shop.product.domain.entity.ItemCategoryCode;
 import org.assertj.core.api.Assertions;
@@ -25,14 +26,14 @@ import java.util.Optional;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @Transactional
-public class ItemServiceTest {
+public class FurnitureServiceTest {
     @Autowired
-    private ItemService itemService;
+    private FurnitureService furnitureService;
 
     @Autowired
     private ItemCategoryCodeRepository itemCategoryCodeRepository;
     @Autowired
-    private ItemRepository itemRepository;
+    private FurnitureRepository furnitureRepository;
 
     @BeforeEach
     public void previouslySetup(){
@@ -48,7 +49,7 @@ public class ItemServiceTest {
 
     @AfterEach
     public void cleanUp() {
-        itemRepository.deleteAll();
+        furnitureRepository.deleteAll();
         itemCategoryCodeRepository.deleteAll();
     }
 
@@ -61,14 +62,16 @@ public class ItemServiceTest {
         String modelName = "레인 짜맞춤 8각 평상형 원목 침대프레임";
         String brandName = "엔투엔퍼니쳐";
         //when
-        Long seq = itemService.save(new ItemSaveRequestDto(
+        Long seq = furnitureService.save(new FurnitureSaveRequestDto(
                 categoryCode,
                 itemName,
                 modelName,
-                brandName
+                brandName,
+                "blue",
+                "10"
         ));
         //then
-        Item findItem = itemRepository.findById(seq)
+        Furniture findItem = furnitureRepository.findById(seq)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 Item : " + seq));
 
         Assertions.assertThat(findItem.getName()).isEqualTo(itemName);
@@ -87,15 +90,17 @@ public class ItemServiceTest {
         String brandName = "JH공방";
 
         //when
-        Long savedSeq = itemService.update(seq, new ItemUpdateRequestDto(
+        Long savedSeq = furnitureService.update(seq, new FurnitureUpdateRequestDto(
                 categoryCode,
                 itemName,
                 modelName,
-                brandName
+                brandName,
+                "blue",
+                "10"
         ));
 
         //then
-        Item findItem = itemRepository.findById(savedSeq)
+        Furniture findItem = furnitureRepository.findById(savedSeq)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 Item : " + savedSeq));
 
         Assertions.assertThat(seq).isEqualTo(savedSeq);
@@ -110,10 +115,10 @@ public class ItemServiceTest {
         //given
         Long seq = saveItem();
         //when
-        itemService.delete(seq);
+        furnitureService.delete(seq);
 
         //then
-        List<ItemAllListResponseDto> all = itemService.findAllAsc();
+        List<FurnitureAllListResponseDto> all = furnitureService.findAllAsc();
 
         Assertions.assertThat(all.isEmpty()).isTrue();
     }
@@ -136,10 +141,12 @@ public class ItemServiceTest {
         String modelName = "레인 짜맞춤 8각 평상형 원목 침대프레임";
         String brandName = "엔투엔퍼니쳐";
 
-        return itemService.save(new ItemSaveRequestDto(
+        return furnitureService.save(new FurnitureSaveRequestDto(
                 categoryCode,
                 itemName,
                 modelName,
-                brandName));
+                brandName,
+                "blue",
+                "10"));
     }
 }

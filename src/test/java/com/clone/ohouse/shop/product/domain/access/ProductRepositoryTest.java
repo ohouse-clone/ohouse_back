@@ -1,5 +1,6 @@
 package com.clone.ohouse.shop.product.domain.access;
 
+import com.clone.ohouse.shop.product.domain.entity.Furniture;
 import com.clone.ohouse.shop.product.domain.entity.Item;
 import com.clone.ohouse.shop.product.domain.entity.ItemCategoryCode;
 import com.clone.ohouse.shop.product.domain.entity.Product;
@@ -11,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Example;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ import java.util.Optional;
 @SpringBootTest
 public class ProductRepositoryTest {
     @Autowired
-    private ItemRepository itemRepository;
+    private FurnitureRepository furnitureRepository;
     @Autowired
     private ItemCategoryCodeRepository itemCategoryCodeRepository;
     @Autowired
@@ -46,32 +46,35 @@ public class ProductRepositoryTest {
 
         //Set Item
         String itemName1 = "이케아침대";
-        Item savedItem1 = itemRepository.save(Item.builder()
+        Furniture savedItem1 = furnitureRepository.save(Furniture.builder()
                 .categoryCode(savedCode)
                 .name(itemName1)
+                .color("red")
                 .build());
         //Set Item2
         String itemName2 = "한샘침대";
-        Item savedItem2 = itemRepository.save(Item.builder()
+        Furniture savedItem2 = furnitureRepository.save(Furniture.builder()
                 .categoryCode(savedCode)
                 .name(itemName2)
+                .color("blue")
                 .build());
         //Set Item3
         String itemName3 = "시몬스침대";
-        Item savedItem3 = itemRepository.save(Item.builder()
+        Furniture savedItem3 = furnitureRepository.save(Furniture.builder()
                 .categoryCode(savedCode)
                 .name(itemName3)
+                .color("white")
                 .build());
 
-        itemRepository.save(savedItem1);
-        itemRepository.save(savedItem2);
-        itemRepository.save(savedItem3);
+        furnitureRepository.save(savedItem1);
+        furnitureRepository.save(savedItem2);
+        furnitureRepository.save(savedItem3);
     }
 
     @AfterEach
     public void cleanUp() {
         productRepository.deleteAll();
-        itemRepository.deleteAll();
+        furnitureRepository.deleteAll();
         itemCategoryCodeRepository.deleteAll();
     }
 
@@ -83,9 +86,9 @@ public class ProductRepositoryTest {
         String itemName2 = "한샘침대";
         String itemName3 = "시몬스침대";
 
-        List<Item> itemList1 = itemRepository.findByName(itemName1);
-        List<Item> itemList2 = itemRepository.findByName(itemName2);
-        List<Item> itemList3 = itemRepository.findByName(itemName3);
+        List<Furniture> itemList1 = furnitureRepository.findByName(itemName1);
+        List<Furniture> itemList2 = furnitureRepository.findByName(itemName2);
+        List<Furniture> itemList3 = furnitureRepository.findByName(itemName3);
 
         List<String> productNames = new ArrayList<>();
         productNames.add("멜로우 하단 메트리스 (SS/Q)");
@@ -98,8 +101,6 @@ public class ProductRepositoryTest {
                 .price(440000)
                 .stock(100)
                 .rateDiscount(44)
-                .size("SS")
-                .color("white")
                 .build();
         Product product2 = Product.builder()
                 .item(itemList2.get(0))
@@ -107,8 +108,6 @@ public class ProductRepositoryTest {
                 .price(600000)
                 .stock(50)
                 .rateDiscount(60)
-                .size("S")
-                .color("red")
                 .build();
         Product product3 = Product.builder()
                 .item(itemList3.get(0))
@@ -116,8 +115,6 @@ public class ProductRepositoryTest {
                 .price(300000)
                 .stock(100)
                 .rateDiscount(20)
-                .size("M")
-                .color("blue")
                 .build();
         //when
         productRepository.save(product1);
@@ -144,7 +141,7 @@ public class ProductRepositoryTest {
     public void 등록된제품제거() {
         //given
         String itemName1 = "이케아침대";
-        List<Item> itemList1 = itemRepository.findByName(itemName1);
+        List<Furniture> itemList1 = furnitureRepository.findByName(itemName1);
 
         String productName1 = "알렌 F 원목 침대";
         Product product1 = Product.builder()
@@ -153,8 +150,6 @@ public class ProductRepositoryTest {
                 .price(440000)
                 .stock(100)
                 .rateDiscount(44)
-                .size("SS")
-                .color("white")
                 .build();
         Product saved = productRepository.save(product1);
 
@@ -174,7 +169,7 @@ public class ProductRepositoryTest {
     public void 등록된제품수정() throws Exception{
         //given
         String itemName1 = "이케아침대";
-        List<Item> itemList1 = itemRepository.findByName(itemName1);
+        List<Furniture> itemList1 = furnitureRepository.findByName(itemName1);
 
         String productName1 = "알렌 F 원목 침대";
         Product product1 = Product.builder()
@@ -183,8 +178,6 @@ public class ProductRepositoryTest {
                 .price(440000)
                 .stock(100)
                 .rateDiscount(44)
-                .size("SS")
-                .color("white")
                 .build();
         Product saved = productRepository.save(product1);
 
@@ -193,10 +186,9 @@ public class ProductRepositoryTest {
         saved.update(
                 saved.getItem(),
                 changedName,
-                saved.getStock(), saved.getPrice(),
-                saved.getRateDiscount(),
-                saved.getSize(),
-                saved.getColor());
+                saved.getStock(),
+                saved.getPrice(),
+                saved.getRateDiscount());
         productRepository.save(saved);
 
         //then

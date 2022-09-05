@@ -1,10 +1,11 @@
 package com.clone.ohouse.shop.product.domain;
 
 import com.clone.ohouse.shop.product.domain.access.ItemCategoryCodeRepository;
-import com.clone.ohouse.shop.product.domain.access.ItemRepository;
+import com.clone.ohouse.shop.product.domain.access.FurnitureRepository;
 import com.clone.ohouse.shop.product.domain.access.ProductRepository;
 import com.clone.ohouse.shop.product.domain.dto.ProductSaveRequestDto;
 import com.clone.ohouse.shop.product.domain.dto.ProductUpdateRequestDto;
+import com.clone.ohouse.shop.product.domain.entity.Furniture;
 import com.clone.ohouse.shop.product.domain.entity.Item;
 import com.clone.ohouse.shop.product.domain.entity.ItemCategoryCode;
 import com.clone.ohouse.shop.product.domain.entity.Product;
@@ -30,7 +31,7 @@ public class ProductServiceTest {
     @Autowired
     private ItemCategoryCodeRepository itemCategoryCodeRepository;
     @Autowired
-    private ItemRepository itemRepository;
+    private FurnitureRepository furnitureRepository;
 
     private Item savedItem;
     private Long savedProductSeq;
@@ -67,7 +68,7 @@ public class ProductServiceTest {
     @AfterAll
     public void cleanAll() {
         productRepository.deleteAll();
-        itemRepository.deleteAll();
+        furnitureRepository.deleteAll();
         itemCategoryCodeRepository.deleteAll();
     }
 
@@ -93,7 +94,6 @@ public class ProductServiceTest {
         Product findProduct = productRepository.findById(seq).orElseThrow(() -> new Exception("해당 제품 Seq 없음"));
         org.assertj.core.api.Assertions.assertThat(findProduct.getProductName()).isEqualTo(productName);
         org.assertj.core.api.Assertions.assertThat(findProduct.getPrice()).isEqualTo(price);
-        org.assertj.core.api.Assertions.assertThat(findProduct.getSize()).isEqualTo(size);
 
 
     }
@@ -119,10 +119,8 @@ public class ProductServiceTest {
         //then
         Product findProduct2 = productRepository.findById(savedProductSeq).orElseThrow(() -> new Exception("해당 제품 Seq 없음"));
         org.assertj.core.api.Assertions.assertThat(findProduct2.getProductName()).isEqualTo(productName);
-        org.assertj.core.api.Assertions.assertThat(findProduct2.getColor()).isEqualTo(color);
         org.assertj.core.api.Assertions.assertThat(findProduct2.getPrice()).isEqualTo(updatedPrice);
         org.assertj.core.api.Assertions.assertThat(findProduct2.getStock()).isEqualTo(updatedStock);
-        org.assertj.core.api.Assertions.assertThat(findProduct2.getSize()).isEqualTo(updatedSize);
     }
 
     @Test
@@ -153,7 +151,7 @@ public class ProductServiceTest {
     private Item saveItem(String itemName, String modelName, String brandName) throws Exception {
         ItemCategoryCode categoryCode = 가구_침대_침대프레임_일반침대_카테고리찾기();
 
-        Item savedItem = itemRepository.save(Item.builder()
+        Item savedItem = furnitureRepository.save(Furniture.builder()
                 .categoryCode(categoryCode)
                 .name(itemName)
                 .modelName(modelName)

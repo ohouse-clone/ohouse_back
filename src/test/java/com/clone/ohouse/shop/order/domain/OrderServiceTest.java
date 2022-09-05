@@ -7,8 +7,9 @@ import com.clone.ohouse.shop.order.domain.dto.OrderedProductDto;
 import com.clone.ohouse.shop.order.domain.entity.Delivery;
 import com.clone.ohouse.shop.order.domain.entity.Order;
 import com.clone.ohouse.shop.product.domain.access.ItemCategoryCodeRepository;
-import com.clone.ohouse.shop.product.domain.access.ItemRepository;
+import com.clone.ohouse.shop.product.domain.access.FurnitureRepository;
 import com.clone.ohouse.shop.product.domain.access.ProductRepository;
+import com.clone.ohouse.shop.product.domain.entity.Furniture;
 import com.clone.ohouse.shop.product.domain.entity.Item;
 import com.clone.ohouse.shop.product.domain.entity.ItemCategoryCode;
 import com.clone.ohouse.shop.product.domain.entity.Product;
@@ -16,7 +17,6 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,14 +33,14 @@ import static org.assertj.core.api.Assertions.*;
 public class OrderServiceTest {
 
     @Autowired private ItemCategoryCodeRepository itemCategoryCodeRepository;
-    @Autowired private ItemRepository itemRepository;
+    @Autowired private FurnitureRepository furnitureRepository;
     @Autowired
     private ProductRepository productRepository;
     @Autowired private OrderRepository orderRepository;
     @Autowired private OrderedProductRepository orderedProductRepository;
     @Autowired private OrderService service;
     private Product product;
-    private Item item;
+    private Furniture item;
     private ItemCategoryCode code;
 
 
@@ -54,7 +54,7 @@ public class OrderServiceTest {
                 .category4("20")
                 .build();
 
-        item = Item.builder()
+        item = Furniture.builder()
                 .categoryCode(code)
                 .name("시몬스침대")
                 .build();
@@ -65,12 +65,10 @@ public class OrderServiceTest {
                 .price(440000)
                 .stock(100)
                 .rateDiscount(44)
-                .size("SS")
-                .color("white")
                 .build();
 
         code = itemCategoryCodeRepository.save(code);
-        item = itemRepository.save(item);
+        item = furnitureRepository.save(item);
         product = productRepository.save(product);
     }
 
@@ -79,7 +77,7 @@ public class OrderServiceTest {
         orderedProductRepository.deleteAll();
         orderRepository.deleteAll();
         productRepository.deleteAll();
-        itemRepository.deleteAll();
+        furnitureRepository.deleteAll();
         itemCategoryCodeRepository.deleteAll();
     }
 
