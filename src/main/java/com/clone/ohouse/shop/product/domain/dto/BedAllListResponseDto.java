@@ -1,11 +1,11 @@
 package com.clone.ohouse.shop.product.domain.dto;
 
-import com.clone.ohouse.shop.product.domain.entity.Furniture;
+import com.clone.ohouse.shop.product.domain.entity.Bed;
 import com.clone.ohouse.shop.product.domain.entity.ItemCategoryCode;
 import lombok.Getter;
 
 @Getter
-public class FurnitureAllListResponseDto {
+public class BedAllListResponseDto {
     private final Long id;
     private final ItemCategoryCode categoryCode;
     private final String name;
@@ -14,7 +14,7 @@ public class FurnitureAllListResponseDto {
     private final String color;
     private final String size;
 
-    public FurnitureAllListResponseDto(Furniture entity) {
+    public BedAllListResponseDto(Bed entity) {
         this.id = entity.getId();
         this.categoryCode = entity.getCategoryCode();
         this.name = entity.getName();

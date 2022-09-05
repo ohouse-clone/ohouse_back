@@ -7,10 +7,9 @@ import com.clone.ohouse.shop.order.domain.dto.OrderedProductDto;
 import com.clone.ohouse.shop.order.domain.entity.Delivery;
 import com.clone.ohouse.shop.order.domain.entity.Order;
 import com.clone.ohouse.shop.product.domain.access.ItemCategoryCodeRepository;
-import com.clone.ohouse.shop.product.domain.access.FurnitureRepository;
+import com.clone.ohouse.shop.product.domain.access.BedRepository;
 import com.clone.ohouse.shop.product.domain.access.ProductRepository;
-import com.clone.ohouse.shop.product.domain.entity.Furniture;
-import com.clone.ohouse.shop.product.domain.entity.Item;
+import com.clone.ohouse.shop.product.domain.entity.Bed;
 import com.clone.ohouse.shop.product.domain.entity.ItemCategoryCode;
 import com.clone.ohouse.shop.product.domain.entity.Product;
 import org.junit.jupiter.api.*;
@@ -33,14 +32,14 @@ import static org.assertj.core.api.Assertions.*;
 public class OrderServiceTest {
 
     @Autowired private ItemCategoryCodeRepository itemCategoryCodeRepository;
-    @Autowired private FurnitureRepository furnitureRepository;
+    @Autowired private BedRepository bedRepository;
     @Autowired
     private ProductRepository productRepository;
     @Autowired private OrderRepository orderRepository;
     @Autowired private OrderedProductRepository orderedProductRepository;
     @Autowired private OrderService service;
     private Product product;
-    private Furniture item;
+    private Bed item;
     private ItemCategoryCode code;
 
 
@@ -54,7 +53,7 @@ public class OrderServiceTest {
                 .category4("20")
                 .build();
 
-        item = Furniture.builder()
+        item = Bed.builder()
                 .categoryCode(code)
                 .name("시몬스침대")
                 .build();
@@ -68,7 +67,7 @@ public class OrderServiceTest {
                 .build();
 
         code = itemCategoryCodeRepository.save(code);
-        item = furnitureRepository.save(item);
+        item = bedRepository.save(item);
         product = productRepository.save(product);
     }
 
@@ -77,7 +76,7 @@ public class OrderServiceTest {
         orderedProductRepository.deleteAll();
         orderRepository.deleteAll();
         productRepository.deleteAll();
-        furnitureRepository.deleteAll();
+        bedRepository.deleteAll();
         itemCategoryCodeRepository.deleteAll();
     }
 

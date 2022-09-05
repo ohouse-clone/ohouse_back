@@ -10,12 +10,7 @@ import javax.persistence.Entity;
 @NoArgsConstructor
 @Getter
 @Entity
-public class Furniture extends Item {
-
-    @Column(length = 50)
-    private String modelName;
-    @Column(length = 45)
-    private String brandName;
+public class Bed extends Item {
     @Column(length = 30)
     private String size;
     @Column(length = 30)
@@ -23,18 +18,15 @@ public class Furniture extends Item {
 
 
     @Builder
-    public Furniture(ItemCategoryCode categoryCode, String name, String modelName, String brandName, String size, String color) {
-        super(categoryCode, name);
-        this.modelName = modelName;
-        this.brandName = brandName;
+    public Bed(ItemCategoryCode categoryCode, String name, String modelName, String brandName, String size, String color) {
+        super(categoryCode, name, modelName, brandName);
+
         this.size = size;
         this.color = color;
     }
 
     public void update(ItemCategoryCode categoryCode, String name, String modelName, String brandName, String size, String color) {
-        super.update(categoryCode, name);
-        if (modelName != null) this.modelName = modelName;
-        if (brandName != null) this.brandName = brandName;
+        super.update(categoryCode, name, modelName, brandName);
         if (size != null) this.size = size;
         if (color != null) this.color = color;
     }

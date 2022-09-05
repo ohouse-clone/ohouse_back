@@ -1,7 +1,7 @@
 package com.clone.ohouse.shop.product.domain.access;
 
 
-import com.clone.ohouse.shop.product.domain.entity.Furniture;
+import com.clone.ohouse.shop.product.domain.entity.Bed;
 import com.clone.ohouse.shop.product.domain.entity.Item;
 import com.clone.ohouse.shop.product.domain.entity.ItemCategoryCode;
 import org.assertj.core.api.Assertions;
@@ -21,9 +21,9 @@ import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-public class FurnitureRepositoryTest {
+public class BedRepositoryTest {
     @Autowired
-    private FurnitureRepository furnitureRepository;
+    private BedRepository bedRepository;
 
     @Autowired
     private ItemCategoryCodeRepository itemCategoryCodeRepository;
@@ -41,7 +41,7 @@ public class FurnitureRepositoryTest {
     }
     @AfterEach
     public void cleanUp() {
-        furnitureRepository.deleteAll();
+        bedRepository.deleteAll();
         itemCategoryCodeRepository.deleteAll();
     }
 
@@ -59,13 +59,13 @@ public class FurnitureRepositoryTest {
         Optional<ItemCategoryCode> one = itemCategoryCodeRepository.findOne(e);
 
         String itemName = "시몬스침대";
-        Item savedItem = furnitureRepository.save(Furniture.builder()
+        Bed savedItem = bedRepository.save(Bed.builder()
                 .categoryCode(one.orElseThrow(()->new Exception("가구_침대_침대프레임_일반침대 항목 없음")))
                 .name(itemName)
                 .build());
 
         //when
-        List<Furniture> list = furnitureRepository.findAll();
+        List<Bed> list = bedRepository.findAll();
 
         //then
         Item item = list.get(0);
@@ -88,15 +88,15 @@ public class FurnitureRepositoryTest {
         Optional<ItemCategoryCode> one = itemCategoryCodeRepository.findOne(e);
 
         String itemName = "이케아침대";
-        Furniture savedItem = furnitureRepository.save(Furniture.builder()
+        Bed savedItem = bedRepository.save(Bed.builder()
                 .categoryCode(one.orElseThrow(()->new Exception("가구_침대_침대프레임_일반침대 항목 없음")))
                 .name(itemName)
                 .build());
 
         //when
-        furnitureRepository.delete(savedItem);
+        bedRepository.delete(savedItem);
 
-        List<Furniture> all = furnitureRepository.findAll();
+        List<Bed> all = bedRepository.findAll();
 
         //then
         Assertions.assertThat(all.isEmpty()).isTrue();
@@ -116,17 +116,17 @@ public class FurnitureRepositoryTest {
         Optional<ItemCategoryCode> one = itemCategoryCodeRepository.findOne(e);
 
         String itemName = "이케아침대";
-        Furniture savedItem = furnitureRepository.save(Furniture.builder()
+        Bed savedItem = bedRepository.save(Bed.builder()
                 .categoryCode(one.orElseThrow(() -> new Exception("가구_침대_침대프레임_일반침대 항목 없음")))
                 .name(itemName)
                 .build());
         //when
-        List<Furniture> all = furnitureRepository.findAll();
-        Furniture item = all.get(0);
+        List<Bed> all = bedRepository.findAll();
+        Bed item = all.get(0);
         item.update(null,"한샘침대",null,null,null,null);
-        furnitureRepository.save(item);
+        bedRepository.save(item);
 
-        Optional<Furniture> itemForCompare = furnitureRepository.findById(savedItem.getId());
+        Optional<Bed> itemForCompare = bedRepository.findById(savedItem.getId());
 
         //then
         Assertions.assertThat(itemForCompare.orElseThrow(()->new Exception("Fail to find 등록된 한샘침대")).getName()).isEqualTo(item.getName());

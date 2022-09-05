@@ -1,12 +1,11 @@
 package com.clone.ohouse.shop.product.domain.dto;
 
-import com.clone.ohouse.shop.product.domain.entity.Furniture;
-import com.clone.ohouse.shop.product.domain.entity.Item;
+import com.clone.ohouse.shop.product.domain.entity.Bed;
 import com.clone.ohouse.shop.product.domain.entity.ItemCategoryCode;
 import lombok.Getter;
 
 @Getter
-public class FurnitureSaveRequestDto {
+public class BedSaveRequestDto {
     private ItemCategoryCode categoryCode;
     private String name;
     private String modelName;
@@ -14,7 +13,7 @@ public class FurnitureSaveRequestDto {
     private String color;
     private String size;
 
-    public FurnitureSaveRequestDto(ItemCategoryCode categoryCode, String name, String modelName, String brandName, String color, String size) {
+    public BedSaveRequestDto(ItemCategoryCode categoryCode, String name, String modelName, String brandName, String color, String size) {
         this.categoryCode = categoryCode;
         this.name = name;
         this.modelName = modelName;
@@ -23,8 +22,8 @@ public class FurnitureSaveRequestDto {
         this.size = size;
     }
 
-    public Furniture toEntity() {
-        return Furniture.builder()
+    public Bed toEntity() {
+        return Bed.builder()
                 .categoryCode(categoryCode)
                 .name(name)
                 .modelName(modelName)

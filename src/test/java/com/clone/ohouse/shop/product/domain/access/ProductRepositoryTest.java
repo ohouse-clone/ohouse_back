@@ -1,7 +1,6 @@
 package com.clone.ohouse.shop.product.domain.access;
 
-import com.clone.ohouse.shop.product.domain.entity.Furniture;
-import com.clone.ohouse.shop.product.domain.entity.Item;
+import com.clone.ohouse.shop.product.domain.entity.Bed;
 import com.clone.ohouse.shop.product.domain.entity.ItemCategoryCode;
 import com.clone.ohouse.shop.product.domain.entity.Product;
 import org.assertj.core.api.Assertions;
@@ -22,7 +21,7 @@ import java.util.Optional;
 @SpringBootTest
 public class ProductRepositoryTest {
     @Autowired
-    private FurnitureRepository furnitureRepository;
+    private BedRepository bedRepository;
     @Autowired
     private ItemCategoryCodeRepository itemCategoryCodeRepository;
     @Autowired
@@ -46,35 +45,35 @@ public class ProductRepositoryTest {
 
         //Set Item
         String itemName1 = "이케아침대";
-        Furniture savedItem1 = furnitureRepository.save(Furniture.builder()
+        Bed savedItem1 = bedRepository.save(Bed.builder()
                 .categoryCode(savedCode)
                 .name(itemName1)
                 .color("red")
                 .build());
         //Set Item2
         String itemName2 = "한샘침대";
-        Furniture savedItem2 = furnitureRepository.save(Furniture.builder()
+        Bed savedItem2 = bedRepository.save(Bed.builder()
                 .categoryCode(savedCode)
                 .name(itemName2)
                 .color("blue")
                 .build());
         //Set Item3
         String itemName3 = "시몬스침대";
-        Furniture savedItem3 = furnitureRepository.save(Furniture.builder()
+        Bed savedItem3 = bedRepository.save(Bed.builder()
                 .categoryCode(savedCode)
                 .name(itemName3)
                 .color("white")
                 .build());
 
-        furnitureRepository.save(savedItem1);
-        furnitureRepository.save(savedItem2);
-        furnitureRepository.save(savedItem3);
+        bedRepository.save(savedItem1);
+        bedRepository.save(savedItem2);
+        bedRepository.save(savedItem3);
     }
 
     @AfterEach
     public void cleanUp() {
         productRepository.deleteAll();
-        furnitureRepository.deleteAll();
+        bedRepository.deleteAll();
         itemCategoryCodeRepository.deleteAll();
     }
 
@@ -86,9 +85,9 @@ public class ProductRepositoryTest {
         String itemName2 = "한샘침대";
         String itemName3 = "시몬스침대";
 
-        List<Furniture> itemList1 = furnitureRepository.findByName(itemName1);
-        List<Furniture> itemList2 = furnitureRepository.findByName(itemName2);
-        List<Furniture> itemList3 = furnitureRepository.findByName(itemName3);
+        List<Bed> itemList1 = bedRepository.findByName(itemName1);
+        List<Bed> itemList2 = bedRepository.findByName(itemName2);
+        List<Bed> itemList3 = bedRepository.findByName(itemName3);
 
         List<String> productNames = new ArrayList<>();
         productNames.add("멜로우 하단 메트리스 (SS/Q)");
@@ -141,7 +140,7 @@ public class ProductRepositoryTest {
     public void 등록된제품제거() {
         //given
         String itemName1 = "이케아침대";
-        List<Furniture> itemList1 = furnitureRepository.findByName(itemName1);
+        List<Bed> itemList1 = bedRepository.findByName(itemName1);
 
         String productName1 = "알렌 F 원목 침대";
         Product product1 = Product.builder()
@@ -169,7 +168,7 @@ public class ProductRepositoryTest {
     public void 등록된제품수정() throws Exception{
         //given
         String itemName1 = "이케아침대";
-        List<Furniture> itemList1 = furnitureRepository.findByName(itemName1);
+        List<Bed> itemList1 = bedRepository.findByName(itemName1);
 
         String productName1 = "알렌 F 원목 침대";
         Product product1 = Product.builder()

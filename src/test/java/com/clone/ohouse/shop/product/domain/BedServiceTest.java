@@ -1,12 +1,11 @@
 package com.clone.ohouse.shop.product.domain;
 
 import com.clone.ohouse.shop.product.domain.access.ItemCategoryCodeRepository;
-import com.clone.ohouse.shop.product.domain.access.FurnitureRepository;
-import com.clone.ohouse.shop.product.domain.dto.FurnitureAllListResponseDto;
-import com.clone.ohouse.shop.product.domain.dto.FurnitureSaveRequestDto;
-import com.clone.ohouse.shop.product.domain.dto.FurnitureUpdateRequestDto;
-import com.clone.ohouse.shop.product.domain.entity.Furniture;
-import com.clone.ohouse.shop.product.domain.entity.Item;
+import com.clone.ohouse.shop.product.domain.access.BedRepository;
+import com.clone.ohouse.shop.product.domain.dto.BedAllListResponseDto;
+import com.clone.ohouse.shop.product.domain.dto.BedSaveRequestDto;
+import com.clone.ohouse.shop.product.domain.dto.BedUpdateRequestDto;
+import com.clone.ohouse.shop.product.domain.entity.Bed;
 import com.clone.ohouse.shop.product.domain.entity.ItemCategoryCode;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
@@ -26,14 +25,14 @@ import java.util.Optional;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @Transactional
-public class FurnitureServiceTest {
+public class BedServiceTest {
     @Autowired
-    private FurnitureService furnitureService;
+    private BedService bedService;
 
     @Autowired
     private ItemCategoryCodeRepository itemCategoryCodeRepository;
     @Autowired
-    private FurnitureRepository furnitureRepository;
+    private BedRepository bedRepository;
 
     @BeforeEach
     public void previouslySetup(){
@@ -49,7 +48,7 @@ public class FurnitureServiceTest {
 
     @AfterEach
     public void cleanUp() {
-        furnitureRepository.deleteAll();
+        bedRepository.deleteAll();
         itemCategoryCodeRepository.deleteAll();
     }
 
@@ -62,7 +61,7 @@ public class FurnitureServiceTest {
         String modelName = "레인 짜맞춤 8각 평상형 원목 침대프레임";
         String brandName = "엔투엔퍼니쳐";
         //when
-        Long seq = furnitureService.save(new FurnitureSaveRequestDto(
+        Long seq = bedService.save(new BedSaveRequestDto(
                 categoryCode,
                 itemName,
                 modelName,
@@ -71,7 +70,7 @@ public class FurnitureServiceTest {
                 "10"
         ));
         //then
-        Furniture findItem = furnitureRepository.findById(seq)
+        Bed findItem = bedRepository.findById(seq)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 Item : " + seq));
 
         Assertions.assertThat(findItem.getName()).isEqualTo(itemName);
@@ -90,7 +89,7 @@ public class FurnitureServiceTest {
         String brandName = "JH공방";
 
         //when
-        Long savedSeq = furnitureService.update(seq, new FurnitureUpdateRequestDto(
+        Long savedSeq = bedService.update(seq, new BedUpdateRequestDto(
                 categoryCode,
                 itemName,
                 modelName,
@@ -100,7 +99,7 @@ public class FurnitureServiceTest {
         ));
 
         //then
-        Furniture findItem = furnitureRepository.findById(savedSeq)
+        Bed findItem = bedRepository.findById(savedSeq)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 Item : " + savedSeq));
 
         Assertions.assertThat(seq).isEqualTo(savedSeq);
@@ -115,10 +114,10 @@ public class FurnitureServiceTest {
         //given
         Long seq = saveItem();
         //when
-        furnitureService.delete(seq);
+        bedService.delete(seq);
 
         //then
-        List<FurnitureAllListResponseDto> all = furnitureService.findAllAsc();
+        List<BedAllListResponseDto> all = bedService.findAllAsc();
 
         Assertions.assertThat(all.isEmpty()).isTrue();
     }
@@ -141,7 +140,7 @@ public class FurnitureServiceTest {
         String modelName = "레인 짜맞춤 8각 평상형 원목 침대프레임";
         String brandName = "엔투엔퍼니쳐";
 
-        return furnitureService.save(new FurnitureSaveRequestDto(
+        return bedService.save(new BedSaveRequestDto(
                 categoryCode,
                 itemName,
                 modelName,

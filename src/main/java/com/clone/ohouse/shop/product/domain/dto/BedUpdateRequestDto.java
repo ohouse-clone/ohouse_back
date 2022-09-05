@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class FurnitureUpdateRequestDto {
+public class BedUpdateRequestDto {
     private ItemCategoryCode categoryCode;
     private String name;
     private String modelName;
@@ -14,7 +14,7 @@ public class FurnitureUpdateRequestDto {
     private String size;
 
     @Builder
-    public FurnitureUpdateRequestDto(ItemCategoryCode categoryCode, String name, String modelName, String brandName, String color, String size) {
+    public BedUpdateRequestDto(ItemCategoryCode categoryCode, String name, String modelName, String brandName, String color, String size) {
         this.categoryCode = categoryCode;
         this.name = name;
         this.modelName = modelName;

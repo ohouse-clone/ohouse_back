@@ -1,11 +1,11 @@
 package com.clone.ohouse.shop.product.domain;
 
 import com.clone.ohouse.shop.product.domain.access.ItemCategoryCodeRepository;
-import com.clone.ohouse.shop.product.domain.access.FurnitureRepository;
+import com.clone.ohouse.shop.product.domain.access.BedRepository;
 import com.clone.ohouse.shop.product.domain.access.ProductRepository;
 import com.clone.ohouse.shop.product.domain.dto.ProductSaveRequestDto;
 import com.clone.ohouse.shop.product.domain.dto.ProductUpdateRequestDto;
-import com.clone.ohouse.shop.product.domain.entity.Furniture;
+import com.clone.ohouse.shop.product.domain.entity.Bed;
 import com.clone.ohouse.shop.product.domain.entity.Item;
 import com.clone.ohouse.shop.product.domain.entity.ItemCategoryCode;
 import com.clone.ohouse.shop.product.domain.entity.Product;
@@ -31,7 +31,7 @@ public class ProductServiceTest {
     @Autowired
     private ItemCategoryCodeRepository itemCategoryCodeRepository;
     @Autowired
-    private FurnitureRepository furnitureRepository;
+    private BedRepository bedRepository;
 
     private Item savedItem;
     private Long savedProductSeq;
@@ -68,7 +68,7 @@ public class ProductServiceTest {
     @AfterAll
     public void cleanAll() {
         productRepository.deleteAll();
-        furnitureRepository.deleteAll();
+        bedRepository.deleteAll();
         itemCategoryCodeRepository.deleteAll();
     }
 
@@ -151,7 +151,7 @@ public class ProductServiceTest {
     private Item saveItem(String itemName, String modelName, String brandName) throws Exception {
         ItemCategoryCode categoryCode = 가구_침대_침대프레임_일반침대_카테고리찾기();
 
-        Item savedItem = furnitureRepository.save(Furniture.builder()
+        Item savedItem = bedRepository.save(Bed.builder()
                 .categoryCode(categoryCode)
                 .name(itemName)
                 .modelName(modelName)
