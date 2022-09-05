@@ -1,7 +1,7 @@
-package com.clone.ohouse.shop.board.domain.dto;
+package com.clone.ohouse.shop.store.domain.dto;
 
 
-import com.clone.ohouse.shop.board.domain.entity.ProductBoard;
+import com.clone.ohouse.shop.store.domain.entity.StorePosts;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 )
 @AllArgsConstructor
 @Getter
-public class ProductBoardResponseDto {
+public class StorePostsResponseDto {
 
     @ApiModelProperty(
             value = "store 게시글 id",
@@ -80,7 +80,7 @@ public class ProductBoardResponseDto {
     private boolean isDeleted;
 
 
-    public ProductBoardResponseDto(ProductBoard entity) {
+    public StorePostsResponseDto(StorePosts entity) {
         this.id = entity.getId();
         this.isActive = entity.isActive();
         this.title = entity.getTitle();

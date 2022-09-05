@@ -1,10 +1,10 @@
-package com.clone.ohouse.shop.board.domain;
+package com.clone.ohouse.shop.store.domain;
 
-import com.clone.ohouse.shop.board.domain.access.ProductBoardRepository;
-import com.clone.ohouse.shop.board.domain.dto.ProductBoardResponseDto;
-import com.clone.ohouse.shop.board.domain.dto.ProductBoardSaveRequestDto;
-import com.clone.ohouse.shop.board.domain.dto.ProductBoardUpdateRequestDto;
-import com.clone.ohouse.shop.board.domain.entity.ProductBoard;
+import com.clone.ohouse.shop.store.domain.access.StorePostsRepository;
+import com.clone.ohouse.shop.store.domain.dto.StorePostsResponseDto;
+import com.clone.ohouse.shop.store.domain.dto.StorePostsSaveRequestDto;
+import com.clone.ohouse.shop.store.domain.dto.StorePostsUpdateRequestDto;
+import com.clone.ohouse.shop.store.domain.entity.StorePosts;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -21,28 +21,28 @@ import java.util.NoSuchElementException;
 @Transactional
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-public class ProductBoardServiceTest {
+public class StorePostsServiceTest {
     @Autowired
-    private ProductBoardService boardService;
+    private StorePostsService boardService;
 
     @Autowired
-    private ProductBoardRepository productBoardRepository;
+    private StorePostsRepository storePostsRepository;
 
     @AfterEach
     void clean(){
-        productBoardRepository.deleteAll();
+        storePostsRepository.deleteAll();
     }
 
     @Test
     void save(){
         //given
-        ProductBoardSaveRequestDto dto = createProductBoardSaveRequest();
+        StorePostsSaveRequestDto dto = createProductBoardSaveRequest();
 
         //when
         Long savedId = boardService.save(dto);
 
         //then
-        List<ProductBoard> all = productBoardRepository.findAll();
+        List<StorePosts> all = storePostsRepository.findAll();
         Assertions.assertThat(all.size()).isEqualTo(1);
         Assertions.assertThat(all.get(0).getId()).isEqualTo(savedId);
     }
@@ -54,9 +54,9 @@ public class ProductBoardServiceTest {
         String content = "내용 없음";
         String modifiedUser = "쿼터";
 
-        ProductBoardSaveRequestDto dto = createProductBoardSaveRequest();
+        StorePostsSaveRequestDto dto = createProductBoardSaveRequest();
         Long savedId = boardService.save(dto);
-        ProductBoardUpdateRequestDto updateDto = ProductBoardUpdateRequestDto.builder()
+        StorePostsUpdateRequestDto updateDto = StorePostsUpdateRequestDto.builder()
                 .title(title)
                 .content(content)
                 .modifiedUser(modifiedUser)
@@ -68,42 +68,42 @@ public class ProductBoardServiceTest {
         boardService.update(savedId, updateDto);
 
         //then
-        ProductBoard productBoard = productBoardRepository.findById(savedId).orElseThrow(() -> new NoSuchElementException("찾으려는 판매글이 없습니다."));
+        StorePosts storePosts = storePostsRepository.findById(savedId).orElseThrow(() -> new NoSuchElementException("찾으려는 판매글이 없습니다."));
 
-        Assertions.assertThat(productBoard.getTitle()).isEqualTo(title);
-        Assertions.assertThat(new String(productBoard.getContent(), StandardCharsets.UTF_8)).isEqualTo(content);
-        Assertions.assertThat(productBoard.getModifiedUser()).isEqualTo(modifiedUser);
+        Assertions.assertThat(storePosts.getTitle()).isEqualTo(title);
+        Assertions.assertThat(new String(storePosts.getContent(), StandardCharsets.UTF_8)).isEqualTo(content);
+        Assertions.assertThat(storePosts.getModifiedUser()).isEqualTo(modifiedUser);
     }
 
     @Test
     void delete(){
         //given
-        ProductBoardSaveRequestDto dto = createProductBoardSaveRequest();
+        StorePostsSaveRequestDto dto = createProductBoardSaveRequest();
         Long savedId = boardService.save(dto);
 
         //when
         boardService.delete(savedId);
 
         //then
-        long count = productBoardRepository.count();
+        long count = storePostsRepository.count();
         Assertions.assertThat(count).isEqualTo(0);
     }
 
     @Test
     void findById(){
         //given
-        ProductBoardSaveRequestDto dto = createProductBoardSaveRequest();
+        StorePostsSaveRequestDto dto = createProductBoardSaveRequest();
         Long savedId = boardService.save(dto);
 
         //when
-        ProductBoardResponseDto responseDto = boardService.findById(savedId);
+        StorePostsResponseDto responseDto = boardService.findById(savedId);
 
 
         //then
         Assertions.assertThat(responseDto.getTitle()).isEqualTo("행복한 마을");
     }
 
-    private ProductBoardSaveRequestDto createProductBoardSaveRequest(){
+    private StorePostsSaveRequestDto createProductBoardSaveRequest(){
         String title = "행복한 마을";
         String content = "One of the early announcements out of Google I/O 2017's keynote was the launch of google.ai, with which Google aims to \"bring the benefits of AI to everyone\". Google.ai is a collection of products and teams across Alphabet with a focus on AI.\n" +
                 "\n" +
@@ -119,7 +119,7 @@ public class ProductBoardServiceTest {
                 "\n";
         String author = "고순무";
 
-        return new ProductBoardSaveRequestDto(title, content, author);
+        return new StorePostsSaveRequestDto(title, content, author);
     }
 
 }

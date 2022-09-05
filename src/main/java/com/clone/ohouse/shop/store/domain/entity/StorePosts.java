@@ -1,4 +1,4 @@
-package com.clone.ohouse.shop.board.domain.entity;
+package com.clone.ohouse.shop.store.domain.entity;
 
 import com.clone.ohouse.shop.BaseTimeEntity;
 import com.clone.ohouse.shop.product.domain.entity.Product;
@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Entity
-public class ProductBoard extends BaseTimeEntity {
+public class StorePosts extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -35,11 +35,11 @@ public class ProductBoard extends BaseTimeEntity {
     private boolean isDeleted = false;
     private Integer hit = 0;
 
-    @OneToMany(mappedBy = "productBoard", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "storePosts", fetch = FetchType.LAZY)
     private List<Product> productList = new ArrayList<>();
 
     @Builder
-    public ProductBoard(String title, byte[] content, String author, String modifiedUser) {
+    public StorePosts(String title, byte[] content, String author, String modifiedUser) {
         this.title = title;
         this.content = content;
         this.author = author;

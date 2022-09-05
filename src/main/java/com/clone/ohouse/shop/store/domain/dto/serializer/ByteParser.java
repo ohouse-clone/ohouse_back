@@ -1,4 +1,4 @@
-package com.clone.ohouse.shop.board.domain.dto.serializer;
+package com.clone.ohouse.shop.store.domain.dto.serializer;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;

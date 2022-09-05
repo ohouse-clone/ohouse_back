@@ -1,6 +1,6 @@
 package com.clone.ohouse.shop.product.domain.entity;
 
-import com.clone.ohouse.shop.board.domain.entity.ProductBoard;
+import com.clone.ohouse.shop.store.domain.entity.StorePosts;
 import com.clone.ohouse.shop.order.domain.entity.Order;
 import com.clone.ohouse.shop.order.domain.entity.OrderedProduct;
 import lombok.Builder;
@@ -30,8 +30,8 @@ public class Product {
 
 
     @ManyToOne
-    @JoinColumn(name = "product_board_id")
-    private ProductBoard productBoard;
+    @JoinColumn(name = "store_posts_id")
+    private StorePosts storePosts;
 
     @Builder
     public Product(Item item, String productName, Integer price, Integer stock, Integer rateDiscount) {

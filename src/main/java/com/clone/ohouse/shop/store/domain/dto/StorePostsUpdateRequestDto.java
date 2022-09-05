@@ -1,6 +1,5 @@
-package com.clone.ohouse.shop.board.domain.dto;
+package com.clone.ohouse.shop.store.domain.dto;
 
-import com.clone.ohouse.shop.board.domain.entity.ProductBoard;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -17,7 +16,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ProductBoardUpdateRequestDto {
+public class StorePostsUpdateRequestDto {
     @ApiModelProperty(
             value = "store 게시글 제목",
             required = false,
@@ -51,7 +50,7 @@ public class ProductBoardUpdateRequestDto {
     private boolean isDeleted = false;
 
     @Builder
-    public ProductBoardUpdateRequestDto(String title, String content, String modifiedUser, boolean isActive, boolean isDeleted) {
+    public StorePostsUpdateRequestDto(String title, String content, String modifiedUser, boolean isActive, boolean isDeleted) {
         this.title = title;
         this.content = content;
         this.modifiedUser = modifiedUser;

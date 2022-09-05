@@ -1,10 +1,8 @@
-package com.clone.ohouse.shop.board.domain.access;
+package com.clone.ohouse.shop.store.domain.access;
 
-import com.clone.ohouse.shop.board.domain.access.ProductBoardRepository;
-import com.clone.ohouse.shop.board.domain.entity.ProductBoard;
+import com.clone.ohouse.shop.store.domain.entity.StorePosts;
 import com.clone.ohouse.shop.product.domain.access.ProductRepository;
 import com.clone.ohouse.shop.product.domain.entity.Product;
-import org.aspectj.lang.annotation.After;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,18 +14,16 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-public class ProductBoardRepositoryTest {
+public class StorePostsRepositoryTest {
 
     @Autowired
     private ProductRepository productRepository;
 
     @Autowired
-    private ProductBoardRepository productBoardRepository;
+    private StorePostsRepository storePostsRepository;
 
     @BeforeEach
     public void previouslySetup(){
@@ -36,7 +32,7 @@ public class ProductBoardRepositoryTest {
 
     @AfterEach
     public void clean(){
-        productBoardRepository.deleteAll();
+        storePostsRepository.deleteAll();
         productRepository.deleteAll();
     }
 
@@ -47,15 +43,15 @@ public class ProductBoardRepositoryTest {
         String content = "내용";
         String author = "나";
 
-        ProductBoard productBoard = new ProductBoard(title, content.getBytes(StandardCharsets.UTF_8), author, null);
+        StorePosts storePosts = new StorePosts(title, content.getBytes(StandardCharsets.UTF_8), author, null);
 
         //when
-        productBoardRepository.save(productBoard);
+        storePostsRepository.save(storePosts);
 
         //then
-        List<ProductBoard> all = productBoardRepository.findAll();
-        Assertions.assertThat(all.get(0).getTitle()).isEqualTo(productBoard.getTitle());
-        Assertions.assertThat(all.get(0).getAuthor()).isEqualTo(productBoard.getAuthor());
+        List<StorePosts> all = storePostsRepository.findAll();
+        Assertions.assertThat(all.get(0).getTitle()).isEqualTo(storePosts.getTitle());
+        Assertions.assertThat(all.get(0).getAuthor()).isEqualTo(storePosts.getAuthor());
     }
 
 
@@ -66,13 +62,13 @@ public class ProductBoardRepositoryTest {
         String content = "내용";
         String author = "나";
 
-        ProductBoard productBoard = new ProductBoard(title, content.getBytes(StandardCharsets.UTF_8), author, null);
-        ProductBoard saved = productBoardRepository.save(productBoard);
+        StorePosts storePosts = new StorePosts(title, content.getBytes(StandardCharsets.UTF_8), author, null);
+        StorePosts saved = storePostsRepository.save(storePosts);
         //when
-        List<ProductBoard> all = productBoardRepository.findAll();
+        List<StorePosts> all = storePostsRepository.findAll();
 
-        productBoardRepository.delete(all.get(0));
+        storePostsRepository.delete(all.get(0));
 
-        Assertions.assertThat(productBoardRepository.count()).isEqualTo(0);
+        Assertions.assertThat(storePostsRepository.count()).isEqualTo(0);
     }
 }

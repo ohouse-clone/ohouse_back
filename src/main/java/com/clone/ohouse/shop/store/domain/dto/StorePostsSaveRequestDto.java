@@ -1,13 +1,10 @@
-package com.clone.ohouse.shop.board.domain.dto;
+package com.clone.ohouse.shop.store.domain.dto;
 
-import com.clone.ohouse.shop.board.domain.entity.ProductBoard;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.clone.ohouse.shop.store.domain.entity.StorePosts;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.nio.charset.StandardCharsets;
 
@@ -17,7 +14,7 @@ import java.nio.charset.StandardCharsets;
 )
 @NoArgsConstructor
 @Getter
-public class ProductBoardSaveRequestDto {
+public class StorePostsSaveRequestDto {
     @ApiModelProperty(
             value = "store 글 제목",
             required = true,
@@ -40,14 +37,14 @@ public class ProductBoardSaveRequestDto {
     private String author;
 
 
-    public ProductBoardSaveRequestDto(String title, String content, String author) {
+    public StorePostsSaveRequestDto(String title, String content, String author) {
         this.title = title;
         this.content = content;
         this.author = author;
     }
 
-    public ProductBoard toEntity() {
-        return ProductBoard.builder()
+    public StorePosts toEntity() {
+        return StorePosts.builder()
                 .title(title)
                 .content(content.getBytes(StandardCharsets.UTF_8))
                 .author(author)
