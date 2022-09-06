@@ -27,21 +27,24 @@ public class Product {
     private Integer stock;
     private Integer rateDiscount;
 
-
+    private Long popular = 0L;
 
     @ManyToOne
     @JoinColumn(name = "store_posts_id")
     private StorePosts storePosts;
 
     @Builder
-    public Product(Item item, String productName, Integer price, Integer stock, Integer rateDiscount) {
+    public Product(Item item, String productName, Integer price, Integer stock, Integer rateDiscount, Long popular) {
         this.item = item;
         this.productName = productName;
         this.price = price;
         this.stock = stock;
         this.rateDiscount = rateDiscount;
+        this.popular = popular;
     }
-
+    public void GainPopular() {
+        this.popular++;
+    }
 
     public void update(Item item, String productName, Integer stock, Integer price, Integer rateDiscount) {
         if(item != null) this.item = item;
