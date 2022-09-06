@@ -17,7 +17,7 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     private Item item;
 
@@ -29,7 +29,7 @@ public class Product {
 
     private Long popular = 0L;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_posts_id")
     private StorePosts storePosts;
 
@@ -66,6 +66,11 @@ public class Product {
         this.stock -= amount;
 
         return new OrderedProduct(this, order, price, amount);
+    }
+
+    public void RegisterStorePosts(StorePosts post){
+        this.storePosts = post;
+        post.getProductList().add(this);
     }
 
 }
