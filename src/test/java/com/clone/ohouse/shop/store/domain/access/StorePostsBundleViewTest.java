@@ -48,10 +48,10 @@ public class StorePostsBundleViewTest {
         String size = "중";
         String postTitle = "제목";
         ItemCategoryCode code = ItemCategoryCode.builder()
-                .category1("0")
-                .category2("22")
-                .category3("20")
-                .category4("20")
+                .category1(0)
+                .category2(22)
+                .category3(20)
+                .category4(20)
                 .categoryDetail("일반침대")
                 .build();
         savedCategoryId = itemCategoryCodeRepository.save(code).getId();

@@ -51,10 +51,10 @@ public class ProductServiceTest {
     void updatePreviously() throws Exception {
         ItemCategoryCode code1 = ItemCategoryCode.builder()
                 .categoryDetail("가구_침대_침대프레임_일반침대")
-                .category1("0")
-                .category2("22")
-                .category3("20")
-                .category4("20")
+                .category1(0)
+                .category2(22)
+                .category3(20)
+                .category4(20)
                 .build();
 
         ItemCategoryCode save1 = itemCategoryCodeRepository.save(code1);
@@ -138,10 +138,10 @@ public class ProductServiceTest {
 
     private ItemCategoryCode 가구_침대_침대프레임_일반침대_카테고리찾기() throws Exception {
         ItemCategoryCode categoryCode = ItemCategoryCode.builder()
-                .category1("0")
-                .category2("22")
-                .category3("20")
-                .category4("20")
+                .category1(0)
+                .category2(22)
+                .category3(20)
+                .category4(20)
                 .build();
         Example<ItemCategoryCode> e = Example.of(categoryCode);
         Optional<ItemCategoryCode> one = itemCategoryCodeRepository.findOne(e);

@@ -47,10 +47,10 @@ public class OrderServiceTest {
     void previsoulyUpdate(){
         code = ItemCategoryCode.builder()
                 .categoryDetail("가구_침대_침대프레임_일반침대")
-                .category1("0")
-                .category2("22")
-                .category3("20")
-                .category4("20")
+                .category1(0)
+                .category2(22)
+                .category3(20)
+                .category4(20)
                 .build();
 
         item = Bed.builder()

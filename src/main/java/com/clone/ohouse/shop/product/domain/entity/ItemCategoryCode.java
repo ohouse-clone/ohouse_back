@@ -18,20 +18,16 @@ public class ItemCategoryCode {
     @Column(nullable = false, length = 50)
     private String categoryDetail;
 
-    @Column(length = 4)
-    private String category1;
+    private Integer category1;
 
-    @Column(length = 4)
-    private String category2;
+    private Integer category2;
 
-    @Column( length = 4)
-    private String category3;
+    private Integer category3;
 
-    @Column(length = 4)
-    private String category4;
+    private Integer category4;
 
     @Builder
-    public ItemCategoryCode(String categoryDetail, String category1, String category2, String category3, String category4) {
+    public ItemCategoryCode(String categoryDetail, Integer category1, Integer category2, Integer category3, Integer category4) {
         this.categoryDetail = categoryDetail;
         this.category1 = category1;
         this.category2 = category2;

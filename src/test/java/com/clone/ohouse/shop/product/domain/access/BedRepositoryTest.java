@@ -32,10 +32,10 @@ public class BedRepositoryTest {
 
         ItemCategoryCode code = ItemCategoryCode.builder()
                 .categoryDetail("가구_침대_침대프레임_일반침대")
-                .category1("0")
-                .category2("22")
-                .category3("20")
-                .category4("20")
+                .category1(0)
+                .category2(22)
+                .category3(20)
+                .category4(20)
                 .build();
         itemCategoryCodeRepository.save(code);
     }
@@ -50,10 +50,10 @@ public class BedRepositoryTest {
     public void itemRepositorySave() throws Exception{
         //given
         ItemCategoryCode categoryCode = ItemCategoryCode.builder()
-                .category1("0")
-                .category2("22")
-                .category3("20")
-                .category4("20")
+                .category1(0)
+                .category2(22)
+                .category3(20)
+                .category4(20)
                 .build();
         Example<ItemCategoryCode> e = Example.of(categoryCode);
         Optional<ItemCategoryCode> one = itemCategoryCodeRepository.findOne(e);
@@ -70,7 +70,7 @@ public class BedRepositoryTest {
         //then
         Item item = list.get(0);
 
-        Assertions.assertThat(item.getCategoryCode().getCategory4()).isEqualTo("20");
+        Assertions.assertThat(item.getCategoryCode().getCategory4()).isEqualTo(20);
         Assertions.assertThat(item.getName()).isEqualTo(savedItem.getName());
     }
 
@@ -79,10 +79,10 @@ public class BedRepositoryTest {
     public void itemRepositoryDelete() throws Exception{
         //given
         ItemCategoryCode categoryCode = ItemCategoryCode.builder()
-                .category1("0")
-                .category2("22")
-                .category3("20")
-                .category4("20")
+                .category1(0)
+                .category2(22)
+                .category3(20)
+                .category4(20)
                 .build();
         Example<ItemCategoryCode> e = Example.of(categoryCode);
         Optional<ItemCategoryCode> one = itemCategoryCodeRepository.findOne(e);
@@ -107,10 +107,10 @@ public class BedRepositoryTest {
     public void itemRepositoryUpdate() throws Exception{
         //given
         ItemCategoryCode categoryCode = ItemCategoryCode.builder()
-                .category1("0")
-                .category2("22")
-                .category3("20")
-                .category4("20")
+                .category1(0)
+                .category2(22)
+                .category3(20)
+                .category4(20)
                 .build();
         Example<ItemCategoryCode> e = Example.of(categoryCode);
         Optional<ItemCategoryCode> one = itemCategoryCodeRepository.findOne(e);
