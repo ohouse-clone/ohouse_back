@@ -17,6 +17,7 @@ public interface ItemCategoryCodeRepository extends JpaRepository<ItemCategoryCo
     List<ItemCategoryCode> findByCategory1AndCategory2AndCategory3OrderByCategory1DescCategory2DescCategory3Desc(Integer category1, Integer category2, Integer category3);
 
     List<ItemCategoryCode> findByCategory1AndCategory2AndCategory3AndCategory4OrderByCategory1DescCategory2DescCategory3DescCategory4Desc(Integer category1, Integer category2, Integer category3, Integer category4);
+    ItemCategoryCode findByCategory1AndCategory2AndCategory3AndCategory4(Integer category1, Integer category2, Integer category3, Integer category4);
 
     @Query("select distinct i.category1 from ItemCategoryCode i order by i.category1 asc")
     List<Integer> findDistinctCategory1ListOrderByAsc();
