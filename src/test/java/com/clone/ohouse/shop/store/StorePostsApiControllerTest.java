@@ -43,7 +43,7 @@ class StorePostsApiControllerTest {
     private final String mappingUrl = "/store/productions";
 
     @BeforeEach
-    public void setup(){
+    public void setup() {
         mvc = MockMvcBuilders
                 .webAppContextSetup(context)
                 .build();
@@ -59,40 +59,40 @@ class StorePostsApiControllerTest {
         //given
         String url = "http://localhost:" + port + mappingUrl;
         String title = "상품제목";
-        String content = "klasdfjlkj34t42363gjerwovm";
+        byte[] content = "klasdfjlkj34t42363gjerwovm".getBytes(StandardCharsets.UTF_8);
         String author = "JJH";
         String modifiedUser = null;
-        StorePostsSaveRequestDto saveRequestDto = new StorePostsSaveRequestDto(title, content, author);
+        StorePostsSaveRequestDto saveRequestDto = new StorePostsSaveRequestDto(title, content, null, author);
 
         //when
         mvc.perform(MockMvcRequestBuilders.post(url)
-                                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                .content(new ObjectMapper().writeValueAsString(saveRequestDto)))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(new ObjectMapper().writeValueAsString(saveRequestDto)))
                 .andExpect(MockMvcResultMatchers.status().isCreated());
 
         //then
         List<StorePosts> all = storePostsRepository.findAll();
         Assertions.assertThat(all.get(0).getTitle()).isEqualTo(title);
-        Assertions.assertThat(new String(all.get(0).getContent(), StandardCharsets.UTF_8)).isEqualTo(content);
+        Assertions.assertThat(all.get(0).getContent()).isEqualTo(content);
         Assertions.assertThat(all.get(0).getAuthor()).isEqualTo(author);
         System.out.println("saved Time : " + all.get(0).getCreatedDate());
 
     }
 
     @Test
-    void update() throws Exception{
+    void update() throws Exception {
         //given
         String url = "http://localhost:" + port + mappingUrl + "/";
         String title = "상품제목";
-        String content = "klasdfjlkj34t42363gjerwovm";
+        byte[] content = "klasdfjlkj34t42363gjerwovm".getBytes(StandardCharsets.UTF_8);
         String author = "JJH";
         String modifiedUser = null;
 
-        StorePostsSaveRequestDto saveRequestDto = new StorePostsSaveRequestDto(title, content, author);
+        StorePostsSaveRequestDto saveRequestDto = new StorePostsSaveRequestDto(title, content, null, author);
         Long savedId = boardService.save(saveRequestDto);
 
         String title2 = "제목없음";
-        String content2 = "정갈";
+        byte[] content2 = "정갈".getBytes(StandardCharsets.UTF_8);
         String modifiedUser2 = "WWA";
         StorePostsUpdateRequestDto updateRequestDto = StorePostsUpdateRequestDto.builder()
                 .title(title2)
@@ -110,7 +110,7 @@ class StorePostsApiControllerTest {
         //then
         List<StorePosts> all = storePostsRepository.findAll();
         Assertions.assertThat(all.get(0).getTitle()).isEqualTo(title2);
-        Assertions.assertThat(new String(all.get(0).getContent(), StandardCharsets.UTF_8)).isEqualTo(content2);
+        Assertions.assertThat(all.get(0).getContent()).isEqualTo(content2);
         Assertions.assertThat(all.get(0).getAuthor()).isEqualTo(author);
         Assertions.assertThat(all.get(0).getModifiedUser()).isEqualTo(modifiedUser2);
     }
@@ -120,11 +120,11 @@ class StorePostsApiControllerTest {
         //given
         String url = "http://localhost:" + port + mappingUrl + "/";
         String title = "상품제목";
-        String content = "klasdfjlkj34t42363gjerwovm";
+        byte[] content = "klasdfjlkj34t42363gjerwovm".getBytes(StandardCharsets.UTF_8);
         String author = "JJH";
         String modifiedUser = null;
 
-        StorePostsSaveRequestDto saveRequestDto = new StorePostsSaveRequestDto(title, content, author);
+        StorePostsSaveRequestDto saveRequestDto = new StorePostsSaveRequestDto(title, content, null, author);
         Long savedId = boardService.save(saveRequestDto);
 
         //when && then
@@ -141,11 +141,11 @@ class StorePostsApiControllerTest {
         //given
         String url = "http://localhost:" + port + mappingUrl + "/";
         String title = "상품제목";
-        String content = "klasdfjlkj34t42363gjerwovm";
+        byte[] content = "klasdfjlkj34t42363gjerwovm".getBytes(StandardCharsets.UTF_8);
         String author = "JJH";
         String modifiedUser = null;
 
-        StorePostsSaveRequestDto saveRequestDto = new StorePostsSaveRequestDto(title, content, author);
+        StorePostsSaveRequestDto saveRequestDto = new StorePostsSaveRequestDto(title, content, null, author);
         Long savedId = boardService.save(saveRequestDto);
 
         //when

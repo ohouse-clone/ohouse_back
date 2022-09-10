@@ -40,10 +40,10 @@ public class StorePostsRepositoryTest {
     void save(){
         //given
         String title = "제목";
-        String content = "내용";
+        byte[] content = "내용".getBytes(StandardCharsets.UTF_8);
         String author = "나";
 
-        StorePosts storePosts = new StorePosts(title, content.getBytes(StandardCharsets.UTF_8), author, null);
+        StorePosts storePosts = new StorePosts(title, content, author, null, null);
 
         //when
         storePostsRepository.save(storePosts);
@@ -59,10 +59,10 @@ public class StorePostsRepositoryTest {
     void delete(){
         //given
         String title = "제목";
-        String content = "내용";
+        byte[] content = "내용".getBytes(StandardCharsets.UTF_8);
         String author = "나";
 
-        StorePosts storePosts = new StorePosts(title, content.getBytes(StandardCharsets.UTF_8), author, null);
+        StorePosts storePosts = new StorePosts(title, content, author, null, null);
         StorePosts saved = storePostsRepository.save(storePosts);
         //when
         List<StorePosts> all = storePostsRepository.findAll();

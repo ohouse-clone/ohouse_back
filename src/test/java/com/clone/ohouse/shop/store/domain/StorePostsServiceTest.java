@@ -29,12 +29,12 @@ public class StorePostsServiceTest {
     private StorePostsRepository storePostsRepository;
 
     @AfterEach
-    void clean(){
+    void clean() {
         storePostsRepository.deleteAll();
     }
 
     @Test
-    void save(){
+    void save() {
         //given
         StorePostsSaveRequestDto dto = createProductBoardSaveRequest();
 
@@ -48,10 +48,10 @@ public class StorePostsServiceTest {
     }
 
     @Test
-    void update(){
+    void update() {
         //given
         String title = "불행한 마을";
-        String content = "내용 없음";
+        byte[] content = "내용 없음".getBytes(StandardCharsets.UTF_8);
         String modifiedUser = "쿼터";
 
         StorePostsSaveRequestDto dto = createProductBoardSaveRequest();
@@ -71,12 +71,12 @@ public class StorePostsServiceTest {
         StorePosts storePosts = storePostsRepository.findById(savedId).orElseThrow(() -> new NoSuchElementException("찾으려는 판매글이 없습니다."));
 
         Assertions.assertThat(storePosts.getTitle()).isEqualTo(title);
-        Assertions.assertThat(new String(storePosts.getContent(), StandardCharsets.UTF_8)).isEqualTo(content);
+        Assertions.assertThat(storePosts.getContent()).isEqualTo(content);
         Assertions.assertThat(storePosts.getModifiedUser()).isEqualTo(modifiedUser);
     }
 
     @Test
-    void delete(){
+    void delete() {
         //given
         StorePostsSaveRequestDto dto = createProductBoardSaveRequest();
         Long savedId = boardService.save(dto);
@@ -90,7 +90,7 @@ public class StorePostsServiceTest {
     }
 
     @Test
-    void findById(){
+    void findById() {
         //given
         StorePostsSaveRequestDto dto = createProductBoardSaveRequest();
         Long savedId = boardService.save(dto);
@@ -103,7 +103,7 @@ public class StorePostsServiceTest {
         Assertions.assertThat(responseDto.getTitle()).isEqualTo("행복한 마을");
     }
 
-    private StorePostsSaveRequestDto createProductBoardSaveRequest(){
+    private StorePostsSaveRequestDto createProductBoardSaveRequest() {
         String title = "행복한 마을";
         String content = "One of the early announcements out of Google I/O 2017's keynote was the launch of google.ai, with which Google aims to \"bring the benefits of AI to everyone\". Google.ai is a collection of products and teams across Alphabet with a focus on AI.\n" +
                 "\n" +
@@ -119,7 +119,7 @@ public class StorePostsServiceTest {
                 "\n";
         String author = "고순무";
 
-        return new StorePostsSaveRequestDto(title, content, author);
+        return new StorePostsSaveRequestDto(title, content.getBytes(StandardCharsets.UTF_8), null, author);
     }
 
 }

@@ -22,13 +22,14 @@ public class StorePostsSaveRequestDto {
     private String title;
 
     @ApiModelProperty(
-            value = "글 내용, 내용 형태는 html 문서",
-            example = "<!DOCTYPE html>\n" +
-                    "<html lang=\"en\">\n" +
-                    "<head></head>" +
-                    "<body></body>" +
-                    "</html>")
-    private String content;
+            value = "내용, image 파일"
+    )
+    private byte[] content;
+    @ApiModelProperty(
+            value = "preview image 파일"
+    )
+    private byte[] previewImage;
+
     @ApiModelProperty(
             value = "작성자",
             required = true,
@@ -37,16 +38,18 @@ public class StorePostsSaveRequestDto {
     private String author;
 
 
-    public StorePostsSaveRequestDto(String title, String content, String author) {
+    public StorePostsSaveRequestDto(String title, byte[] content, byte[] previewImage, String author) {
         this.title = title;
         this.content = content;
+        this.previewImage = previewImage;
         this.author = author;
     }
 
     public StorePosts toEntity() {
         return StorePosts.builder()
                 .title(title)
-                .content(content.getBytes(StandardCharsets.UTF_8))
+                .content(content)
+                .previewImage(previewImage)
                 .author(author)
                 .build();
     }

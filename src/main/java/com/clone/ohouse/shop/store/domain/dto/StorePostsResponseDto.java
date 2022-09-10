@@ -30,21 +30,19 @@ public class StorePostsResponseDto {
     )
     private String title;
     @ApiModelProperty(
-            value = "store 글 내용, 내용 형태는 html 문서",
-            example = "<!DOCTYPE html>\n" +
-                    "<html lang=\"en\">\n" +
-                    "<head></head>" +
-                    "<body></body>" +
-                    "</html>"
+            value = "내용, image 파일"
     )
-    private String content;
+    private byte[] content;
 
     @ApiModelProperty(
             value = "작성자",
             required = true
     )
     private String author;
-
+    @ApiModelProperty(
+            value = "preview image 파일"
+    )
+    private byte[] previewImage;
     @ApiModelProperty(
             value = "수정한 자, 수정한 적이 없다면 null입니다."
     )
@@ -84,7 +82,8 @@ public class StorePostsResponseDto {
         this.id = entity.getId();
         this.isActive = entity.isActive();
         this.title = entity.getTitle();
-        this.content = new String(entity.getContent(), StandardCharsets.UTF_8);
+        this.content = entity.getContent();
+        this.previewImage = entity.getPreviewImage();
         this.author = entity.getAuthor();
         this.modifiedUser = entity.getModifiedUser();
         this.isDeleted = entity.isDeleted();

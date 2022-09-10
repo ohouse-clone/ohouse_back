@@ -20,6 +20,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Transactional
@@ -52,10 +53,10 @@ public class StoreCategoryServiceTest {
     public void findBundleViewAllOrderByPopular() {
         //given
         ItemCategoryCode code = itemCategoryCodeRepository.findByCategory1AndCategory2AndCategory3AndCategory4(0, 22, 20, 20);
-        StorePosts post1 = storePostsRepository.save(new StorePostsSaveRequestDto("제목1", "내용1", "JJH").toEntity());
-        StorePosts post2 = storePostsRepository.save(new StorePostsSaveRequestDto("제목2", "내용2", "AAA").toEntity());
-        StorePosts post3 = storePostsRepository.save(new StorePostsSaveRequestDto("제목3", "내용3", "BBB").toEntity());
-        StorePosts post4 = storePostsRepository.save(new StorePostsSaveRequestDto("제목4", "내용4", "CCC").toEntity());
+        StorePosts post1 = storePostsRepository.save(new StorePostsSaveRequestDto("제목1", "내용1".getBytes(StandardCharsets.UTF_8), null, "JJH").toEntity());
+        StorePosts post2 = storePostsRepository.save(new StorePostsSaveRequestDto("제목2", "내용2".getBytes(StandardCharsets.UTF_8), null, "AAA").toEntity());
+        StorePosts post3 = storePostsRepository.save(new StorePostsSaveRequestDto("제목3", "내용3".getBytes(StandardCharsets.UTF_8), null, "BBB").toEntity());
+        StorePosts post4 = storePostsRepository.save(new StorePostsSaveRequestDto("제목4", "내용4".getBytes(StandardCharsets.UTF_8), null, "CCC").toEntity());
 
         Bed bed1 = bedRepository.save(Bed.builder().categoryCode(code).name("침대1").size("크기1").build());
         Bed bed2 = bedRepository.save(Bed.builder().categoryCode(code).name("침대2").size("크기2").build());

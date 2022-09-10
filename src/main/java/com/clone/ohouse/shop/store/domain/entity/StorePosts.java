@@ -24,6 +24,8 @@ public class StorePosts extends BaseTimeEntity {
     private String title = "제목 없음";
 
     @Lob
+    private byte[] previewImage;
+    @Lob
     private byte[] content;
 
     @Column(length = 45, nullable = false)
@@ -40,19 +42,21 @@ public class StorePosts extends BaseTimeEntity {
     private List<Product> productList = new ArrayList<>();
 
     @Builder
-    public StorePosts(String title, byte[] content, String author, String modifiedUser) {
+    public StorePosts(String title, byte[] content, String author, String modifiedUser, byte[] previewImage) {
         this.title = title;
         this.content = content;
         this.author = author;
         this.modifiedUser = modifiedUser;
+        this.previewImage = previewImage;
     }
 
-    public void update(boolean isActive, String title, byte[] content, String modifiedUser, boolean isDeleted) {
+    public void update(boolean isActive, String title, byte[] previewImage, byte[] content, String modifiedUser, boolean isDeleted) {
         this.isActive = isActive;
         this.isDeleted = isDeleted;
         if (title != null) this.title = title;
         if (modifiedUser != null) this.modifiedUser = modifiedUser;
         if (content != null) this.content = content;
+        if (previewImage != null) this.previewImage = previewImage;
     }
 
 }
