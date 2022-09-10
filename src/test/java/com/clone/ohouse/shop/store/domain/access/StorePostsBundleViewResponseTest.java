@@ -28,7 +28,7 @@ import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-public class StorePostsBundleViewTest {
+public class StorePostsBundleViewResponseTest {
     @Autowired
     private ItemCategoryCodeRepository itemCategoryCodeRepository;
     @Autowired

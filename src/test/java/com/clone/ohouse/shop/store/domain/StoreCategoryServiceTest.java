@@ -7,10 +7,9 @@ import com.clone.ohouse.shop.product.domain.entity.Bed;
 import com.clone.ohouse.shop.product.domain.entity.ItemCategoryCode;
 import com.clone.ohouse.shop.product.domain.entity.Product;
 import com.clone.ohouse.shop.store.domain.access.StorePostsRepository;
-import com.clone.ohouse.shop.store.domain.dto.StorePostsBundleViewResponseDto;
+import com.clone.ohouse.shop.store.domain.dto.StorePostsBundleViewDto;
 import com.clone.ohouse.shop.store.domain.dto.StorePostsSaveRequestDto;
 import com.clone.ohouse.shop.store.domain.entity.StorePosts;
-import org.aspectj.lang.annotation.After;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -19,9 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 
@@ -83,17 +80,17 @@ public class StoreCategoryServiceTest {
         PageRequest request = PageRequest.of(0, 4);
 
         //when
-        List<StorePostsBundleViewResponseDto> bundleView = storeCategoryService.findBundleViewAllOrderByPopular(code, request);
+        List<StorePostsBundleViewDto> bundleView = storeCategoryService.findBundleViewAllOrderByPopular(code, request);
 
         //then
-        Assertions.assertThat(bundleView).extracting(StorePostsBundleViewResponseDto::getTitle)
+        Assertions.assertThat(bundleView).extracting(StorePostsBundleViewDto::getTitle)
                 .containsExactlyInAnyOrder("제목1", "제목2", "제목3", "제목4");
-        Assertions.assertThat(bundleView).extracting(StorePostsBundleViewResponseDto::getPrice)
+        Assertions.assertThat(bundleView).extracting(StorePostsBundleViewDto::getPrice)
                 .containsExactlyInAnyOrder(1000, 2000, 3000, 4000);
         /* View */
         System.out.println();
         System.out.println(bundleView.size());
-        for (StorePostsBundleViewResponseDto dto : bundleView) {
+        for (StorePostsBundleViewDto dto : bundleView) {
             System.out.println("title = " + dto.getTitle() + " , price = " + dto.getPrice());
         }
     }
