@@ -68,7 +68,7 @@ public class Product {
         return new OrderedProduct(this, order, price, amount);
     }
 
-    public void RegisterStorePosts(StorePosts post){
+    public void registerStorePosts(StorePosts post){
         this.storePosts = post;
         post.getProductList().add(this);
     }

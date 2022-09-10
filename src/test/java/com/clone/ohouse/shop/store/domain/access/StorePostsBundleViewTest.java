@@ -73,7 +73,7 @@ public class StorePostsBundleViewTest {
                     .item(bed)
                     .build();
 
-            product.RegisterStorePosts(post);
+            product.registerStorePosts(post);
 
             storePostsRepository.save(post);
             bedRepository.save(bed);
