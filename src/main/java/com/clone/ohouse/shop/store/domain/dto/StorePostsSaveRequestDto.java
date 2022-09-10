@@ -24,11 +24,11 @@ public class StorePostsSaveRequestDto {
     @ApiModelProperty(
             value = "내용, image 파일"
     )
-    private byte[] content;
+    private String contentUrl;
     @ApiModelProperty(
             value = "preview image 파일"
     )
-    private byte[] previewImage;
+    private String previewImageUrl;
 
     @ApiModelProperty(
             value = "작성자",
@@ -38,18 +38,18 @@ public class StorePostsSaveRequestDto {
     private String author;
 
 
-    public StorePostsSaveRequestDto(String title, byte[] content, byte[] previewImage, String author) {
+    public StorePostsSaveRequestDto(String title, String contentUrl, String previewImageUrl, String author) {
         this.title = title;
-        this.content = content;
-        this.previewImage = previewImage;
+        this.contentUrl = contentUrl;
+        this.previewImageUrl = previewImageUrl;
         this.author = author;
     }
 
     public StorePosts toEntity() {
         return StorePosts.builder()
                 .title(title)
-                .content(content)
-                .previewImage(previewImage)
+                .contentUrl(contentUrl)
+                .previewImageUrl(previewImageUrl)
                 .author(author)
                 .build();
     }

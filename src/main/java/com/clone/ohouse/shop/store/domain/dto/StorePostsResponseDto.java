@@ -7,7 +7,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 @ApiModel(
         value = "store post response",
@@ -30,9 +29,9 @@ public class StorePostsResponseDto {
     )
     private String title;
     @ApiModelProperty(
-            value = "내용, image 파일"
+            value = "내용, image url"
     )
-    private byte[] content;
+    private String contentUrl;
 
     @ApiModelProperty(
             value = "작성자",
@@ -40,9 +39,9 @@ public class StorePostsResponseDto {
     )
     private String author;
     @ApiModelProperty(
-            value = "preview image 파일"
+            value = "preview image url"
     )
-    private byte[] previewImage;
+    private String previewImageUrl;
     @ApiModelProperty(
             value = "수정한 자, 수정한 적이 없다면 null입니다."
     )
@@ -82,8 +81,8 @@ public class StorePostsResponseDto {
         this.id = entity.getId();
         this.isActive = entity.isActive();
         this.title = entity.getTitle();
-        this.content = entity.getContent();
-        this.previewImage = entity.getPreviewImage();
+        this.contentUrl = entity.getContentUrl();
+        this.previewImageUrl = entity.getPreviewImageUrl();
         this.author = entity.getAuthor();
         this.modifiedUser = entity.getModifiedUser();
         this.isDeleted = entity.isDeleted();

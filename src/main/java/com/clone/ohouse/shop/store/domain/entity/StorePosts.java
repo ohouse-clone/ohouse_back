@@ -23,10 +23,10 @@ public class StorePosts extends BaseTimeEntity {
     @Column(length = 200)
     private String title = "제목 없음";
 
-    @Lob
-    private byte[] previewImage;
-    @Lob
-    private byte[] content;
+    @Column(length = 100)
+    private String previewImageUrl;
+    @Column(length = 100)
+    private String contentUrl;
 
     @Column(length = 45, nullable = false)
     private String author;
@@ -42,21 +42,21 @@ public class StorePosts extends BaseTimeEntity {
     private List<Product> productList = new ArrayList<>();
 
     @Builder
-    public StorePosts(String title, byte[] content, String author, String modifiedUser, byte[] previewImage) {
+    public StorePosts(String title, String contentUrl, String author, String modifiedUser, String previewImageUrl) {
         this.title = title;
-        this.content = content;
+        this.contentUrl = contentUrl;
         this.author = author;
         this.modifiedUser = modifiedUser;
-        this.previewImage = previewImage;
+        this.previewImageUrl = previewImageUrl;
     }
 
-    public void update(boolean isActive, String title, byte[] previewImage, byte[] content, String modifiedUser, boolean isDeleted) {
+    public void update(boolean isActive, String title, String previewImage, String content, String modifiedUser, boolean isDeleted) {
         this.isActive = isActive;
         this.isDeleted = isDeleted;
         if (title != null) this.title = title;
         if (modifiedUser != null) this.modifiedUser = modifiedUser;
-        if (content != null) this.content = content;
-        if (previewImage != null) this.previewImage = previewImage;
+        if (content != null) this.contentUrl = content;
+        if (previewImage != null) this.previewImageUrl = previewImage;
     }
 
 }

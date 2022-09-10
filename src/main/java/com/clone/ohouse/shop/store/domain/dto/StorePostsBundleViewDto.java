@@ -10,7 +10,7 @@ public class StorePostsBundleViewDto {
     private final String title;
     private final Integer price;
     private final Integer rateDiscount;
-    private final byte[] previewImage;
+    private final String previewImageUrl;
 
     public StorePostsBundleViewDto(StorePosts entity) {
         this.id = entity.getId();
@@ -18,6 +18,6 @@ public class StorePostsBundleViewDto {
         this.title = entity.getTitle();
         this.price = entity.getProductList().get(0).getPrice();
         this.rateDiscount = entity.getProductList().get(0).getRateDiscount();
-        this.previewImage = entity.getPreviewImage();
+        this.previewImageUrl = entity.getPreviewImageUrl();
     }
 }

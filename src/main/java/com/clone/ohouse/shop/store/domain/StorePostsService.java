@@ -33,7 +33,7 @@ public class StorePostsService {
     @Transactional
     public Long update(Long id, StorePostsUpdateRequestDto dto){
         StorePosts entity = storePostsRepository.findById(id).orElseThrow(() -> new NoSuchElementException("찾으려는 게시글이 없음"));
-        entity.update(dto.isActive(), dto.getTitle(), dto.getPreviewImage(), dto.getContent(), dto.getModifiedUser(), dto.isDeleted());
+        entity.update(dto.isActive(), dto.getTitle(), dto.getPreviewImageUrl(), dto.getContentUrl(), dto.getModifiedUser(), dto.isDeleted());
 
         return storePostsRepository.save(entity).getId();
     }

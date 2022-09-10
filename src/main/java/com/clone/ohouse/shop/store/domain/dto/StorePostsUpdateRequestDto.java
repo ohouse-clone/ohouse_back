@@ -25,13 +25,13 @@ public class StorePostsUpdateRequestDto {
     private String title;
 
     @ApiModelProperty(
-            value = "내용, image 파일"
+            value = "내용, image url"
     )
-    private byte[] content;
+    private String contentUrl;
     @ApiModelProperty(
-            value = "preview image 파일"
+            value = "preview image url"
     )
-    private byte[] previewImage;
+    private String previewImageUrl;
     @ApiModelProperty(
             value = "수정한 자",
             required = true,
@@ -53,10 +53,10 @@ public class StorePostsUpdateRequestDto {
     private boolean isDeleted = false;
 
     @Builder
-    public StorePostsUpdateRequestDto(String title, byte[] content, byte[] previewImage, String modifiedUser, boolean isActive, boolean isDeleted) {
+    public StorePostsUpdateRequestDto(String title, String contentUrl, String previewImageUrl, String modifiedUser, boolean isActive, boolean isDeleted) {
         this.title = title;
-        this.content = content;
-        this.previewImage = previewImage;
+        this.contentUrl = contentUrl;
+        this.previewImageUrl = previewImageUrl;
         this.modifiedUser = modifiedUser;
         this.isActive = isActive;
         this.isDeleted = isDeleted;
