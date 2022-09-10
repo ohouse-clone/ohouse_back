@@ -21,10 +21,11 @@ public class ItemCategoryCodeRepositoryTest {
     @Autowired
     private ItemCategoryCodeRepository itemCategoryCodeRepository;
 
+    private ItemCategoryCode saved;
 
     @AfterAll
     public void clean(){
-        itemCategoryCodeRepository.deleteAll();
+        itemCategoryCodeRepository.deleteById(saved.getId());
     }
 
 
@@ -40,7 +41,7 @@ public class ItemCategoryCodeRepositoryTest {
                 .category4(1003)
                 .build();
 
-        ItemCategoryCode save1 = itemCategoryCodeRepository.save(code1);
+        saved = itemCategoryCodeRepository.save(code1);
 
         Optional<ItemCategoryCode> byId = itemCategoryCodeRepository.findById(code1.getId());
 
