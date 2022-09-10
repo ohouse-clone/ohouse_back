@@ -29,19 +29,8 @@ public class ProductRepositoryTest {
 
     @BeforeEach
     public void updatePreviously() {
-        ItemCategoryCode code = ItemCategoryCode.builder()
-                .categoryDetail("가구_침대_침대프레임_일반침대")
-                .category1(0)
-                .category2(22)
-                .category3(20)
-                .category4(20)
-                .build();
-        ItemCategoryCode savedCode = itemCategoryCodeRepository.save(code);
-
-
-
         //Find Category 0-22-20-20 : 가구_침대_침대프레임_일반침대
-
+        ItemCategoryCode savedCode = itemCategoryCodeRepository.findByCategory1AndCategory2AndCategory3AndCategory4(0,22,20,20);
 
         //Set Item
         String itemName1 = "이케아침대";
@@ -74,7 +63,6 @@ public class ProductRepositoryTest {
     public void cleanUp() {
         productRepository.deleteAll();
         bedRepository.deleteAll();
-        itemCategoryCodeRepository.deleteAll();
     }
 
     @Test

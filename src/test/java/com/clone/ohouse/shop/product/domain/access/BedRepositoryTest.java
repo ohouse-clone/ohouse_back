@@ -5,6 +5,7 @@ import com.clone.ohouse.shop.product.domain.entity.Bed;
 import com.clone.ohouse.shop.product.domain.entity.Item;
 import com.clone.ohouse.shop.product.domain.entity.ItemCategoryCode;
 import org.assertj.core.api.Assertions;
+import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,6 +18,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
 import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.tuple;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.beans.HasPropertyWithValue.hasProperty;
 
 
 @ExtendWith(SpringExtension.class)
@@ -32,10 +38,10 @@ public class BedRepositoryTest {
 
         ItemCategoryCode code = ItemCategoryCode.builder()
                 .categoryDetail("가구_침대_침대프레임_일반침대")
-                .category1(0)
-                .category2(22)
-                .category3(20)
-                .category4(20)
+                .category1(1002)
+                .category2(1002)
+                .category3(1003)
+                .category4(1004)
                 .build();
         itemCategoryCodeRepository.save(code);
     }
@@ -50,17 +56,18 @@ public class BedRepositoryTest {
     public void itemRepositorySave() throws Exception{
         //given
         ItemCategoryCode categoryCode = ItemCategoryCode.builder()
-                .category1(0)
-                .category2(22)
-                .category3(20)
-                .category4(20)
+                .category1(1002)
+                .category2(1002)
+                .category3(1003)
+                .category4(1004)
                 .build();
         Example<ItemCategoryCode> e = Example.of(categoryCode);
         Optional<ItemCategoryCode> one = itemCategoryCodeRepository.findOne(e);
 
         String itemName = "시몬스침대";
+        ItemCategoryCode code = one.orElseThrow(() -> new Exception("가구_침대_침대프레임_일반침대 항목 없음"));
         Bed savedItem = bedRepository.save(Bed.builder()
-                .categoryCode(one.orElseThrow(()->new Exception("가구_침대_침대프레임_일반침대 항목 없음")))
+                .categoryCode(code)
                 .name(itemName)
                 .build());
 
@@ -68,10 +75,18 @@ public class BedRepositoryTest {
         List<Bed> list = bedRepository.findAll();
 
         //then
-        Item item = list.get(0);
 
-        Assertions.assertThat(item.getCategoryCode().getCategory4()).isEqualTo(20);
-        Assertions.assertThat(item.getName()).isEqualTo(savedItem.getName());
+        Assertions.assertThat(list).extracting(Bed::getName)
+                .containsExactly(itemName);
+        Assertions.assertThat(list).extracting(Bed::getCategoryCode)
+                        .extracting(ItemCategoryCode::getCategory1, ItemCategoryCode::getCategory2, ItemCategoryCode::getCategory3, ItemCategoryCode::getCategory4)
+                                .containsExactly(Tuple.tuple(code.getCategory1(), code.getCategory2(), code.getCategory3(), code.getCategory4()));
+        System.out.println("id : " + savedItem.getId());
+        System.out.println("wd : " + savedItem.getName());
+
+        System.out.println("l id : " + list.get(0).getId());
+        System.out.println("l wd : " + list.get(0).getName());
+
     }
 
     @Test
@@ -79,10 +94,10 @@ public class BedRepositoryTest {
     public void itemRepositoryDelete() throws Exception{
         //given
         ItemCategoryCode categoryCode = ItemCategoryCode.builder()
-                .category1(0)
-                .category2(22)
-                .category3(20)
-                .category4(20)
+                .category1(1002)
+                .category2(1002)
+                .category3(1003)
+                .category4(1004)
                 .build();
         Example<ItemCategoryCode> e = Example.of(categoryCode);
         Optional<ItemCategoryCode> one = itemCategoryCodeRepository.findOne(e);
@@ -107,10 +122,10 @@ public class BedRepositoryTest {
     public void itemRepositoryUpdate() throws Exception{
         //given
         ItemCategoryCode categoryCode = ItemCategoryCode.builder()
-                .category1(0)
-                .category2(22)
-                .category3(20)
-                .category4(20)
+                .category1(1002)
+                .category2(1002)
+                .category3(1003)
+                .category4(1004)
                 .build();
         Example<ItemCategoryCode> e = Example.of(categoryCode);
         Optional<ItemCategoryCode> one = itemCategoryCodeRepository.findOne(e);
@@ -121,7 +136,7 @@ public class BedRepositoryTest {
                 .name(itemName)
                 .build());
         //when
-        List<Bed> all = bedRepository.findAll();
+        List<Bed> all = bedRepository.findByName(itemName);
         Bed item = all.get(0);
         item.update(null,"한샘침대",null,null,null,null);
         bedRepository.save(item);

@@ -43,7 +43,7 @@ public class ItemCategoryCode {
 
 
     @Builder
-    public ItemCategoryCode(@NotNull String categoryDetail, @NotNull Integer category1, @NotNull Integer category2, @NotNull Integer category3, @NotNull Integer category4) {
+    public ItemCategoryCode(String categoryDetail, @NotNull Integer category1, @NotNull Integer category2, @NotNull Integer category3, @NotNull Integer category4) {
         this.categoryDetail = categoryDetail;
         this.category1 = category1;
         this.category2 = category2;

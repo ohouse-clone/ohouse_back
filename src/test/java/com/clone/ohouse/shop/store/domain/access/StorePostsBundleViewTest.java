@@ -38,7 +38,7 @@ public class StorePostsBundleViewTest {
     @Autowired
     private StorePostsRepository storePostsRepository;
 
-    private Long savedCategoryId;
+    private ItemCategoryCode savedCategory;
     private Long maxPopular = 0L;
 
     @BeforeEach
@@ -47,14 +47,8 @@ public class StorePostsBundleViewTest {
         String productName = "제품이름";
         String size = "중";
         String postTitle = "제목";
-        ItemCategoryCode code = ItemCategoryCode.builder()
-                .category1(0)
-                .category2(22)
-                .category3(20)
-                .category4(20)
-                .categoryDetail("일반침대")
-                .build();
-        savedCategoryId = itemCategoryCodeRepository.save(code).getId();
+
+        savedCategory = itemCategoryCodeRepository.findByCategory1AndCategory2AndCategory3AndCategory4(0, 22, 20, 20);
 
 
         for (int i = 0; i < 100; i++) {
@@ -66,7 +60,7 @@ public class StorePostsBundleViewTest {
                     .author("JJH")
                     .build();
             Bed bed = Bed.builder()
-                    .categoryCode(code)
+                    .categoryCode(savedCategory)
                     .name(itemName + Integer.toString(i))
                     .size(size + Integer.toString(i))
                     .build();
@@ -98,12 +92,11 @@ public class StorePostsBundleViewTest {
     @Test
     @DisplayName("Get StorePosts bundle, categoryCode & popular & page")
     void findBundleViewByCategoryOrderByPopular() {
-        Optional<ItemCategoryCode> byId = itemCategoryCodeRepository.findById(savedCategoryId);
-        ItemCategoryCode c = byId.orElseThrow(() -> new NoSuchElementException("category code가 잘못되었습니다"));
+        ItemCategoryCode c = savedCategory;
 
         PageRequest request = PageRequest.of(0, 50);
         List<StorePosts> lst = storePostsRepository.findBundleViewByCategoryOrderByPopular(
-                c.getCategory1(),c.getCategory2(),c.getCategory3(),c.getCategory4(),
+                c.getCategory1(), c.getCategory2(), c.getCategory3(), c.getCategory4(),
                 request
         );
 

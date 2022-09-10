@@ -25,7 +25,7 @@ import java.util.Optional;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @Transactional
-public class BedServiceTest {
+public class CategoryBedServiceTest {
     @Autowired
     private BedService bedService;
 
@@ -33,18 +33,6 @@ public class BedServiceTest {
     private ItemCategoryCodeRepository itemCategoryCodeRepository;
     @Autowired
     private BedRepository bedRepository;
-
-    @BeforeEach
-    public void previouslySetup(){
-        ItemCategoryCode code1 = ItemCategoryCode.builder()
-                .categoryDetail("가구_침대_침대프레임_일반침대")
-                .category1(0)
-                .category2(22)
-                .category3(20)
-                .category4(20)
-                .build();
-        ItemCategoryCode save1 = itemCategoryCodeRepository.save(code1);
-    }
 
     @AfterEach
     public void cleanUp() {

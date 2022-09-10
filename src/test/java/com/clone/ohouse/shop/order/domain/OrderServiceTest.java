@@ -45,13 +45,7 @@ public class OrderServiceTest {
 
     @BeforeEach
     void previsoulyUpdate(){
-        code = ItemCategoryCode.builder()
-                .categoryDetail("가구_침대_침대프레임_일반침대")
-                .category1(0)
-                .category2(22)
-                .category3(20)
-                .category4(20)
-                .build();
+        code = itemCategoryCodeRepository.findByCategory1AndCategory2AndCategory3AndCategory4(0,22,20,20);
 
         item = Bed.builder()
                 .categoryCode(code)
