@@ -36,9 +36,7 @@ public class ProductService {
                 requestDto.getProductName(),
                 requestDto.getStock(),
                 requestDto.getPrice(),
-                requestDto.getRateDiscount(),
-                requestDto.getSize(),
-                requestDto.getColor());
+                requestDto.getRateDiscount());
 
         return seq;
     }

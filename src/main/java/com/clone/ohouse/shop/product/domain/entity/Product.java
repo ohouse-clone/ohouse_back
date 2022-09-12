@@ -1,6 +1,6 @@
 package com.clone.ohouse.shop.product.domain.entity;
 
-import com.clone.ohouse.shop.board.domain.entity.ProductBoard;
+import com.clone.ohouse.shop.store.domain.entity.StorePosts;
 import com.clone.ohouse.shop.order.domain.entity.Order;
 import com.clone.ohouse.shop.order.domain.entity.OrderedProduct;
 import lombok.Builder;
@@ -17,7 +17,7 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     private Item item;
 
@@ -27,35 +27,32 @@ public class Product {
     private Integer stock;
     private Integer rateDiscount;
 
-    @Column(length = 30)
-    private String size;
-    @Column(length = 30)
-    private String color;
+    private Long popular = 0L;
 
-    @ManyToOne
-    @JoinColumn(name = "product_board_id")
-    private ProductBoard productBoard;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_posts_id")
+    private StorePosts storePosts;
 
     @Builder
-    public Product(Item item, String productName, Integer price, Integer stock, Integer rateDiscount, String size, String color) {
+    public Product(Item item, String productName, Integer price, Integer stock, Integer rateDiscount, Long popular) {
         this.item = item;
         this.productName = productName;
         this.price = price;
         this.stock = stock;
         this.rateDiscount = rateDiscount;
-        this.size = size;
-        this.color = color;
+        this.popular = popular;
+    }
+    public void GainPopular() {
+        this.popular++;
     }
 
-
-    public void update(Item item, String productName, Integer stock, Integer price, Integer rateDiscount, String size, String color) {
+    public void update(Item item, String productName, Integer stock, Integer price, Integer rateDiscount) {
         if(item != null) this.item = item;
         if(productName != null) this.productName = productName;
         if(price != null) this.price = price;
         if(stock != null) this.stock = stock;
         if(rateDiscount != null) this.rateDiscount = rateDiscount;
-        if(size != null) this.size = size;
-        if(color != null) this.color = color;
+
     }
 
     public void returnAmount(Integer count) throws Exception{
@@ -69,6 +66,11 @@ public class Product {
         this.stock -= amount;
 
         return new OrderedProduct(this, order, price, amount);
+    }
+
+    public void registerStorePosts(StorePosts post){
+        this.storePosts = post;
+        post.getProductList().add(this);
     }
 
 }

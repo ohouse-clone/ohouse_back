@@ -1,13 +1,12 @@
-package com.clone.ohouse.shop.board.domain.dto;
+package com.clone.ohouse.shop.store.domain.dto;
 
 
-import com.clone.ohouse.shop.board.domain.entity.ProductBoard;
+import com.clone.ohouse.shop.store.domain.entity.StorePosts;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 @ApiModel(
         value = "store post response",
@@ -15,7 +14,7 @@ import java.time.LocalDateTime;
 )
 @AllArgsConstructor
 @Getter
-public class ProductBoardResponseDto {
+public class StorePostsResponseDto {
 
     @ApiModelProperty(
             value = "store 게시글 id",
@@ -30,21 +29,19 @@ public class ProductBoardResponseDto {
     )
     private String title;
     @ApiModelProperty(
-            value = "store 글 내용, 내용 형태는 html 문서",
-            example = "<!DOCTYPE html>\n" +
-                    "<html lang=\"en\">\n" +
-                    "<head></head>" +
-                    "<body></body>" +
-                    "</html>"
+            value = "내용, image url"
     )
-    private String content;
+    private String contentUrl;
 
     @ApiModelProperty(
             value = "작성자",
             required = true
     )
     private String author;
-
+    @ApiModelProperty(
+            value = "preview image url"
+    )
+    private String previewImageUrl;
     @ApiModelProperty(
             value = "수정한 자, 수정한 적이 없다면 null입니다."
     )
@@ -80,11 +77,12 @@ public class ProductBoardResponseDto {
     private boolean isDeleted;
 
 
-    public ProductBoardResponseDto(ProductBoard entity) {
+    public StorePostsResponseDto(StorePosts entity) {
         this.id = entity.getId();
         this.isActive = entity.isActive();
         this.title = entity.getTitle();
-        this.content = new String(entity.getContent(), StandardCharsets.UTF_8);
+        this.contentUrl = entity.getContentUrl();
+        this.previewImageUrl = entity.getPreviewImageUrl();
         this.author = entity.getAuthor();
         this.modifiedUser = entity.getModifiedUser();
         this.isDeleted = entity.isDeleted();

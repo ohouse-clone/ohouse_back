@@ -1,11 +1,11 @@
 package com.clone.ohouse.shop.product.domain;
 
 import com.clone.ohouse.shop.product.domain.access.ItemCategoryCodeRepository;
-import com.clone.ohouse.shop.product.domain.access.ItemRepository;
-import com.clone.ohouse.shop.product.domain.dto.ItemAllListResponseDto;
-import com.clone.ohouse.shop.product.domain.dto.ItemSaveRequestDto;
-import com.clone.ohouse.shop.product.domain.dto.ItemUpdateRequestDto;
-import com.clone.ohouse.shop.product.domain.entity.Item;
+import com.clone.ohouse.shop.product.domain.access.BedRepository;
+import com.clone.ohouse.shop.product.domain.dto.BedAllListResponseDto;
+import com.clone.ohouse.shop.product.domain.dto.BedSaveRequestDto;
+import com.clone.ohouse.shop.product.domain.dto.BedUpdateRequestDto;
+import com.clone.ohouse.shop.product.domain.entity.Bed;
 import com.clone.ohouse.shop.product.domain.entity.ItemCategoryCode;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
@@ -25,30 +25,18 @@ import java.util.Optional;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @Transactional
-public class ItemServiceTest {
+public class CategoryBedServiceTest {
     @Autowired
-    private ItemService itemService;
+    private BedService bedService;
 
     @Autowired
     private ItemCategoryCodeRepository itemCategoryCodeRepository;
     @Autowired
-    private ItemRepository itemRepository;
-
-    @BeforeEach
-    public void previouslySetup(){
-        ItemCategoryCode code1 = ItemCategoryCode.builder()
-                .categoryDetail("가구_침대_침대프레임_일반침대")
-                .category1("0")
-                .category2("22")
-                .category3("20")
-                .category4("20")
-                .build();
-        ItemCategoryCode save1 = itemCategoryCodeRepository.save(code1);
-    }
+    private BedRepository bedRepository;
 
     @AfterEach
     public void cleanUp() {
-        itemRepository.deleteAll();
+        bedRepository.deleteAll();
         itemCategoryCodeRepository.deleteAll();
     }
 
@@ -61,14 +49,16 @@ public class ItemServiceTest {
         String modelName = "레인 짜맞춤 8각 평상형 원목 침대프레임";
         String brandName = "엔투엔퍼니쳐";
         //when
-        Long seq = itemService.save(new ItemSaveRequestDto(
+        Long seq = bedService.save(new BedSaveRequestDto(
                 categoryCode,
                 itemName,
                 modelName,
-                brandName
+                brandName,
+                "blue",
+                "10"
         ));
         //then
-        Item findItem = itemRepository.findById(seq)
+        Bed findItem = bedRepository.findById(seq)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 Item : " + seq));
 
         Assertions.assertThat(findItem.getName()).isEqualTo(itemName);
@@ -87,15 +77,17 @@ public class ItemServiceTest {
         String brandName = "JH공방";
 
         //when
-        Long savedSeq = itemService.update(seq, new ItemUpdateRequestDto(
+        Long savedSeq = bedService.update(seq, new BedUpdateRequestDto(
                 categoryCode,
                 itemName,
                 modelName,
-                brandName
+                brandName,
+                "blue",
+                "10"
         ));
 
         //then
-        Item findItem = itemRepository.findById(savedSeq)
+        Bed findItem = bedRepository.findById(savedSeq)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 Item : " + savedSeq));
 
         Assertions.assertThat(seq).isEqualTo(savedSeq);
@@ -110,10 +102,10 @@ public class ItemServiceTest {
         //given
         Long seq = saveItem();
         //when
-        itemService.delete(seq);
+        bedService.delete(seq);
 
         //then
-        List<ItemAllListResponseDto> all = itemService.findAllAsc();
+        List<BedAllListResponseDto> all = bedService.findAllAsc();
 
         Assertions.assertThat(all.isEmpty()).isTrue();
     }
@@ -121,10 +113,10 @@ public class ItemServiceTest {
 
     private ItemCategoryCode 가구_침대_침대프레임_일반침대_카테고리찾기() throws Exception{
         ItemCategoryCode categoryCode = ItemCategoryCode.builder()
-                .category1("0")
-                .category2("22")
-                .category3("20")
-                .category4("20")
+                .category1(0)
+                .category2(22)
+                .category3(20)
+                .category4(20)
                 .build();
         Example<ItemCategoryCode> e = Example.of(categoryCode);
         Optional<ItemCategoryCode> one = itemCategoryCodeRepository.findOne(e);
@@ -136,10 +128,12 @@ public class ItemServiceTest {
         String modelName = "레인 짜맞춤 8각 평상형 원목 침대프레임";
         String brandName = "엔투엔퍼니쳐";
 
-        return itemService.save(new ItemSaveRequestDto(
+        return bedService.save(new BedSaveRequestDto(
                 categoryCode,
                 itemName,
                 modelName,
-                brandName));
+                brandName,
+                "blue",
+                "10"));
     }
 }

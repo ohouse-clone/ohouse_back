@@ -1,13 +1,10 @@
-package com.clone.ohouse.shop.board.domain.dto;
+package com.clone.ohouse.shop.store.domain.dto;
 
-import com.clone.ohouse.shop.board.domain.entity.ProductBoard;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.clone.ohouse.shop.store.domain.entity.StorePosts;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.nio.charset.StandardCharsets;
 
@@ -17,7 +14,7 @@ import java.nio.charset.StandardCharsets;
 )
 @NoArgsConstructor
 @Getter
-public class ProductBoardSaveRequestDto {
+public class StorePostsSaveRequestDto {
     @ApiModelProperty(
             value = "store 글 제목",
             required = true,
@@ -25,13 +22,14 @@ public class ProductBoardSaveRequestDto {
     private String title;
 
     @ApiModelProperty(
-            value = "글 내용, 내용 형태는 html 문서",
-            example = "<!DOCTYPE html>\n" +
-                    "<html lang=\"en\">\n" +
-                    "<head></head>" +
-                    "<body></body>" +
-                    "</html>")
-    private String content;
+            value = "내용, image 파일"
+    )
+    private String contentUrl;
+    @ApiModelProperty(
+            value = "preview image 파일"
+    )
+    private String previewImageUrl;
+
     @ApiModelProperty(
             value = "작성자",
             required = true,
@@ -40,16 +38,18 @@ public class ProductBoardSaveRequestDto {
     private String author;
 
 
-    public ProductBoardSaveRequestDto(String title, String content, String author) {
+    public StorePostsSaveRequestDto(String title, String contentUrl, String previewImageUrl, String author) {
         this.title = title;
-        this.content = content;
+        this.contentUrl = contentUrl;
+        this.previewImageUrl = previewImageUrl;
         this.author = author;
     }
 
-    public ProductBoard toEntity() {
-        return ProductBoard.builder()
+    public StorePosts toEntity() {
+        return StorePosts.builder()
                 .title(title)
-                .content(content.getBytes(StandardCharsets.UTF_8))
+                .contentUrl(contentUrl)
+                .previewImageUrl(previewImageUrl)
                 .author(author)
                 .build();
     }

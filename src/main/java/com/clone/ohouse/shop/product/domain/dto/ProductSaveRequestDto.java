@@ -12,8 +12,6 @@ public class ProductSaveRequestDto {
     private Integer price;
     private Integer stock;
     private Integer rateDiscount;
-    private String size;
-    private String color;
 
     @Builder
     public ProductSaveRequestDto(Item item, String productName, Integer price, Integer stock, Integer rateDiscount, String size, String color) {
@@ -22,8 +20,6 @@ public class ProductSaveRequestDto {
         this.price = price;
         this.stock = stock;
         this.rateDiscount = rateDiscount;
-        this.size = size;
-        this.color = color;
     }
 
     public Product toEntity() {
@@ -33,8 +29,6 @@ public class ProductSaveRequestDto {
                 .price(price)
                 .stock(stock)
                 .rateDiscount(rateDiscount)
-                .size(size)
-                .color(color)
                 .build();
     }
 }

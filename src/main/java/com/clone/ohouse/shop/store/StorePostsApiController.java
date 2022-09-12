@@ -1,9 +1,9 @@
-package com.clone.ohouse.shop.board;
+package com.clone.ohouse.shop.store;
 
-import com.clone.ohouse.shop.board.domain.ProductBoardService;
-import com.clone.ohouse.shop.board.domain.dto.ProductBoardResponseDto;
-import com.clone.ohouse.shop.board.domain.dto.ProductBoardSaveRequestDto;
-import com.clone.ohouse.shop.board.domain.dto.ProductBoardUpdateRequestDto;
+import com.clone.ohouse.shop.store.domain.StorePostsService;
+import com.clone.ohouse.shop.store.domain.dto.StorePostsResponseDto;
+import com.clone.ohouse.shop.store.domain.dto.StorePostsSaveRequestDto;
+import com.clone.ohouse.shop.store.domain.dto.StorePostsUpdateRequestDto;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
-public class ProductBoardApiController {
-    private final ProductBoardService boardService;
+public class StorePostsApiController {
+    private final StorePostsService boardService;
 
     @ApiOperation(
             value = "제품 게시글 등록",
@@ -23,7 +23,7 @@ public class ProductBoardApiController {
     })
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/store/productions")
-    public void save(@RequestBody ProductBoardSaveRequestDto saveRequestDto) {
+    public void save(@RequestBody StorePostsSaveRequestDto saveRequestDto) {
         boardService.save(saveRequestDto);
     }
 
@@ -38,7 +38,7 @@ public class ProductBoardApiController {
     })
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/store/productions/{id}")
-    public void update(@PathVariable Long id, @RequestBody ProductBoardUpdateRequestDto updateRequestDto) {
+    public void update(@PathVariable Long id, @RequestBody StorePostsUpdateRequestDto updateRequestDto) {
         boardService.update(id, updateRequestDto);
     }
 
@@ -50,7 +50,7 @@ public class ProductBoardApiController {
     @ApiImplicitParam(name = "id", value = "제품 게시글의 id (제품 id X)")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/store/productions/{id}")
-    public ProductBoardResponseDto findById(@PathVariable Long id) {
+    public StorePostsResponseDto findById(@PathVariable Long id) {
         return boardService.findById(id);
     }
     @ApiOperation(

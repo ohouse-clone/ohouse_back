@@ -21,10 +21,11 @@ public class ItemCategoryCodeRepositoryTest {
     @Autowired
     private ItemCategoryCodeRepository itemCategoryCodeRepository;
 
+    private ItemCategoryCode saved;
 
     @AfterAll
     public void clean(){
-        itemCategoryCodeRepository.deleteAll();
+        itemCategoryCodeRepository.deleteById(saved.getId());
     }
 
 
@@ -33,47 +34,14 @@ public class ItemCategoryCodeRepositoryTest {
     @DisplayName("Save CategoryCode")
     public void SaveItemCategoryCode(){
         ItemCategoryCode code1 = ItemCategoryCode.builder()
-                .categoryDetail("가구_침대_침대프레임_일반침대")
-                .category1("0")
-                .category2("22")
-                .category3("20")
-                .category4("20")
-                .build();
-        ItemCategoryCode code2 = ItemCategoryCode.builder()
-                .categoryDetail("가구_침대_침대프레임_수납침대")
-                .category1("0")
-                .category2("22")
-                .category3("20")
-                .category4("21")
-                .build();
-        ItemCategoryCode code3 = ItemCategoryCode.builder()
-                .categoryDetail("가구_침대_침대+매트리스_일반침대")
-                .category1("0")
-                .category2("22")
-                .category3("21")
-                .category4("20")
-                .build();
-        ItemCategoryCode code4 = ItemCategoryCode.builder()
-                .categoryDetail("가구_매트리스.토퍼_매트리스_스프링매트리스")
-                .category1("0")
-                .category2("23")
-                .category3("20")
-                .category4("20")
-                .build();
-        ItemCategoryCode code5 = ItemCategoryCode.builder()
-                .categoryDetail("패브릭_여름패브릭_침구_차렵이블")
-                .category1("1")
-                .category2("20")
-                .category3("20")
-                .category4("20")
+                .categoryDetail("TestSave")
+                .category1(1000)
+                .category2(1001)
+                .category3(1002)
+                .category4(1003)
                 .build();
 
-
-        ItemCategoryCode save1 = itemCategoryCodeRepository.save(code1);
-        ItemCategoryCode save2 = itemCategoryCodeRepository.save(code2);
-        ItemCategoryCode save3 = itemCategoryCodeRepository.save(code3);
-        ItemCategoryCode save4 = itemCategoryCodeRepository.save(code4);
-        ItemCategoryCode save5 = itemCategoryCodeRepository.save(code5);
+        saved = itemCategoryCodeRepository.save(code1);
 
         Optional<ItemCategoryCode> byId = itemCategoryCodeRepository.findById(code1.getId());
 
@@ -85,14 +53,13 @@ public class ItemCategoryCodeRepositoryTest {
     @DisplayName("Read CategoryCode")
     public void ReadItemCategoryCode() {
         //given
-        String codeCategory1 = "0";
-        String codeCategory2 = "22";
-        String codeCategory3 = "20";
-        String codeCategory4 = "20"; //가구_침대_침대프레임_일반침대
+        Integer codeCategory1 = 1000;
+        Integer codeCategory2 = 1001;
+        Integer codeCategory3 = 1002;
+        Integer codeCategory4 = 1003; //가구_침대_침대프레임_일반침대
         //when
         List<ItemCategoryCode> byCategory1 = itemCategoryCodeRepository.findByCategory1OrderByCategory1Desc(codeCategory1);
         List<ItemCategoryCode> list0All = itemCategoryCodeRepository.findByCategory1AndCategory2AndCategory3OrderByCategory1DescCategory2DescCategory3Desc(codeCategory1, codeCategory2, codeCategory3);
-
 
         //then
         Assertions.assertThat(byCategory1.get(0).getCategory1()).isEqualTo(codeCategory1);
@@ -106,12 +73,10 @@ public class ItemCategoryCodeRepositoryTest {
         //given
 
         //when
-        //In DB, Set 0 is 침대, 1 is 패브릭
-        List<String> category1All = itemCategoryCodeRepository.findDistinctCategory1ListOrderByAsc();
+        List<Integer> category1All = itemCategoryCodeRepository.findDistinctCategory1ListOrderByAsc();
 
         //then
-        Assertions.assertThat(category1All.get(0)).isEqualTo("0");
-        Assertions.assertThat(category1All.get(1)).isEqualTo("1");
+        Assertions.assertThat(category1All).contains(1000);
     }
 
     @Test
@@ -121,13 +86,10 @@ public class ItemCategoryCodeRepositoryTest {
         //givin
 
         //when
-        //In DB, Set 0 is 침대, 1 is 패브릭
-        //In DB, if category 1 == 0 then category has 22:침대 and 23:매트리스.토퍼 and so on.
-        List<String> category1All = itemCategoryCodeRepository.findDistinctCategory2ListOrderByAsc("0");
+        List<Integer> category1All = itemCategoryCodeRepository.findDistinctCategory2ListOrderByAsc(1000);
 
         //then
-        Assertions.assertThat(category1All.get(0)).isEqualTo("22"); //22 : 침대
-        Assertions.assertThat(category1All.get(1)).isEqualTo("23"); //23 : 매트리스
+        Assertions.assertThat(category1All.get(0)).isEqualTo(1001);
     }
 
     @Test
@@ -137,14 +99,10 @@ public class ItemCategoryCodeRepositoryTest {
         //givin
 
         //when
-        //In DB, Set 0 is 침대, 1 is 패브릭
-        //In DB, if category 1 == 0 then category has 22:침대 and 23:매트리스.토퍼 and so on.
-        //In DB, if category 1 == 0 && category 2 == 22 then category3 is one that start from 20, 20 : 침대프레임, 21 : 침대+매트리스
-        List<String> category1All = itemCategoryCodeRepository.findDistinctCategory3ListOrderByAsc("0", "22");
+        List<Integer> category1All = itemCategoryCodeRepository.findDistinctCategory3ListOrderByAsc(1000, 1001);
 
         //then
-        Assertions.assertThat(category1All.get(0)).isEqualTo("20"); //20 : 침대프레임
-        Assertions.assertThat(category1All.get(1)).isEqualTo("21"); //21 : 침대+매트리스
+        Assertions.assertThat(category1All.get(0)).isEqualTo(1002);
     }
 
     @Test

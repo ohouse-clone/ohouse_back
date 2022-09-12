@@ -1,6 +1,5 @@
-package com.clone.ohouse.shop.board.domain.dto;
+package com.clone.ohouse.shop.store.domain.dto;
 
-import com.clone.ohouse.shop.board.domain.entity.ProductBoard;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -17,7 +16,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ProductBoardUpdateRequestDto {
+public class StorePostsUpdateRequestDto {
     @ApiModelProperty(
             value = "store 게시글 제목",
             required = false,
@@ -26,10 +25,13 @@ public class ProductBoardUpdateRequestDto {
     private String title;
 
     @ApiModelProperty(
-            value = "글 내용, 내용 형태는 html 문서",
-            example = "<html></html>"
+            value = "내용, image url"
     )
-    private String content;
+    private String contentUrl;
+    @ApiModelProperty(
+            value = "preview image url"
+    )
+    private String previewImageUrl;
     @ApiModelProperty(
             value = "수정한 자",
             required = true,
@@ -51,9 +53,10 @@ public class ProductBoardUpdateRequestDto {
     private boolean isDeleted = false;
 
     @Builder
-    public ProductBoardUpdateRequestDto(String title, String content, String modifiedUser, boolean isActive, boolean isDeleted) {
+    public StorePostsUpdateRequestDto(String title, String contentUrl, String previewImageUrl, String modifiedUser, boolean isActive, boolean isDeleted) {
         this.title = title;
-        this.content = content;
+        this.contentUrl = contentUrl;
+        this.previewImageUrl = previewImageUrl;
         this.modifiedUser = modifiedUser;
         this.isActive = isActive;
         this.isDeleted = isDeleted;

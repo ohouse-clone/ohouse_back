@@ -1,14 +1,13 @@
-package com.clone.ohouse.shop.board;
+package com.clone.ohouse.shop.store;
 
-import com.clone.ohouse.shop.board.domain.ProductBoardService;
-import com.clone.ohouse.shop.board.domain.access.ProductBoardRepository;
-import com.clone.ohouse.shop.board.domain.dto.ProductBoardSaveRequestDto;
-import com.clone.ohouse.shop.board.domain.dto.ProductBoardUpdateRequestDto;
-import com.clone.ohouse.shop.board.domain.entity.ProductBoard;
+import com.clone.ohouse.shop.store.domain.StorePostsService;
+import com.clone.ohouse.shop.store.domain.access.StorePostsRepository;
+import com.clone.ohouse.shop.store.domain.dto.StorePostsSaveRequestDto;
+import com.clone.ohouse.shop.store.domain.dto.StorePostsUpdateRequestDto;
+import com.clone.ohouse.shop.store.domain.entity.StorePosts;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,27 +17,22 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MockMvcExtensionsKt;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.util.StreamUtils;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class ProductBoardApiControllerTest {
+class StorePostsApiControllerTest {
 
     @Autowired
-    private ProductBoardRepository productBoardRepository;
+    private StorePostsRepository storePostsRepository;
     @Autowired
-    private ProductBoardService boardService;
+    private StorePostsService boardService;
 
     @LocalServerPort
     private int port;
@@ -49,7 +43,7 @@ class ProductBoardApiControllerTest {
     private final String mappingUrl = "/store/productions";
 
     @BeforeEach
-    public void setup(){
+    public void setup() {
         mvc = MockMvcBuilders
                 .webAppContextSetup(context)
                 .build();
@@ -57,7 +51,7 @@ class ProductBoardApiControllerTest {
 
     @AfterEach
     public void clean() {
-        productBoardRepository.deleteAll();
+        storePostsRepository.deleteAll();
     }
 
     @Test
@@ -68,41 +62,41 @@ class ProductBoardApiControllerTest {
         String content = "klasdfjlkj34t42363gjerwovm";
         String author = "JJH";
         String modifiedUser = null;
-        ProductBoardSaveRequestDto saveRequestDto = new ProductBoardSaveRequestDto(title, content, author);
+        StorePostsSaveRequestDto saveRequestDto = new StorePostsSaveRequestDto(title, content, null, author);
 
         //when
         mvc.perform(MockMvcRequestBuilders.post(url)
-                                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                .content(new ObjectMapper().writeValueAsString(saveRequestDto)))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(new ObjectMapper().writeValueAsString(saveRequestDto)))
                 .andExpect(MockMvcResultMatchers.status().isCreated());
 
         //then
-        List<ProductBoard> all = productBoardRepository.findAll();
+        List<StorePosts> all = storePostsRepository.findAll();
         Assertions.assertThat(all.get(0).getTitle()).isEqualTo(title);
-        Assertions.assertThat(new String(all.get(0).getContent(), StandardCharsets.UTF_8)).isEqualTo(content);
+        Assertions.assertThat(all.get(0).getContentUrl()).isEqualTo(content);
         Assertions.assertThat(all.get(0).getAuthor()).isEqualTo(author);
         System.out.println("saved Time : " + all.get(0).getCreatedDate());
 
     }
 
     @Test
-    void update() throws Exception{
+    void update() throws Exception {
         //given
         String url = "http://localhost:" + port + mappingUrl + "/";
         String title = "상품제목";
-        String content = "klasdfjlkj34t42363gjerwovm";
+        String contentUrl = "klasdfjlkj34t42363gjerwovm";
         String author = "JJH";
         String modifiedUser = null;
 
-        ProductBoardSaveRequestDto saveRequestDto = new ProductBoardSaveRequestDto(title, content, author);
+        StorePostsSaveRequestDto saveRequestDto = new StorePostsSaveRequestDto(title, contentUrl, null, author);
         Long savedId = boardService.save(saveRequestDto);
 
         String title2 = "제목없음";
-        String content2 = "정갈";
+        String contentUrl2 = "url";
         String modifiedUser2 = "WWA";
-        ProductBoardUpdateRequestDto updateRequestDto = ProductBoardUpdateRequestDto.builder()
+        StorePostsUpdateRequestDto updateRequestDto = StorePostsUpdateRequestDto.builder()
                 .title(title2)
-                .content(content2)
+                .contentUrl(contentUrl2)
                 .modifiedUser(modifiedUser2)
                 .build();
 
@@ -114,9 +108,9 @@ class ProductBoardApiControllerTest {
 
 
         //then
-        List<ProductBoard> all = productBoardRepository.findAll();
+        List<StorePosts> all = storePostsRepository.findAll();
         Assertions.assertThat(all.get(0).getTitle()).isEqualTo(title2);
-        Assertions.assertThat(new String(all.get(0).getContent(), StandardCharsets.UTF_8)).isEqualTo(content2);
+        Assertions.assertThat(all.get(0).getContentUrl()).isEqualTo(contentUrl2);
         Assertions.assertThat(all.get(0).getAuthor()).isEqualTo(author);
         Assertions.assertThat(all.get(0).getModifiedUser()).isEqualTo(modifiedUser2);
     }
@@ -130,7 +124,7 @@ class ProductBoardApiControllerTest {
         String author = "JJH";
         String modifiedUser = null;
 
-        ProductBoardSaveRequestDto saveRequestDto = new ProductBoardSaveRequestDto(title, content, author);
+        StorePostsSaveRequestDto saveRequestDto = new StorePostsSaveRequestDto(title, content, null, author);
         Long savedId = boardService.save(saveRequestDto);
 
         //when && then
@@ -147,17 +141,17 @@ class ProductBoardApiControllerTest {
         //given
         String url = "http://localhost:" + port + mappingUrl + "/";
         String title = "상품제목";
-        String content = "klasdfjlkj34t42363gjerwovm";
+        String contentUrl = "klasdfjlkj34t42363gjerwovm";
         String author = "JJH";
         String modifiedUser = null;
 
-        ProductBoardSaveRequestDto saveRequestDto = new ProductBoardSaveRequestDto(title, content, author);
+        StorePostsSaveRequestDto saveRequestDto = new StorePostsSaveRequestDto(title, contentUrl, null, author);
         Long savedId = boardService.save(saveRequestDto);
 
         //when
         mvc.perform(MockMvcRequestBuilders.delete(url + String.valueOf(savedId)))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
-        Assertions.assertThat(productBoardRepository.count()).isEqualTo(0);
+        Assertions.assertThat(storePostsRepository.count()).isEqualTo(0);
     }
 }

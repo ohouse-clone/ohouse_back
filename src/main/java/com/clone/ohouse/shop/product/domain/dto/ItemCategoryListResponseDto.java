@@ -7,10 +7,10 @@ import lombok.Getter;
 public class ItemCategoryListResponseDto {
     private final Long categoryId;
     private final String categoryDetail;
-    private final String category1;
-    private final String category2;
-    private final String category3;
-    private final String category4;
+    private final Integer category1;
+    private final Integer category2;
+    private final Integer category3;
+    private final Integer category4;
 
     public ItemCategoryListResponseDto(ItemCategoryCode entity) {
         this.categoryId = entity.getId();
