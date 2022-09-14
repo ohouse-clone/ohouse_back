@@ -11,6 +11,7 @@ import lombok.*;
 @ToString
 
 public class UserDto {
+    private Long id;
     private String email;
     private String password;
     private String nickname;
@@ -19,6 +20,7 @@ public class UserDto {
 
     public User toEntity(){
         User user = User.builder()
+                .id(id)
                 .email(email)
                 .password(password)
                 .nickname(nickname)
@@ -29,8 +31,9 @@ public class UserDto {
     }
 
     @Builder
-    public UserDto(String email, String password, String nickname, String phone, String birthday) {
+    public UserDto(Long id,String email, String password, String nickname, String phone, String birthday) {
 
+        this.id = id;
         this.email = email;
         this.password = password;
         this.nickname = nickname;

@@ -2,10 +2,7 @@ package com.clone.ohouse.community.entity;
 
 import com.clone.ohouse.community.dto.CommentDto;
 import com.clone.ohouse.community.dto.UserDto;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -16,20 +13,23 @@ import java.util.List;
 @AllArgsConstructor
 
 @Getter
+@Setter
 @Entity
 @Table(name="post")
 public class Post {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="post_id")
     private Long id;
 
-    @Column(length = 500, nullable = false)
+    @Column(length = 500, nullable = false,name="title")
     private String title;
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
     @Column(nullable = false,length = 30)
     private String author;
-    @Column(name="modified_user",nullable = false,length = 30)
+    @Column(name="modified_user",length = 30)
     private String modifiedUser;
 
     @Column(columnDefinition = "integer default 0")
@@ -54,11 +54,14 @@ public class Post {
         this.createDate = createDate;
         this.modifiedDate = modifiedDate;
     }
+
+//    @Builder
+//    public Post(String title, String content, String author)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "email")
+    @JoinColumn(name = "point")
     private User user;
 
-    @OneToMany(mappedBy = "commentTitle", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @OrderBy("id asc")
     private List<Comment> comments = new ArrayList<>();
 

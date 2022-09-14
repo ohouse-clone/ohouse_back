@@ -4,6 +4,8 @@ import lombok.*;
 //import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Getter
@@ -31,7 +33,8 @@ public class User {
     private String refreshToken;
 
     @Builder
-    public User(String email, String password, String nickname, String phone, String birthday,String refreshToken) {
+    public User(Long id, String email, String password, String nickname, String phone, String birthday,String refreshToken) {
+        this.id = id;
         this.email = email;
         this.password = password;
         this.nickname = nickname;
@@ -53,7 +56,9 @@ public class User {
         this.email = email;
         this.password = password;
     }
-
+    @OneToMany(mappedBy = "user",fetch =FetchType.EAGER,cascade =CascadeType.REMOVE)
+    @OrderBy("id asc")
+    private List<Post> posts = new ArrayList<>();
     //    public void encodePassword(PasswordEncoder passwordEncoder){
 //        this.password = passwordEncoder.encode(password);
 //    }
