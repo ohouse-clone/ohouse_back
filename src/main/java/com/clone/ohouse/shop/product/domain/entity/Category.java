@@ -12,10 +12,12 @@ import java.util.List;
 @Entity
 public class Category {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "category_id")
     private Long id;
 
     @Column(length = 20)
     private String name;
+
     private Long code;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -30,8 +32,12 @@ public class Category {
         this.code = code;
     }
 
-    public void registerParent(Category parent){
+    public void addParent(Category parent){
         this.parent = parent;
         parent.getChild().add(this);
+    }
+    public void addChild(Category child){
+        this.child.add(child);
+        child.parent = this;
     }
 }
