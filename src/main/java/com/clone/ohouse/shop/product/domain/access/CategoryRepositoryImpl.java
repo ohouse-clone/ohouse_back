@@ -95,7 +95,7 @@ public class CategoryRepositoryImpl implements CategoryRepositoryCustom {
         qCategories.add(category3);
         qCategories.add(category4);
 
-        List<Tuple> tuples = queryFactory
+        Tuple tuple = queryFactory
                 .select(
                         category1,
                         category2,
@@ -112,10 +112,10 @@ public class CategoryRepositoryImpl implements CategoryRepositoryCustom {
                                 .and(category2.code.eq(condition.code2))
                                 .and(category3.code.eq(condition.code3))
                                 .and(category4.code.eq(condition.code4)))
-                .fetch();
+                .fetchOne();
 
         for(int i = 0; i < Category.CATEGORY_SIZE; ++i)
-            result.add(tuples.get(i).get(qCategories.get(i)));
+            result.add(tuple.get(qCategories.get(i)));
         return result;
     }
 }

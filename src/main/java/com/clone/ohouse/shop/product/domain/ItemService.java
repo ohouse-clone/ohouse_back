@@ -37,8 +37,12 @@ public class ItemService {
 
         List<Category> categories = categoryRepository.findCategories(condition);
 
-        for(int i = 0; i < Category.CATEGORY_SIZE; ++i)
-            itemCategoryRepository.save(new ItemCategory(categories.get(i), item));
+        for(int i = 0; i < Category.CATEGORY_SIZE; ++i){
+            ItemCategory itemCategory = new ItemCategory(categories.get(i), item);
+            itemCategoryRepository.save(itemCategory);
+            item.getItemCategories().add(itemCategory);
+        }
+
     }
 
 
