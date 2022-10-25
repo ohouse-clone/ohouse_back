@@ -29,7 +29,7 @@ public class BedService {
         Bed posts = bedRepository.findById(seq)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 Item : " + seq));
 
-        posts.update( requestDto.getCategoryCode(),requestDto.getName(), requestDto.getModelName(), requestDto.getBrandName(), requestDto.getSize(), requestDto.getColor());
+        posts.update(requestDto.getName(), requestDto.getModelName(), requestDto.getBrandName(), requestDto.getSize(), requestDto.getColor());
 
         return seq;
     }

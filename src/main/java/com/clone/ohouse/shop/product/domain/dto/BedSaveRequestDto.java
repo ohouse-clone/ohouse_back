@@ -24,7 +24,6 @@ public class BedSaveRequestDto {
 
     public Bed toEntity() {
         return Bed.builder()
-                .categoryCode(categoryCode)
                 .name(name)
                 .modelName(modelName)
                 .brandName(brandName)

@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -13,11 +15,13 @@ import javax.persistence.*;
 public abstract class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "item_id")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
-    private ItemCategoryCode categoryCode;
+
+    @OneToMany(mappedBy = "item")
+    private List<ItemCategory> itemCategories = new ArrayList<>();
+
     @Column(length = 45, nullable = false)
     private String name;
     @Column(length = 50)
@@ -25,16 +29,14 @@ public abstract class Item {
     @Column(length = 45)
     private String brandName;
 
-    public Item(ItemCategoryCode categoryCode, String name, String modelName, String brandName) {
-        this.categoryCode = categoryCode;
+    public Item(String name, String modelName, String brandName) {
         this.name = name;
         this.modelName = modelName;
         this.brandName = brandName;
     }
 
 
-    public void update(ItemCategoryCode categoryCode, String name, String modelName, String brandName){
-        if(categoryCode != null) this.categoryCode = categoryCode;
+    public void update(String name, String modelName, String brandName){
         if(name != null) this.name = name;
         if(modelName != null) this.modelName = modelName;
         if(brandName != null) this.brandName = brandName;

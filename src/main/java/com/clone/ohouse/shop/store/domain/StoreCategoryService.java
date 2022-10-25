@@ -21,13 +21,14 @@ public class StoreCategoryService {
 
     @Transactional
     public List<StorePostsBundleViewDto> findBundleViewAllOrderByPopular(ItemCategoryCode code, Pageable pageable){
-        List<StorePosts> bundleView = storePostsRepository.findBundleViewByCategoryOrderByPopular(code.getCategory1(), code.getCategory2(), code.getCategory3(), code.getCategory4(), pageable);
-
-        List<StorePostsBundleViewDto> result = new ArrayList<>();
-        for (StorePosts storePosts : bundleView) {
-            result.add(new StorePostsBundleViewDto(storePosts));
-        }
-
-        return result;
+//        List<StorePosts> bundleView = storePostsRepository.findBundleViewByCategoryOrderByPopular(code.getCategory1(), code.getCategory2(), code.getCategory3(), code.getCategory4(), pageable);
+//
+//        List<StorePostsBundleViewDto> result = new ArrayList<>();
+//        for (StorePosts storePosts : bundleView) {
+//            result.add(new StorePostsBundleViewDto(storePosts));
+//        }
+//
+//        return result;
+        return null;
     }
 }

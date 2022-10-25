@@ -18,15 +18,15 @@ public class Bed extends Item {
 
 
     @Builder
-    public Bed(ItemCategoryCode categoryCode, String name, String modelName, String brandName, String size, String color) {
-        super(categoryCode, name, modelName, brandName);
+    public Bed(String name, String modelName, String brandName, String size, String color) {
+        super(name, modelName, brandName);
 
         this.size = size;
         this.color = color;
     }
 
-    public void update(ItemCategoryCode categoryCode, String name, String modelName, String brandName, String size, String color) {
-        super.update(categoryCode, name, modelName, brandName);
+    public void update(String name, String modelName, String brandName, String size, String color) {
+        super.update(name, modelName, brandName);
         if (size != null) this.size = size;
         if (color != null) this.color = color;
     }
