@@ -8,5 +8,5 @@ import java.util.List;
 public interface CategoryRepositoryCustom {
      Category findCategory(CategorySearch condition);
 
-     CategoryIdsDto findCategoryIds(CategorySearch condition);
+     List<Category> findCategories(CategorySearch condition);
 }

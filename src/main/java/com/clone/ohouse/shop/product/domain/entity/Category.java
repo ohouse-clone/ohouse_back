@@ -11,6 +11,9 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 public class Category {
+    @Transient
+    public static final Integer CATEGORY_SIZE = 4;
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "category_id")
     private Long id;

@@ -4,16 +4,20 @@ package com.clone.ohouse.shop.product.domain.access;
 import com.clone.ohouse.shop.product.domain.dto.CategoryIdsDto;
 import com.clone.ohouse.shop.product.domain.entity.Category;
 import com.clone.ohouse.shop.product.domain.entity.QCategory;
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.clone.ohouse.shop.product.domain.entity.QCategory.category;
 
 @RequiredArgsConstructor
 public class CategoryRepositoryImpl implements CategoryRepositoryCustom {
+
+
     private final JPAQueryFactory queryFactory;
 
     @Override
@@ -78,18 +82,26 @@ public class CategoryRepositoryImpl implements CategoryRepositoryCustom {
     }
 
     @Override
-    public CategoryIdsDto findCategoryIds(CategorySearch condition) {
+    public List<Category> findCategories(CategorySearch condition) {
+        List<Category> result = new ArrayList<>();
+        List<QCategory> qCategories = new ArrayList<>();
         QCategory category1 = new QCategory("c1");
         QCategory category2 = new QCategory("c2");
         QCategory category3 = new QCategory("c3");
         QCategory category4 = new QCategory("c4");
 
-        return queryFactory
-                .select(Projections.constructor(CategoryIdsDto.class,
-                        category1.id,
-                        category2.id,
-                        category3.id,
-                        category4.id))
+        qCategories.add(category1);
+        qCategories.add(category2);
+        qCategories.add(category3);
+        qCategories.add(category4);
+
+        List<Tuple> tuples = queryFactory
+                .select(
+                        category1,
+                        category2,
+                        category3,
+                        category4
+                )
                 .from(category4)
                 .join(category4.parent, category3)
                 .join(category3.parent, category2)
@@ -100,6 +112,10 @@ public class CategoryRepositoryImpl implements CategoryRepositoryCustom {
                                 .and(category2.code.eq(condition.code2))
                                 .and(category3.code.eq(condition.code3))
                                 .and(category4.code.eq(condition.code4)))
-                .fetchOne();
+                .fetch();
+
+        for(int i = 0; i < Category.CATEGORY_SIZE; ++i)
+            result.add(tuples.get(i).get(qCategories.get(i)));
+        return result;
     }
 }
