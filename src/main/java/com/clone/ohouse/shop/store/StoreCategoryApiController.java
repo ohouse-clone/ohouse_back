@@ -2,7 +2,7 @@ package com.clone.ohouse.shop.store;
 
 import com.clone.ohouse.shop.product.domain.access.ItemCategoryCodeRepository;
 import com.clone.ohouse.shop.product.domain.entity.ItemCategoryCode;
-import com.clone.ohouse.shop.store.domain.StoreCategoryService;
+import com.clone.ohouse.shop.store.domain.StorePostsQueryService;
 import com.clone.ohouse.shop.store.domain.dto.StorePostsBundleViewDto;
 import com.clone.ohouse.shop.store.domain.dto.StorePostsBundleViewResponse;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ import java.util.List;
 public class StoreCategoryApiController {
 
     private final ItemCategoryCodeRepository itemCategoryCodeRepository;
-    private final StoreCategoryService storeCategoryService;
+    private final StorePostsQueryService storeCategoryService;
 
     @GetMapping("/store/category")
     public StorePostsBundleViewResponse getCategoryView(

@@ -1,16 +1,21 @@
 package com.clone.ohouse.shop.store.domain;
 
 
+import com.clone.ohouse.shop.product.domain.access.CategoryRepository;
+import com.clone.ohouse.shop.product.domain.access.CategorySearch;
+import com.clone.ohouse.shop.product.domain.entity.Category;
 import com.clone.ohouse.shop.store.domain.access.StorePostsRepository;
 import com.clone.ohouse.shop.store.domain.dto.StorePostsResponseDto;
 import com.clone.ohouse.shop.store.domain.dto.StorePostsSaveRequestDto;
 import com.clone.ohouse.shop.store.domain.dto.StorePostsUpdateRequestDto;
 import com.clone.ohouse.shop.store.domain.entity.StorePosts;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
