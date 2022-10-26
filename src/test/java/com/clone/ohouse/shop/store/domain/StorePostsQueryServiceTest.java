@@ -113,24 +113,14 @@ class StorePostsQueryServiceTest {
         StorePosts post7 = new StorePosts("제목7", null, "작가7",  null,null);
         StorePosts post8 = new StorePosts("제목8", null, "작가8",  null,null);
 
-        productRepository.save(product11);
-        productRepository.save(product12);
-        productRepository.save(product21);
-        productRepository.save(product22);
-        productRepository.save(product31);
-        productRepository.save(product32);
-        productRepository.save(product41);
-        productRepository.save(product42);
-        productRepository.save(product51);
-        productRepository.save(product52);
-        productRepository.save(product61);
-        productRepository.save(product62);
-        productRepository.save(product71);
-        productRepository.save(product72);
-        productRepository.save(product81);
-        productRepository.save(product82);
-        productRepository.save(product83);
-        productRepository.save(product84);
+        storePostsRepository.save(post1);
+        storePostsRepository.save(post2);
+        storePostsRepository.save(post3);
+        storePostsRepository.save(post4);
+        storePostsRepository.save(post5);
+        storePostsRepository.save(post6);
+        storePostsRepository.save(post7);
+        storePostsRepository.save(post8);
 
         product11.registerStorePosts(post1);
         product12.registerStorePosts(post1);
@@ -151,16 +141,26 @@ class StorePostsQueryServiceTest {
         product83.registerStorePosts(post8);
         product84.registerStorePosts(post8);
 
+        productRepository.save(product11);
+        productRepository.save(product12);
+        productRepository.save(product21);
+        productRepository.save(product22);
+        productRepository.save(product31);
+        productRepository.save(product32);
+        productRepository.save(product41);
+        productRepository.save(product42);
+        productRepository.save(product51);
+        productRepository.save(product52);
+        productRepository.save(product61);
+        productRepository.save(product62);
+        productRepository.save(product71);
+        productRepository.save(product72);
+        productRepository.save(product81);
+        productRepository.save(product82);
+        productRepository.save(product83);
+        productRepository.save(product84);
 
 
-        storePostsRepository.save(post1);
-        storePostsRepository.save(post2);
-        storePostsRepository.save(post3);
-        storePostsRepository.save(post4);
-        storePostsRepository.save(post5);
-        storePostsRepository.save(post6);
-        storePostsRepository.save(post7);
-        storePostsRepository.save(post8);
     }
     @AfterEach
     void clean(){
@@ -173,13 +173,17 @@ class StorePostsQueryServiceTest {
 
     @Test
     void getBundleViewV1(){
-        CategorySearch condition = new CategorySearch(20L, 22L, 20L, 19L);
-        Pageable pageable = PageRequest.of(0, 10);
+        CategorySearch condition = new CategorySearch(20L, 22L, 20L, 17L);
+        Pageable pageable = PageRequest.of(0, 2);
+        System.out.println("---------------------------------------------------------------------------------------------Bang!");
+        List<StorePosts> bundleViewV1 = storePostsQueryService.getBundleViewV3(condition, pageable);
 
-        List<StorePosts> bundleViewV1 = storePostsQueryService.getBundleViewV1(condition, pageable);
-
+        System.out.println("---------------------------------------------------------------------------------------------doit!");
         for (StorePosts storePosts : bundleViewV1) {
             System.out.println("storePosts = " + storePosts.getTitle());
+//            for(Product product : storePosts.getProductList()){
+//                System.out.println("storePosts = " + storePosts.getTitle() + ", popular : " + product.getPopular());
+//            }
         }
     }
     @Test

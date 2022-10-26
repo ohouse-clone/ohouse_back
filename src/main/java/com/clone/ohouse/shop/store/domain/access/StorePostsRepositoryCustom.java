@@ -9,4 +9,5 @@ import java.util.List;
 public interface StorePostsRepositoryCustom {
     List<StorePosts> getBundleViewByCategoryWithConditionV1(Long categoryId, Pageable pageable);
     List<StorePosts> getBundleViewByCategoryWithConditionV2(Long categoryId, Pageable pageable);
+    List<StorePosts> getBundleViewByCategoryWithConditionV3(Long categoryId, Pageable pageable);
 }

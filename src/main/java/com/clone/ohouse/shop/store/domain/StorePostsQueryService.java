@@ -37,4 +37,13 @@ public class StorePostsQueryService {
 
         return posts;
     }
+
+    @Transactional
+    public List<StorePosts> getBundleViewV3(CategorySearch condition, Pageable pageable){
+        Category category = categoryRepository.findCategory(condition);
+
+        List<StorePosts> posts = storePostsRepository.getBundleViewByCategoryWithConditionV3(category.getId(), pageable);
+
+        return posts;
+    }
 }
