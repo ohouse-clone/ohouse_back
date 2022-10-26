@@ -5,6 +5,7 @@ import com.clone.ohouse.shop.product.domain.access.CategorySearch;
 import com.clone.ohouse.shop.product.domain.entity.Category;
 import com.clone.ohouse.shop.product.domain.entity.ItemCategoryCode;
 import com.clone.ohouse.shop.store.domain.access.StorePostsRepository;
+import com.clone.ohouse.shop.store.domain.dto.BundleVIewDto;
 import com.clone.ohouse.shop.store.domain.dto.StorePostsBundleViewDto;
 import com.clone.ohouse.shop.store.domain.entity.StorePosts;
 import lombok.RequiredArgsConstructor;
@@ -39,11 +40,11 @@ public class StorePostsQueryService {
     }
 
     @Transactional
-    public List<StorePosts> getBundleViewV3(CategorySearch condition, Pageable pageable){
+    public BundleVIewDto getBundleViewV3(CategorySearch condition, Pageable pageable){
         Category category = categoryRepository.findCategory(condition);
 
-        List<StorePosts> posts = storePostsRepository.getBundleViewByCategoryWithConditionV3(category.getId(), pageable);
+        BundleVIewDto result = storePostsRepository.getBundleViewByCategoryWithConditionV3(category.getId(), pageable);
 
-        return posts;
+        return result;
     }
 }

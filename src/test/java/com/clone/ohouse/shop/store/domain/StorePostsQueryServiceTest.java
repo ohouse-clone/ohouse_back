@@ -7,6 +7,8 @@ import com.clone.ohouse.shop.product.domain.entity.Category;
 import com.clone.ohouse.shop.product.domain.entity.Item;
 import com.clone.ohouse.shop.product.domain.entity.Product;
 import com.clone.ohouse.shop.store.domain.access.StorePostsRepository;
+import com.clone.ohouse.shop.store.domain.access.StorePostsViewDto;
+import com.clone.ohouse.shop.store.domain.dto.BundleVIewDto;
 import com.clone.ohouse.shop.store.domain.entity.StorePosts;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -85,24 +87,24 @@ class StorePostsQueryServiceTest {
         itemService.save(item7, condition2);
         itemService.save(item8, condition2);
 
-        Product product11 = new Product(item1, "제품11", 5000, 100, 0, 0L);
-        Product product12 = new Product(item1, "제품12", 5000, 100, 0, 1L);
-        Product product21 = new Product(item2, "제품21", 5000, 100, 0, 2L);
-        Product product22 = new Product(item2, "제품22", 5000, 100, 0, 3L);
-        Product product31 = new Product(item3, "제품31", 5000, 100, 0, 4L);
-        Product product32 = new Product(item3, "제품32", 5000, 100, 0, 5L);
-        Product product41 = new Product(item4, "제품41", 5000, 100, 0, 6L);
-        Product product42 = new Product(item4, "제품42", 5000, 100, 0, 0L);
-        Product product51 = new Product(item5, "제품51", 5000, 100, 0, 0L);
-        Product product52 = new Product(item5, "제품52", 5000, 100, 0, 0L);
-        Product product61 = new Product(item6, "제품61", 5000, 100, 0, 0L);
-        Product product62 = new Product(item6, "제품62", 5000, 100, 0, 99L);
-        Product product71 = new Product(item7, "제품71", 5000, 100, 0, 0L);
-        Product product72 = new Product(item7, "제품72", 5000, 100, 0, 0L);
-        Product product81 = new Product(item8, "제품81", 5000, 100, 0, 0L);
-        Product product82 = new Product(item8, "제품82", 5000, 100, 0, 0L);
-        Product product83 = new Product(item8, "제품83", 5000, 100, 0, 100L);
-        Product product84 = new Product(item8, "제품84", 5000, 100, 0, 0L);
+        Product product11 = new Product(item1, "제품11", 5001, 100, 0, 0L);
+        Product product12 = new Product(item1, "제품12", 5002, 100, 0, 1L);
+        Product product21 = new Product(item2, "제품21", 5003, 100, 0, 2L);
+        Product product22 = new Product(item2, "제품22", 5004, 100, 0, 3L);
+        Product product31 = new Product(item3, "제품31", 5005, 100, 0, 4L);
+        Product product32 = new Product(item3, "제품32", 5006, 100, 0, 5L);
+        Product product41 = new Product(item4, "제품41", 5007, 100, 0, 6L);
+        Product product42 = new Product(item4, "제품42", 5008, 100, 0, 0L);
+        Product product51 = new Product(item5, "제품51", 5009, 100, 0, 0L);
+        Product product52 = new Product(item5, "제품52", 5010, 100, 0, 0L);
+        Product product61 = new Product(item6, "제품61", 5011, 100, 0, 0L);
+        Product product62 = new Product(item6, "제품62", 5012, 100, 0, 99L);
+        Product product71 = new Product(item7, "제품71", 5013, 100, 0, 0L);
+        Product product72 = new Product(item7, "제품72", 5014, 100, 0, 0L);
+        Product product81 = new Product(item8, "제품81", 5015, 100, 0, 0L);
+        Product product82 = new Product(item8, "제품82", 5016, 100, 0, 0L);
+        Product product83 = new Product(item8, "제품83", 5017, 100, 0, 100L);
+        Product product84 = new Product(item8, "제품84", 5018, 100, 0, 0L);
 
         StorePosts post1 = new StorePosts("제목1", null, "작가1",  null,null);
         StorePosts post2 = new StorePosts("제목2", null, "작가2",  null,null);
@@ -175,19 +177,15 @@ class StorePostsQueryServiceTest {
     void getBundleViewV1(){
         CategorySearch condition = new CategorySearch(20L, 22L, 20L, 17L);
         Pageable pageable = PageRequest.of(0, 2);
-        System.out.println("---------------------------------------------------------------------------------------------Bang!");
-        List<StorePosts> bundleViewV1 = storePostsQueryService.getBundleViewV3(condition, pageable);
 
-        System.out.println("---------------------------------------------------------------------------------------------doit!");
-        for (StorePosts storePosts : bundleViewV1) {
-            System.out.println("storePosts = " + storePosts.getTitle());
-//            for(Product product : storePosts.getProductList()){
-//                System.out.println("storePosts = " + storePosts.getTitle() + ", popular : " + product.getPopular());
-//            }
+        BundleVIewDto bundle = storePostsQueryService.getBundleViewV3(condition, pageable);
+
+        System.out.println("-- result --");
+        System.out.println("TotalNum : " + bundle.getTotalNum());
+        System.out.println("postNum : " + bundle.getPostsNum());
+        for (StorePostsViewDto viewDto : bundle.getPreviewPosts()) {
+            System.out.println("viewDto = " + viewDto.getTitle() + ", price : " + viewDto.getPrice());
         }
     }
-    @Test
-    void getBundleViewV2(){
 
-    }
 }
