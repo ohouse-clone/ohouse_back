@@ -37,11 +37,11 @@ public class StoreCategoryApiController {
             code = itemCategoryCodeRepository.findByCategory1AndCategory2AndCategory3AndCategory4(Integer.valueOf(s[0]), Integer.valueOf(s[1]), Integer.valueOf(s[2]), Integer.valueOf(s[3]));
         }
 
-        bundle = storeCategoryService.findBundleViewAllOrderByPopular(code, pageable);
+//        bundle = storeCategoryService.findBundleViewAllOrderByPopular(code, pageable);
 
         StorePostsBundleViewResponse response = new StorePostsBundleViewResponse();
-        response.bundleSize = bundle.size();
-        response.bundle = bundle;
+//        response.bundleSize = bundle.size();
+//        response.bundle = bundle;
 
         return response;
     }

@@ -19,6 +19,7 @@ import static com.clone.ohouse.shop.product.domain.entity.QItemCategory.*;
 import static com.clone.ohouse.shop.product.domain.entity.QProduct.*;
 import static com.clone.ohouse.shop.store.domain.entity.QStorePosts.*;
 
+
 @RequiredArgsConstructor
 public class StorePostsRepositoryImpl implements StorePostsRepositoryCustom {
 
@@ -26,18 +27,24 @@ public class StorePostsRepositoryImpl implements StorePostsRepositoryCustom {
 
     @Override
     public List<StorePosts> getBundleViewByCategoryWithConditionV1(Long categoryId, Pageable pageable) {
-    return queryFactory
+//    return queryFactory
+//                .select(storePosts)
+//                .from(storePosts)
+//                .where(storePosts.id.in(
+//                        JPAExpressions
+//                                .select(product.storePosts.id)
+//                                .from(product)
+//                                .join(product.item, item)
+//                                .join(item.itemCategories, itemCategory)
+//                                .where(itemCategory.category.id.eq(categoryId))
+//                                .orderBy(product.popular.asc())
+//                        ))
+//                .offset(pageable.getOffset())
+//                .limit(pageable.getPageSize())
+//                .fetch();
+        return queryFactory
                 .select(storePosts)
                 .from(storePosts)
-                .where(storePosts.id.in(
-                        JPAExpressions
-                                .select(product.storePosts.id)
-                                .from(product)
-                                .join(product.item, item)
-                                .join(item.itemCategories, itemCategory)
-                                .where(itemCategory.category.id.eq(categoryId))
-                                .orderBy(product.popular.asc())
-                        ))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();

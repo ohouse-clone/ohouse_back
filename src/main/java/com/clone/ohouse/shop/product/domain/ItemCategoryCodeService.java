@@ -24,12 +24,12 @@ public class ItemCategoryCodeService {
                 .collect(Collectors.toList());
     }
 
-    @PostConstruct
-    public void postCategoryFurniture(){
-        CategoryBed categoryBed = new CategoryBed(itemCategoryCodeRepository);
-
-        categoryBed.postCategoryBed();
-    }
+//    @PostConstruct
+//    public void postCategoryFurniture(){
+//        CategoryBed categoryBed = new CategoryBed(itemCategoryCodeRepository);
+//
+//        categoryBed.postCategoryBed();
+//    }
 
 
 }
