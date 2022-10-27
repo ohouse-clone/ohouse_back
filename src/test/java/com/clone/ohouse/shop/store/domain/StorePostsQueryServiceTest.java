@@ -10,6 +10,7 @@ import com.clone.ohouse.shop.store.domain.access.StorePostsRepository;
 import com.clone.ohouse.shop.store.domain.access.StorePostsViewDto;
 import com.clone.ohouse.shop.store.domain.dto.BundleVIewDto;
 import com.clone.ohouse.shop.store.domain.entity.StorePosts;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -175,17 +176,26 @@ class StorePostsQueryServiceTest {
 
     @Test
     void getBundleViewV1(){
+        //given
+        int size = 2;
         CategorySearch condition = new CategorySearch(20L, 22L, 20L, 17L);
-        Pageable pageable = PageRequest.of(0, 2);
+        Pageable pageable = PageRequest.of(0, size);
 
+        //when
         BundleVIewDto bundle = storePostsQueryService.getBundleViewV3(condition, pageable);
 
-        System.out.println("-- result --");
-        System.out.println("TotalNum : " + bundle.getTotalNum());
-        System.out.println("postNum : " + bundle.getPostsNum());
-        for (StorePostsViewDto viewDto : bundle.getPreviewPosts()) {
-            System.out.println("viewDto = " + viewDto.getTitle() + ", price : " + viewDto.getPrice());
-        }
+
+        // -- View --
+//        System.out.println("-- result --");
+//        System.out.println("TotalNum : " + bundle.getTotalNum());
+//        System.out.println("postNum : " + bundle.getPostsNum());
+//        for (StorePostsViewDto viewDto : bundle.getPreviewPosts()) {
+//            System.out.println("viewDto = " + viewDto.getTitle() + ", price : " + viewDto.getPrice());
+//        }
+
+        //then
+        Assertions.assertThat(bundle.getPostsNum()).isEqualTo(size);
+        Assertions.assertThat(bundle.getPreviewPosts()).extracting(StorePostsViewDto::getTitle).containsExactly("제목8", "제목6");
     }
 
 }

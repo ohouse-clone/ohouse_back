@@ -84,22 +84,21 @@ public class StorePostsRepositoryImpl implements StorePostsRepositoryCustom {
     @Override
     public BundleVIewDto getBundleViewByCategoryWithConditionV3(Long categoryId, Pageable pageable) {
         //Total Count
-        List<Long> fetch = queryFactory
+        // 성능에 우려가 있지만 현재로선 별 다른 방법이 없음, 일대다 관계에서 groupby 이후에 재 계산될 수 있는 count쿼리가 필요함
+        Long count = queryFactory
                 .select(storePosts.count()).distinct()
                 .from(storePosts)
-                .join(storePosts.productList, product)
-                .join(product.item, item)
-                .join(item.itemCategories, itemCategory)
-//                .where(itemCategory.category.id.eq(categoryId).and(storePosts.isActive.eq(true)).and(storePosts.isDeleted.eq(false)))
-                .where(itemCategory.category.id.eq(categoryId))
-                .groupBy(storePosts.id)
-                .fetch();
-        System.out.println("fetchs = " + fetch.size());
-        System.out.println("fetch1 = " + fetch.get(0));
-        System.out.println("fetch2 = " + fetch.get(1));
-        System.out.println("fetch3 = " + fetch.get(2));
-        System.out.println("fetch4 = " + fetch.get(3));
-        Long count = 0L;
+                .where(storePosts.id.in(
+                        JPAExpressions
+                                .select(product.storePosts.id)
+                                .from(product)
+                                .join(product.item, item)
+                                .join(item.itemCategories, itemCategory)
+                                .where(itemCategory.category.id.eq(categoryId))
+                ))
+                .fetchOne();
+
+
         List<Tuple> tuples = queryFactory
                 .select(storePosts,
                         product.popular.sum()).distinct()
