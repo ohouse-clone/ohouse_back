@@ -41,6 +41,7 @@ public class StorePostsQueryService {
     public BundleVIewDto getBundleViewV3(CategorySearch condition, Pageable pageable){
         Category category = categoryRepository.findCategory(condition);
 
+
         BundleVIewDto result = storePostsRepository.getBundleViewByCategoryWithConditionV3(category.getId(), pageable);
 
         return result;

@@ -3,7 +3,7 @@
 //import com.clone.ohouse.store.domain.item.dto.BedAllListResponseDto;
 //import com.clone.ohouse.store.domain.item.dto.BedSaveRequestDto;
 //import com.clone.ohouse.store.domain.item.dto.BedUpdateRequestDto;
-//import com.clone.ohouse.store.domain.item.Bed;
+//import com.clone.ohouse.store.domain.item.bed.Bed;
 //import org.assertj.core.api.Assertions;
 //import org.junit.jupiter.api.AfterEach;
 //import org.junit.jupiter.api.DisplayName;

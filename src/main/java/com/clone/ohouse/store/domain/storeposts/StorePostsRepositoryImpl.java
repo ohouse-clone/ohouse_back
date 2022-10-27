@@ -1,5 +1,7 @@
 package com.clone.ohouse.store.domain.storeposts;
 
+import com.clone.ohouse.store.domain.item.bed.BedSize;
+import com.clone.ohouse.store.domain.item.bed.QBed;
 import com.clone.ohouse.store.domain.product.Product;
 import com.clone.ohouse.store.domain.storeposts.dto.StorePostsViewDto;
 import com.clone.ohouse.store.domain.storeposts.dto.BundleVIewDto;
@@ -17,9 +19,9 @@ import java.util.Map;
 
 import static com.clone.ohouse.store.domain.category.QItemCategory.itemCategory;
 import static com.clone.ohouse.store.domain.item.QItem.item;
+import static com.clone.ohouse.store.domain.item.bed.QBed.*;
 import static com.clone.ohouse.store.domain.product.QProduct.product;
 import static com.clone.ohouse.store.domain.storeposts.QStorePosts.storePosts;
-
 
 
 @RequiredArgsConstructor
@@ -29,7 +31,7 @@ public class StorePostsRepositoryImpl implements StorePostsRepositoryCustom {
 
     @Override
     public List<StorePosts> getBundleViewByCategoryWithConditionV1(Long categoryId, Pageable pageable) {
-    return queryFactory
+        return queryFactory
                 .select(storePosts)
                 .from(storePosts)
                 .where(storePosts.id.in(
@@ -40,7 +42,7 @@ public class StorePostsRepositoryImpl implements StorePostsRepositoryCustom {
                                 .join(item.itemCategories, itemCategory)
                                 .where(itemCategory.category.id.eq(categoryId))
                                 .orderBy(product.popular.desc())
-                        ))
+                ))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -88,7 +90,10 @@ public class StorePostsRepositoryImpl implements StorePostsRepositoryCustom {
                                 .from(product)
                                 .join(product.item, item)
                                 .join(item.itemCategories, itemCategory)
-                                .where(itemCategory.category.id.eq(categoryId))
+//                                .join(bed).on(bed.eq(item))
+                                .where(itemCategory.category.id.eq(categoryId)
+//                                        .and(bed.size.eq(BedSize.SS))
+                                )
                 ))
                 .fetchOne();
 
@@ -101,8 +106,11 @@ public class StorePostsRepositoryImpl implements StorePostsRepositoryCustom {
                 .join(storePosts.productList, product)
                 .join(product.item, item)
                 .join(item.itemCategories, itemCategory)
+//                .join(bed).on(bed.eq(item))
 //                .where(itemCategory.category.id.eq(categoryId).and(storePosts.isActive.eq(true)).and(storePosts.isDeleted.eq(false)))
-                .where(itemCategory.category.id.eq(categoryId))
+                .where(itemCategory.category.id.eq(categoryId)
+//                        .and(bed.size.eq(BedSize.SS))
+                )
                 .groupBy(storePosts.id)
                 .orderBy(product.popular.sum().desc())
                 .offset(pageable.getOffset())
@@ -118,6 +126,7 @@ public class StorePostsRepositoryImpl implements StorePostsRepositoryCustom {
             System.out.println("product.sum = " + tuple.get(product.popular.sum()).toString());
         }
 
+
         Map<Long, Product> productMap = queryFactory
                 .select(storePosts.id, product)
                 .from(product)
@@ -125,7 +134,6 @@ public class StorePostsRepositoryImpl implements StorePostsRepositoryCustom {
                 .where(storePosts.id.in(postIds))
                 .orderBy(product.id.asc())
                 .transform(GroupBy.groupBy(storePosts.id).as(product));
-
         //combine
         List<StorePostsViewDto> views = new ArrayList<>();
         for (StorePosts post : posts) {

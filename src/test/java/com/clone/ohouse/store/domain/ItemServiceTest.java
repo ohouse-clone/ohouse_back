@@ -1,14 +1,14 @@
 package com.clone.ohouse.store.domain;
 
-import com.clone.ohouse.store.domain.ItemService;
 import com.clone.ohouse.store.domain.category.CategoryRepository;
 import com.clone.ohouse.store.domain.category.CategorySearch;
 import com.clone.ohouse.store.domain.category.ItemCategoryRepository;
 import com.clone.ohouse.store.domain.item.ItemRepository;
-import com.clone.ohouse.store.domain.item.Bed;
+import com.clone.ohouse.store.domain.item.bed.Bed;
 import com.clone.ohouse.store.domain.category.Category;
 import com.clone.ohouse.store.domain.item.Item;
 import com.clone.ohouse.store.domain.category.ItemCategory;
+import com.clone.ohouse.store.domain.item.bed.BedSize;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -94,7 +94,7 @@ class ItemServiceTest {
         //given
         CategorySearch condition = new CategorySearch(20L, 22L, 20L, 17L);
         String name = "나무침대";
-        String size = "BIG";
+        BedSize size = BedSize.CK;
         Bed bed = new Bed(name, "JJH1", "JHCOM", size, "RED");
 
         //when
@@ -117,7 +117,7 @@ class ItemServiceTest {
         //given
         CategorySearch condition = new CategorySearch(20L, 22L, 20L, 17L);
         String name = "나무침대";
-        String size = "BIG";
+        BedSize size = BedSize.MS;
         Bed bed = new Bed(name, "JJH1", "JHCOM", size, "RED");
         Long savedId = itemService.save(bed, condition);
 
