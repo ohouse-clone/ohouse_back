@@ -1,8 +1,4 @@
-//package com.clone.ohouse.shop.product.domain.access;
-//
-//import com.clone.ohouse.shop.product.domain.entity.Bed;
-//import com.clone.ohouse.shop.product.domain.entity.ItemCategoryCode;
-//import com.clone.ohouse.shop.product.domain.entity.Product;
+//package com.clone.ohouse.store.domain.product;
 //import org.assertj.core.api.Assertions;
 //import org.junit.jupiter.api.AfterEach;
 //import org.junit.jupiter.api.BeforeEach;

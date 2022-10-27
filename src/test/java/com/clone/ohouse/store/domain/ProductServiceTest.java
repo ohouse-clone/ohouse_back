@@ -1,14 +1,8 @@
-//package com.clone.ohouse.shop.product.domain;
+//package com.clone.ohouse.store.domain;
 //
-//import com.clone.ohouse.shop.product.domain.access.ItemCategoryCodeRepository;
-//import com.clone.ohouse.shop.product.domain.access.BedRepository;
-//import com.clone.ohouse.shop.product.domain.access.ProductRepository;
-//import com.clone.ohouse.shop.product.domain.dto.ProductSaveRequestDto;
-//import com.clone.ohouse.shop.product.domain.dto.ProductUpdateRequestDto;
-//import com.clone.ohouse.shop.product.domain.entity.Bed;
-//import com.clone.ohouse.shop.product.domain.entity.Item;
-//import com.clone.ohouse.shop.product.domain.entity.ItemCategoryCode;
-//import com.clone.ohouse.shop.product.domain.entity.Product;
+//
+//import com.clone.ohouse.store.domain.item.Item;
+//import com.clone.ohouse.store.domain.product.ProductRepository;
 //import org.junit.jupiter.api.*;
 //import org.junit.jupiter.api.extension.ExtendWith;
 //import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +22,7 @@
 //    private ProductService productService;
 //    @Autowired
 //    private ProductRepository productRepository;
-//    @Autowired
-//    private ItemCategoryCodeRepository itemCategoryCodeRepository;
+//
 //    @Autowired
 //    private BedRepository bedRepository;
 //

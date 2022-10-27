@@ -1,8 +1,14 @@
-package com.clone.ohouse.store.product.domain.access;
+package com.clone.ohouse.store.domain;
 
+import com.clone.ohouse.store.domain.ItemService;
 import com.clone.ohouse.store.domain.category.CategoryRepository;
 import com.clone.ohouse.store.domain.category.CategorySearch;
+import com.clone.ohouse.store.domain.category.ItemCategoryRepository;
+import com.clone.ohouse.store.domain.item.ItemRepository;
+import com.clone.ohouse.store.domain.item.Bed;
 import com.clone.ohouse.store.domain.category.Category;
+import com.clone.ohouse.store.domain.item.Item;
+import com.clone.ohouse.store.domain.category.ItemCategory;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,15 +19,23 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Transactional
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-class CategoryRepositoryImplTest {
+class ItemServiceTest {
     @Autowired
-    private CategoryRepository categoryRepository;
+    CategoryRepository categoryRepository;
+    @Autowired
+    ItemCategoryRepository itemCategoryRepository;
+    @Autowired
+    ItemRepository itemRepository;
+    @Autowired
+    ItemService itemService;
 
     @BeforeEach
-    void beforeEach(){
+    void setup(){
         Category c1 = new Category("가구",20L);
         Category c2 = new Category("침대",22L);
         c2.addParent(c1);
@@ -69,45 +83,51 @@ class CategoryRepositoryImplTest {
         categoryRepository.save(c15);
     }
     @AfterEach
-    public void clean(){
+    void clean(){
+        itemCategoryRepository.deleteAll();
+        itemRepository.deleteAll();
         categoryRepository.deleteAll();
     }
 
-
     @Test
-    void findCategoryWithSingleCondition(){
-        CategorySearch condition = new CategorySearch(20L, null, null, null);
-        Category findCategory = categoryRepository.findCategory(condition);
-
-        Assertions.assertThat(findCategory.getCode()).isEqualTo(20L);
-        Assertions.assertThat(findCategory.getName()).isEqualTo("가구");
-    }
-
-    @Test
-    void findCategoryWithSDoubleCondition(){
-        CategorySearch condition = new CategorySearch(20L, 22L, null, null);
-        Category findCategory = categoryRepository.findCategory(condition);
-
-        Assertions.assertThat(findCategory.getCode()).isEqualTo(22L);
-        Assertions.assertThat(findCategory.getName()).isEqualTo("침대");
-    }
-
-    @Test
-    void findCategoryWithThreeCondition(){
-        CategorySearch condition = new CategorySearch(20L, 22L, 21L, null);
-        Category findCategory = categoryRepository.findCategory(condition);
-
-        Assertions.assertThat(findCategory.getCode()).isEqualTo(21L);
-        Assertions.assertThat(findCategory.getName()).isEqualTo("침대+메트릭스");
-    }
-
-    @Test
-    void findCategoryWithFourCondition(){
+    void save() throws Exception{
+        //given
         CategorySearch condition = new CategorySearch(20L, 22L, 20L, 17L);
-        Category findCategory = categoryRepository.findCategory(condition);
+        String name = "나무침대";
+        String size = "BIG";
+        Bed bed = new Bed(name, "JJH1", "JHCOM", size, "RED");
 
-        Assertions.assertThat(findCategory.getCode()).isEqualTo(17L);
-        Assertions.assertThat(findCategory.getName()).isEqualTo("저상형침대");
+        //when
+        Long savedId = itemService.save(bed, condition);
+
+        //then
+        Item savedItem = itemRepository.findById(savedId).get();
+
+        List<ItemCategory> byItem = itemCategoryRepository.findByItem(savedItem);
+
+        for (ItemCategory itemCategory : byItem)
+            Assertions.assertThat(savedItem.getItemCategories()).extracting(ItemCategory::getId).contains(itemCategory.getId());
+        Assertions.assertThat(savedItem.getItemCategories().size()).isEqualTo(Category.CATEGORY_SIZE);
+        Assertions.assertThat(savedItem.getName()).isEqualTo(name);
+        Assertions.assertThat(((Bed)savedItem).getSize()).isEqualTo(size);
+    }
+
+    @Test
+    void delete() throws Exception {
+        //given
+        CategorySearch condition = new CategorySearch(20L, 22L, 20L, 17L);
+        String name = "나무침대";
+        String size = "BIG";
+        Bed bed = new Bed(name, "JJH1", "JHCOM", size, "RED");
+        Long savedId = itemService.save(bed, condition);
+
+        //when
+        Item savedItem = itemRepository.findById(savedId).get();
+        itemService.delete(savedItem);
+
+        //then
+        Assertions.assertThat(itemRepository.count()).isEqualTo(0);
+        Assertions.assertThat(itemCategoryRepository.count()).isEqualTo(0);
     }
 
 }

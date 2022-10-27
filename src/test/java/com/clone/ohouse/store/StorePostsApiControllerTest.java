@@ -1,4 +1,4 @@
-package com.clone.ohouse.store.store;
+package com.clone.ohouse.store;
 
 import com.clone.ohouse.store.domain.StorePostsService;
 import com.clone.ohouse.store.domain.storeposts.StorePostsRepository;

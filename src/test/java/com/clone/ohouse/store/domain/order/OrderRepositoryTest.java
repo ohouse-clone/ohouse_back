@@ -1,4 +1,4 @@
-package com.clone.ohouse.store.order.domain.access;
+package com.clone.ohouse.store.domain.order;
 
 import com.clone.ohouse.store.domain.order.OrderRepository;
 import com.clone.ohouse.store.domain.order.Order;
