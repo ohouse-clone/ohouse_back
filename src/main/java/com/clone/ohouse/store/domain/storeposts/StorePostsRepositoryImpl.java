@@ -8,6 +8,7 @@ import com.clone.ohouse.store.domain.storeposts.dto.BundleVIewDto;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.group.GroupBy;
 import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.clone.ohouse.store.domain.category.QItemCategory.itemCategory;
 import static com.clone.ohouse.store.domain.item.QItem.item;
@@ -78,10 +80,13 @@ public class StorePostsRepositoryImpl implements StorePostsRepositoryCustom {
     }
 
     @Override
-    public BundleVIewDto getBundleViewByCategoryWithConditionV3(Long categoryId, Pageable pageable) {
+    public BundleVIewDto getBundleViewByCategoryWithConditionV3(Long categoryId, Pageable pageable, Optional<Class> type) {
+
+
         //Total Count
         // 성능에 우려가 있지만 현재로선 별 다른 방법이 없음, 일대다 관계에서 groupby 이후에 재 계산될 수 있는 count쿼리가 필요함
-        Long count = queryFactory
+        Long count =
+                queryFactory
                 .select(storePosts.count()).distinct()
                 .from(storePosts)
                 .where(storePosts.id.in(
@@ -97,22 +102,23 @@ public class StorePostsRepositoryImpl implements StorePostsRepositoryCustom {
                 ))
                 .fetchOne();
 
+        getPostsQuery();
 
         List<Tuple> tuples = queryFactory
                 .select(storePosts,
                         product.popular.sum()).distinct()
-                .offset(0)
                 .from(storePosts)
                 .join(storePosts.productList, product)
                 .join(product.item, item)
                 .join(item.itemCategories, itemCategory)
+                .groupBy(storePosts.id)
+                .orderBy(product.popular.sum().desc())
 //                .join(bed).on(bed.eq(item))
 //                .where(itemCategory.category.id.eq(categoryId).and(storePosts.isActive.eq(true)).and(storePosts.isDeleted.eq(false)))
                 .where(itemCategory.category.id.eq(categoryId)
 //                        .and(bed.size.eq(BedSize.SS))
                 )
-                .groupBy(storePosts.id)
-                .orderBy(product.popular.sum().desc())
+
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -145,4 +151,18 @@ public class StorePostsRepositoryImpl implements StorePostsRepositoryCustom {
 
         return result;
     }
+
+    private JPAQuery<Tuple> getPostsQuery() {
+        return queryFactory
+                .select(storePosts,
+                        product.popular.sum()).distinct()
+                .from(storePosts)
+                .join(storePosts.productList, product)
+                .join(product.item, item)
+                .join(item.itemCategories, itemCategory)
+                .groupBy(storePosts.id)
+                .orderBy(product.popular.sum().desc());
+    }
+
+
 }

@@ -3,6 +3,8 @@ package com.clone.ohouse.store.domain;
 import com.clone.ohouse.store.domain.category.CategoryRepository;
 import com.clone.ohouse.store.domain.category.CategorySearch;
 import com.clone.ohouse.store.domain.category.Category;
+import com.clone.ohouse.store.domain.item.Item;
+import com.clone.ohouse.store.domain.item.itemselector.ItemSelector;
 import com.clone.ohouse.store.domain.storeposts.StorePostsRepository;
 import com.clone.ohouse.store.domain.storeposts.dto.BundleVIewDto;
 import com.clone.ohouse.store.domain.storeposts.StorePosts;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @RequiredArgsConstructor
@@ -38,11 +41,12 @@ public class StorePostsQueryService {
     }
 
     @Transactional
-    public BundleVIewDto getBundleViewV3(CategorySearch condition, Pageable pageable){
+    public BundleVIewDto getBundleViewV3(CategorySearch condition, Pageable pageable) throws Exception{
         Category category = categoryRepository.findCategory(condition);
+        Optional<Class> type = new ItemSelector().selectTypeFrom(category.getName());
 
 
-        BundleVIewDto result = storePostsRepository.getBundleViewByCategoryWithConditionV3(category.getId(), pageable);
+        BundleVIewDto result = storePostsRepository.getBundleViewByCategoryWithConditionV3(category.getId(), pageable, type);
 
         return result;
     }
