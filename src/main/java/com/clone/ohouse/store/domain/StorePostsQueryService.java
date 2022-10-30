@@ -4,6 +4,7 @@ import com.clone.ohouse.store.domain.category.CategoryRepository;
 import com.clone.ohouse.store.domain.category.CategorySearch;
 import com.clone.ohouse.store.domain.category.Category;
 import com.clone.ohouse.store.domain.item.Item;
+import com.clone.ohouse.store.domain.item.ItemSearchCondition;
 import com.clone.ohouse.store.domain.item.itemselector.ItemSelector;
 import com.clone.ohouse.store.domain.storeposts.StorePostsRepository;
 import com.clone.ohouse.store.domain.storeposts.dto.BundleVIewDto;
@@ -41,12 +42,11 @@ public class StorePostsQueryService {
     }
 
     @Transactional
-    public BundleVIewDto getBundleViewV3(CategorySearch condition, Pageable pageable) throws Exception{
+    public BundleVIewDto getBundleViewV3(CategorySearch condition, Pageable pageable, ItemSearchCondition itemSearchCondition) throws Exception{
         Category category = categoryRepository.findCategory(condition);
         Optional<Class> type = new ItemSelector().selectTypeFrom(category.getName());
 
-
-        BundleVIewDto result = storePostsRepository.getBundleViewByCategoryWithConditionV3(category.getId(), pageable, type);
+        BundleVIewDto result = storePostsRepository.getBundleViewByCategoryWithConditionV3(category.getId(), pageable, type, itemSearchCondition);
 
         return result;
     }

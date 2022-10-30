@@ -8,6 +8,7 @@ import com.clone.ohouse.store.domain.item.bed.Bed;
 import com.clone.ohouse.store.domain.category.Category;
 import com.clone.ohouse.store.domain.item.Item;
 import com.clone.ohouse.store.domain.category.ItemCategory;
+import com.clone.ohouse.store.domain.item.bed.BedColor;
 import com.clone.ohouse.store.domain.item.bed.BedSize;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
@@ -95,7 +96,8 @@ class ItemServiceTest {
         CategorySearch condition = new CategorySearch(20L, 22L, 20L, 17L);
         String name = "나무침대";
         BedSize size = BedSize.CK;
-        Bed bed = new Bed(name, "JJH1", "JHCOM", size, "RED");
+        BedColor color = BedColor.WHITE;
+        Bed bed = new Bed(name, "JJH1", "JHCOM", size, color);
 
         //when
         Long savedId = itemService.save(bed, condition);
@@ -118,7 +120,8 @@ class ItemServiceTest {
         CategorySearch condition = new CategorySearch(20L, 22L, 20L, 17L);
         String name = "나무침대";
         BedSize size = BedSize.MS;
-        Bed bed = new Bed(name, "JJH1", "JHCOM", size, "RED");
+        BedColor color = BedColor.WHITE;
+        Bed bed = new Bed(name, "JJH1", "JHCOM", size, color);
         Long savedId = itemService.save(bed, condition);
 
         //when

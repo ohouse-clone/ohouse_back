@@ -4,9 +4,9 @@ import com.clone.ohouse.store.domain.category.CategoryRepository;
 import com.clone.ohouse.store.domain.category.CategorySearch;
 import com.clone.ohouse.store.domain.category.ItemCategoryRepository;
 import com.clone.ohouse.store.domain.item.ItemRepository;
-import com.clone.ohouse.store.domain.item.bed.BedSize;
+import com.clone.ohouse.store.domain.item.ItemSearchCondition;
+import com.clone.ohouse.store.domain.item.bed.*;
 import com.clone.ohouse.store.domain.product.ProductRepository;
-import com.clone.ohouse.store.domain.item.bed.Bed;
 import com.clone.ohouse.store.domain.category.Category;
 import com.clone.ohouse.store.domain.item.Item;
 import com.clone.ohouse.store.domain.product.Product;
@@ -54,11 +54,11 @@ class StorePostsQueryServiceTest {
         c2.addParent(c1);
         Category c3 = new Category("침대프레임",20L);
         c3.addParent(c2);
-        Category c4 = new Category("일반침대",19L);
+        Category c4 = new Category("일반침대",20L);
         c4.addParent(c3);
-        Category c5 = new Category("수납침대",18L);
+        Category c5 = new Category("수납침대",21L);
         c5.addParent(c3);
-        Category c6 = new Category("저상형침대",17L);
+        Category c6 = new Category("저상형침대",22L);
         c6.addParent(c3);
 
         categoryRepository.save(c1);
@@ -68,17 +68,17 @@ class StorePostsQueryServiceTest {
         categoryRepository.save(c5);
         categoryRepository.save(c6);
 
-        CategorySearch condition1 = new CategorySearch(20L, 22L, 20L, 19L);
-        Item item1 = new Bed("나무침대1", "MJH", "JHH", BedSize.K, "RED");
-        Item item2 = new Bed("나무침대2", "MJH", "JHH", BedSize.K, "RED");
-        Item item3 = new Bed("나무침대3", "MJH", "JHH", BedSize.K, "RED");
-        Item item4 = new Bed("나무침대4", "MJH", "JHH", BedSize.K, "RED");
+        CategorySearch condition1 = new CategorySearch(20L, 22L, 20L, 20L);
+        Item item1 = new Bed("나무침대1", "MJH", "JHH", BedSize.K, BedColor.WHITE);
+        Item item2 = new Bed("나무침대2", "MJH", "JHH", BedSize.K, BedColor.RED);
+        Item item3 = new Bed("나무침대3", "MJH", "JHH", BedSize.K, BedColor.BLUE);
+        Item item4 = new Bed("나무침대4", "MJH", "JHH", BedSize.K, BedColor.WHITE);
 
-        CategorySearch condition2 = new CategorySearch(20L, 22L, 20L, 17L);
-        Item item5 = new Bed("불편한침대5", "MJH", "JHH", BedSize.K, "RED");
-        Item item6 = new Bed("불편한침대6", "MJH", "JHH", BedSize.LK, "RED");
-        Item item7 = new Bed("불편한침대7", "MJH", "JHH", BedSize.SS, "RED");
-        Item item8 = new Bed("불편한침대8", "MJH", "JHH", BedSize.K, "RED");
+        CategorySearch condition2 = new CategorySearch(20L, 22L, 20L, 21L);
+        Item item5 = new Bed("불편한침대5", "MJH", "JHH", BedSize.K, BedColor.WHITE);
+        Item item6 = new Bed("불편한침대6", "MJH", "JHH", BedSize.LK, BedColor.WHITE);
+        Item item7 = new Bed("불편한침대7", "MJH", "JHH", BedSize.SS, BedColor.WHITE);
+        Item item8 = new Bed("불편한침대8", "MJH", "JHH", BedSize.K, BedColor.WHITE);
 
         itemService.save(item1, condition1);
         itemService.save(item2, condition1);
@@ -176,18 +176,19 @@ class StorePostsQueryServiceTest {
     }
 
     @Test
-    void getBundleViewWithFullCategory(){
+    void getBundleViewWithFullCategory() throws Exception{
         //given
         int size = 2;
-        CategorySearch condition = new CategorySearch(20L, 22L, 20L, 17L);
+        CategorySearch condition = new CategorySearch(20L, 22L, 20L, 21L);
         Pageable pageable = PageRequest.of(0, size);
+        ItemSearchCondition itemSearchCondition = new StorageBedCondition();
+        itemSearchCondition.itemName = "가방!";
 
         //when
-        BundleVIewDto bundle = storePostsQueryService.getBundleViewV3(condition, pageable);
+        BundleVIewDto bundle = storePostsQueryService.getBundleViewV3(condition, pageable, itemSearchCondition);
 
 ////         -- View --
 //        System.out.println("-- result --");
-//        System.out.println("TotalNum : " + bundle.getTotalNum());
 //        System.out.println("postNum : " + bundle.getPostsNum());
 //        for (StorePostsViewDto viewDto : bundle.getPreviewPosts()) {
 //            System.out.println("viewDto = " + viewDto.getTitle() + ", price : " + viewDto.getPrice());
@@ -198,14 +199,15 @@ class StorePostsQueryServiceTest {
         Assertions.assertThat(bundle.getPreviewPosts()).extracting(StorePostsViewDto::getTitle).containsExactly("제목8", "제목6");
     }
     @Test
-    void getBundleViewWithThreeCategory(){
+    void getBundleViewWithThreeCategory() throws Exception{
         //given
         int size = 4;
         CategorySearch condition = new CategorySearch(20L, 22L, 20L, null);
         Pageable pageable = PageRequest.of(0, size);
+        BedSearchCondition bedSearchCondition = new BedSearchCondition();
 
         //when
-        BundleVIewDto bundle = storePostsQueryService.getBundleViewV3(condition, pageable);
+        BundleVIewDto bundle = storePostsQueryService.getBundleViewV3(condition, pageable, bedSearchCondition);
 
 //         -- View --
 //        `System.out.println("-- result --");
@@ -219,4 +221,30 @@ class StorePostsQueryServiceTest {
         Assertions.assertThat(bundle.getPostsNum()).isEqualTo(size);
         Assertions.assertThat(bundle.getPreviewPosts()).extracting(StorePostsViewDto::getTitle).containsExactly("제목8", "제목6", "제목3", "제목4");
     }
+
+    @Test
+    void getBundleViewWithBedCondition() throws Exception{
+//given
+        int size = 2;
+        CategorySearch condition = new CategorySearch(20L, 22L, 20L, 20L);
+        Pageable pageable = PageRequest.of(0, size);
+        BedSearchCondition itemSearchCondition = new BedSearchCondition();
+        itemSearchCondition.bedColor[0] = BedColor.RED;
+        itemSearchCondition.bedColor[1] = BedColor.BLUE;
+
+        //when
+        BundleVIewDto bundle = storePostsQueryService.getBundleViewV3(condition, pageable, itemSearchCondition);
+
+//         -- View --
+//        System.out.println("-- result --");
+//        System.out.println("postNum : " + bundle.getPostsNum());
+//        for (StorePostsViewDto viewDto : bundle.getPreviewPosts()) {
+//            System.out.println("viewDto = " + viewDto.getTitle() + ", price : " + viewDto.getPrice());
+//        }
+
+        //then
+        Assertions.assertThat(bundle.getPostsNum()).isEqualTo(size);
+        Assertions.assertThat(bundle.getPreviewPosts()).extracting(StorePostsViewDto::getTitle).containsExactly("제목3", "제목2");
+    }
+
 }

@@ -16,19 +16,19 @@ import javax.persistence.Enumerated;
 public class Bed extends Item {
     @Enumerated(value = EnumType.STRING)
     private BedSize size;
-    @Column(length = 30)
-    private String color;
+    @Enumerated(value = EnumType.STRING)
+    private BedColor color;
 
 
     @Builder
-    public Bed(String name, String modelName, String brandName, BedSize size, String color) {
+    public Bed(String name, String modelName, String brandName, BedSize size, BedColor color) {
         super(name, modelName, brandName);
 
         this.size = size;
         this.color = color;
     }
 
-    public void update(String name, String modelName, String brandName, BedSize size, String color) {
+    public void update(String name, String modelName, String brandName, BedSize size, BedColor color) {
         super.update(name, modelName, brandName);
         if (size != null) this.size = size;
         if (color != null) this.color = color;

@@ -1,12 +1,13 @@
 package com.clone.ohouse.store.domain.storeposts;
 
-import com.clone.ohouse.store.domain.item.bed.BedSize;
-import com.clone.ohouse.store.domain.item.bed.QBed;
+import com.clone.ohouse.store.domain.item.ItemSearchCondition;
+import com.clone.ohouse.store.domain.item.bed.*;
 import com.clone.ohouse.store.domain.product.Product;
 import com.clone.ohouse.store.domain.storeposts.dto.StorePostsViewDto;
 import com.clone.ohouse.store.domain.storeposts.dto.BundleVIewDto;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.group.GroupBy;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -80,8 +81,8 @@ public class StorePostsRepositoryImpl implements StorePostsRepositoryCustom {
     }
 
     @Override
-    public BundleVIewDto getBundleViewByCategoryWithConditionV3(Long categoryId, Pageable pageable, Optional<Class> type) {
-
+    public BundleVIewDto getBundleViewByCategoryWithConditionV3(Long categoryId, Pageable pageable, Optional<Class> type, ItemSearchCondition condition) {
+        //validateCondition(condition, type);
 
         //Total Count
         // 성능에 우려가 있지만 현재로선 별 다른 방법이 없음, 일대다 관계에서 groupby 이후에 재 계산될 수 있는 count쿼리가 필요함
@@ -102,9 +103,22 @@ public class StorePostsRepositoryImpl implements StorePostsRepositoryCustom {
                 ))
                 .fetchOne();
 
-        getPostsQuery();
+//        JPAQuery<Tuple> bundleQuery = queryFactory
+//                .select(storePosts,
+//                        product.popular.sum()).distinct()
+//                .from(storePosts)
+//                .offset(pageable.getOffset())
+//                .limit(pageable.getPageSize())
+//                .groupBy(storePosts.id)
+//                .orderBy(product.popular.sum().desc())
+//                .join(storePosts.productList, product)
+//                .join(product.item, item)
+//                .join(item.itemCategories, itemCategory);
+//                .where(itemCategory.category.id.eq(categoryId)
+////                        .and(bed.size.eq(BedSize.SS))
+//                )
 
-        List<Tuple> tuples = queryFactory
+        JPAQuery<Tuple> postQuery = queryFactory
                 .select(storePosts,
                         product.popular.sum()).distinct()
                 .from(storePosts)
@@ -113,15 +127,10 @@ public class StorePostsRepositoryImpl implements StorePostsRepositoryCustom {
                 .join(item.itemCategories, itemCategory)
                 .groupBy(storePosts.id)
                 .orderBy(product.popular.sum().desc())
-//                .join(bed).on(bed.eq(item))
-//                .where(itemCategory.category.id.eq(categoryId).and(storePosts.isActive.eq(true)).and(storePosts.isDeleted.eq(false)))
-                .where(itemCategory.category.id.eq(categoryId)
-//                        .and(bed.size.eq(BedSize.SS))
-                )
-
                 .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
+                .limit(pageable.getPageSize());
+
+        List<Tuple> tuples = addQueryByType(postQuery, categoryId, condition, type).fetch();
 
         List<StorePosts> posts = new ArrayList<>();
         List<Long> postIds = new ArrayList<>();
@@ -151,18 +160,23 @@ public class StorePostsRepositoryImpl implements StorePostsRepositoryCustom {
 
         return result;
     }
+    private JPAQuery<Tuple> addQueryByType(JPAQuery<Tuple> prevQuery, Long categoryId ,ItemSearchCondition condition, Optional<Class> type){
+        if(type.isEmpty()) return prevQuery.where(eqAll(categoryId, null));
+        Class classType = type.get();
+        Class conditionType = condition.getClass();
+        if(classType == Bed.class && conditionType == BedSearchCondition.class){
+            prevQuery.join(bed).on(bed.eq(item))
+                            .where(eqAll(categoryId, ((BedSearchCondition) condition).eqBedCondition()));
+        }
+        else if(classType == StorageBed.class && conditionType == StorageBedCondition.class) {
+        }
 
-    private JPAQuery<Tuple> getPostsQuery() {
-        return queryFactory
-                .select(storePosts,
-                        product.popular.sum()).distinct()
-                .from(storePosts)
-                .join(storePosts.productList, product)
-                .join(product.item, item)
-                .join(item.itemCategories, itemCategory)
-                .groupBy(storePosts.id)
-                .orderBy(product.popular.sum().desc());
+
+        return prevQuery;
     }
 
+    private BooleanExpression eqAll(Long categoryId ,BooleanExpression expr){
+        return itemCategory.category.id.eq(categoryId).and(expr);
+    }
 
 }

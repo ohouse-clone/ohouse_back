@@ -15,8 +15,8 @@ public class ItemSelector {
     private final String storageBed = "수납침대";
 
     public Optional<Class> selectTypeFrom(String categoryName) throws Exception{
-        if(normalBed.equals(categoryName)) return Optional.of(Class.forName("Bed"));
-        else if(storageBed.equals(categoryName)) return Optional.of(Class.forName("StorageBed"));
+        if(normalBed.equals(categoryName)) return Optional.of(Class.forName("com.clone.ohouse.store.domain.item.bed.Bed"));
+        else if(storageBed.equals(categoryName)) return Optional.of(Class.forName("com.clone.ohouse.store.domain.item.bed.StorageBed"));
 
         return Optional.empty();
     }
