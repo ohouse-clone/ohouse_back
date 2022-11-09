@@ -140,15 +140,14 @@ public class StorePostsRepositoryImpl implements StorePostsRepositoryCustom {
         if(classType == Bed.class && conditionType == BedSearchCondition.class){
             prevQuery.join(bed).on(bed.eq(item))
                             .where(eqAll(categoryId, ((BedSearchCondition) condition).eqBedCondition()));
-            System.out.println("!!Bed");
+
         }
         else if(classType == StorageBed.class && conditionType == StorageBedCondition.class) {
             prevQuery.join(storageBed).on(storageBed.eq(item))
                     .where(eqAll(categoryId, ((StorageBedCondition) condition).eqStorageBedCondition()));
-            System.out.println("!!StorageBed");
-            if(((StorageBedCondition) condition).eqStorageBedCondition() == null) System.out.println("!!NULL");
+
         }
-        System.out.println("!!Fin");
+
 
         return prevQuery;
     }

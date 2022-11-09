@@ -4,6 +4,11 @@ import com.clone.ohouse.store.domain.StorePostsQueryService;
 import com.clone.ohouse.store.domain.category.Category;
 import com.clone.ohouse.store.domain.category.CategoryRepository;
 import com.clone.ohouse.store.domain.category.CategorySearch;
+import com.clone.ohouse.store.domain.item.ItemSearchCondition;
+import com.clone.ohouse.store.domain.item.bed.Bed;
+import com.clone.ohouse.store.domain.item.bed.BedColor;
+import com.clone.ohouse.store.domain.item.bed.BedSearchCondition;
+import com.clone.ohouse.store.domain.item.bed.StorageBed;
 import com.clone.ohouse.store.domain.item.itemselector.ItemSelector;
 import com.clone.ohouse.store.domain.storeposts.dto.BundleVIewDto;
 import lombok.RequiredArgsConstructor;
@@ -13,8 +18,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
@@ -30,9 +37,27 @@ public class StorePostsQueryController {
         CategorySearch categorySearch = parseCategoryString(categories);
 
         Category category = categoryRepository.findCategory(categorySearch);
+        if(category == null) return null;
+
         Optional<Class> type = new ItemSelector().selectTypeFrom(category.getName());
         Class classType = type.get();
-        if(classType == )
+        ItemSearchCondition condition;
+        if(classType == Bed.class){
+            condition = new BedSearchCondition();
+            ArrayList<BedColor> bedColors = paramMap.get("bedcolor").stream().map(t -> (BedColor) t).distinct().collect(Collectors.toCollection(ArrayList<BedColor>::new));
+
+            int last = 0;
+
+            for(int l = 0; l < bedColors.size(); ++l)
+                ((BedSearchCondition) condition).bedColor[l] = bedColors.get(l);
+
+
+
+
+        }
+        else if(classType == StorageBed.class){
+
+        }
 
 
         storePostsQueryService.getBundleViewV3(categorySearch, pageable, )
