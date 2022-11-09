@@ -252,7 +252,7 @@ class StorePostsQueryServiceTest {
         Assertions.assertThat(bundle.getTotalNum()).isEqualTo(2);
     }
     @Test
-    void getBundleViewWithStroageBedCondition() throws Exception{
+    void getBundleViewWithStorageBedCondition() throws Exception{
 //given
         int size = 4;
         CategorySearch condition = new CategorySearch(20L, 22L, 20L, 21L);
