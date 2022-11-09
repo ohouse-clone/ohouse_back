@@ -75,10 +75,10 @@ class StorePostsQueryServiceTest {
         Item item4 = new Bed("나무침대4", "MJH", "JHH", BedSize.K, BedColor.WHITE);
 
         CategorySearch condition2 = new CategorySearch(20L, 22L, 20L, 21L);
-        Item item5 = new Bed("불편한침대5", "MJH", "JHH", BedSize.K, BedColor.WHITE);
-        Item item6 = new Bed("불편한침대6", "MJH", "JHH", BedSize.LK, BedColor.WHITE);
-        Item item7 = new Bed("불편한침대7", "MJH", "JHH", BedSize.SS, BedColor.WHITE);
-        Item item8 = new Bed("불편한침대8", "MJH", "JHH", BedSize.K, BedColor.WHITE);
+        Item item5 = new StorageBed("불편한침대5", "MJH", "JHH", Material.FAKE_LEATHER);
+        Item item6 = new StorageBed("불편한침대6", "MJH", "JHH", Material.FAKE_LEATHER);
+        Item item7 = new StorageBed("불편한침대7", "MJH", "JHH", Material.FAKE_LEATHER);
+        Item item8 = new StorageBed("불편한침대8", "MJH", "JHH", Material.STEEL);
 
         itemService.save(item1, condition1);
         itemService.save(item2, condition1);
@@ -179,13 +179,14 @@ class StorePostsQueryServiceTest {
     void getBundleViewWithFullCategory() throws Exception{
         //given
         int size = 2;
-        CategorySearch condition = new CategorySearch(20L, 22L, 20L, 21L);
+        CategorySearch categoryCondition = new CategorySearch(20L, 22L, 20L, 20L);
         Pageable pageable = PageRequest.of(0, size);
-        ItemSearchCondition itemSearchCondition = new StorageBedCondition();
-        itemSearchCondition.itemName = "가방!";
+        ItemSearchCondition itemCondition = new StorageBedCondition();
+        itemCondition.itemName = "가방!";
+
 
         //when
-        BundleVIewDto bundle = storePostsQueryService.getBundleViewV3(condition, pageable, itemSearchCondition);
+        BundleVIewDto bundle = storePostsQueryService.getBundleViewV3(categoryCondition, pageable, itemCondition);
 
 ////         -- View --
 //        System.out.println("-- result --");
@@ -193,10 +194,13 @@ class StorePostsQueryServiceTest {
 //        for (StorePostsViewDto viewDto : bundle.getPreviewPosts()) {
 //            System.out.println("viewDto = " + viewDto.getTitle() + ", price : " + viewDto.getPrice());
 //        }
+//        System.out.println("totalNum : " + bundle.getTotalNum());
 
         //then
+        //itemCondition is not matched with categoryCondition. so result must get all with categoryId
         Assertions.assertThat(bundle.getPostsNum()).isEqualTo(size);
         Assertions.assertThat(bundle.getPreviewPosts()).extracting(StorePostsViewDto::getTitle).containsExactly("제목8", "제목6");
+        Assertions.assertThat(bundle.getTotalNum()).isEqualTo(8);
     }
     @Test
     void getBundleViewWithThreeCategory() throws Exception{
@@ -225,7 +229,7 @@ class StorePostsQueryServiceTest {
     @Test
     void getBundleViewWithBedCondition() throws Exception{
 //given
-        int size = 2;
+        int size = 4;
         CategorySearch condition = new CategorySearch(20L, 22L, 20L, 20L);
         Pageable pageable = PageRequest.of(0, size);
         BedSearchCondition itemSearchCondition = new BedSearchCondition();
@@ -235,6 +239,31 @@ class StorePostsQueryServiceTest {
         //when
         BundleVIewDto bundle = storePostsQueryService.getBundleViewV3(condition, pageable, itemSearchCondition);
 
+////         -- View --
+//        System.out.println("-- result --");
+//        System.out.println("postNum : " + bundle.getPostsNum());
+//        for (StorePostsViewDto viewDto : bundle.getPreviewPosts()) {
+//            System.out.println("viewDto = " + viewDto.getTitle() + ", price : " + viewDto.getPrice());
+//        }
+
+        //then
+        Assertions.assertThat(bundle.getPostsNum()).isEqualTo(2);
+        Assertions.assertThat(bundle.getPreviewPosts()).extracting(StorePostsViewDto::getTitle).containsExactly("제목3", "제목2");
+        Assertions.assertThat(bundle.getTotalNum()).isEqualTo(2);
+    }
+    @Test
+    void getBundleViewWithStroageBedCondition() throws Exception{
+//given
+        int size = 4;
+        CategorySearch condition = new CategorySearch(20L, 22L, 20L, 21L);
+        Pageable pageable = PageRequest.of(0, size);
+        StorageBedCondition itemCondition = new StorageBedCondition();
+        itemCondition.material[0] = Material.STEEL;
+
+
+        //when
+        BundleVIewDto bundle = storePostsQueryService.getBundleViewV3(condition, pageable, itemCondition);
+
 //         -- View --
 //        System.out.println("-- result --");
 //        System.out.println("postNum : " + bundle.getPostsNum());
@@ -243,8 +272,8 @@ class StorePostsQueryServiceTest {
 //        }
 
         //then
-        Assertions.assertThat(bundle.getPostsNum()).isEqualTo(size);
-        Assertions.assertThat(bundle.getPreviewPosts()).extracting(StorePostsViewDto::getTitle).containsExactly("제목3", "제목2");
+        Assertions.assertThat(bundle.getPostsNum()).isEqualTo(1);
+        Assertions.assertThat(bundle.getPreviewPosts()).extracting(StorePostsViewDto::getTitle).containsExactly("제목8");
+        Assertions.assertThat(bundle.getTotalNum()).isEqualTo(1);
     }
-
 }
