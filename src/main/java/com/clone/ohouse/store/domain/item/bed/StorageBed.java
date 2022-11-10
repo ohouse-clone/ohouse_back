@@ -1,12 +1,16 @@
 package com.clone.ohouse.store.domain.item.bed;
 
 import com.clone.ohouse.store.domain.item.Item;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.web.bind.annotation.MatrixVariable;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
+@NoArgsConstructor
+@Getter
 @Entity
 public class StorageBed extends Item {
     @Enumerated(value = EnumType.STRING)

@@ -14,6 +14,7 @@ import com.clone.ohouse.store.domain.storeposts.dto.BundleVIewDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,10 +28,10 @@ import java.util.stream.Collectors;
 @RestController
 public class StorePostsQueryController {
 
-    private StorePostsQueryService storePostsQueryService;
-    private CategoryRepository categoryRepository;
+    private final StorePostsQueryService storePostsQueryService;
+    private final CategoryRepository categoryRepository;
 
-    @PostMapping("/store/category")
+    @GetMapping("/store/category")
     public BundleVIewDto getBundleView(@RequestParam MultiValueMap<String, Object> paramMap, Pageable pageable) throws Exception{
         List<Object> categories = paramMap.get("category");
         if(categories.size() <= 0) return null;
@@ -43,8 +44,9 @@ public class StorePostsQueryController {
         Class classType = type.get();
         ItemSearchCondition condition = null;
         if(classType == Bed.class){
+            System.out.println("Call Bed");
             condition = new BedSearchCondition();
-            ArrayList<BedColor> bedColors = paramMap.get("bedcolor").stream().map(t -> (BedColor) t).distinct().collect(Collectors.toCollection(ArrayList<BedColor>::new));
+            ArrayList<BedColor> bedColors = paramMap.get("bedcolor").stream().map(t -> (BedColor)t)).distinct().collect(Collectors.toCollection(ArrayList<BedColor>::new));
 
             int last = 0;
 
@@ -53,9 +55,10 @@ public class StorePostsQueryController {
 
         }
         else if(classType == StorageBed.class){
-
+            System.out.println("Call StorageBed");
         }
         else {
+            System.out.println("Call else");
             condition = new ItemSearchCondition();
         }
 
@@ -68,10 +71,12 @@ public class StorePostsQueryController {
         String categoryCodes = (String) category.get(0);
         String[] s = categoryCodes.split("_");
 
-        if(s.length >= 1) categorySearch.setCode4(Long.parseLong(s[0]));
-        if(s.length >= 2) categorySearch.setCode4(Long.parseLong(s[1]));
-        if(s.length >= 3) categorySearch.setCode4(Long.parseLong(s[2]));
+        if(s.length >= 1) categorySearch.setCode1(Long.parseLong(s[0]));
+        if(s.length >= 2) categorySearch.setCode2(Long.parseLong(s[1]));
+        if(s.length >= 3) categorySearch.setCode3(Long.parseLong(s[2]));
         if(s.length >= 4) categorySearch.setCode4(Long.parseLong(s[3]));
+
+
         return categorySearch;
     }
 

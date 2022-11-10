@@ -1,7 +1,7 @@
 package com.clone.ohouse.store.domain.item.bed;
 
 public enum BedColor {
-    RED("RED"), BLUE("WHITE"), WHITE("WHITE");
+    RED("RED"), BLUE("BLUE"), WHITE("WHITE");
     private final String color;
 
     BedColor(String color) {
