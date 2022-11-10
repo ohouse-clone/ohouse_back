@@ -41,7 +41,7 @@ public class StorePostsQueryController {
 
         Optional<Class> type = new ItemSelector().selectTypeFrom(category.getName());
         Class classType = type.get();
-        ItemSearchCondition condition;
+        ItemSearchCondition condition = null;
         if(classType == Bed.class){
             condition = new BedSearchCondition();
             ArrayList<BedColor> bedColors = paramMap.get("bedcolor").stream().map(t -> (BedColor) t).distinct().collect(Collectors.toCollection(ArrayList<BedColor>::new));
@@ -51,16 +51,15 @@ public class StorePostsQueryController {
             for(int l = 0; l < bedColors.size(); ++l)
                 ((BedSearchCondition) condition).bedColor[l] = bedColors.get(l);
 
-
-
-
         }
         else if(classType == StorageBed.class){
 
         }
+        else {
+            condition = new ItemSearchCondition();
+        }
 
-
-        storePostsQueryService.getBundleViewV3(categorySearch, pageable, )
+        return storePostsQueryService.getBundleViewV3(categorySearch, pageable, condition);
     }
 
     private CategorySearch parseCategoryString(List<Object> category) {
