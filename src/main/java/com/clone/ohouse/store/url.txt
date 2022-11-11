@@ -1,0 +1,19 @@
+For getBundleView Test
+Action :
+http://localhost:8080/store/category?category=20_22_20_20&bedcolor=BLUE&bedcolor=WHITE&page=1&size=1
+result :
+{
+    "totalNum": 3,
+    "postsNum": 1,
+    "previewPosts": [
+        {
+            "id": 4,
+            "title": "제목4",
+            "previewImageUrl": null,
+            "popular": 6,
+            "price": 5007,
+            "discountRate": 0
+        }
+    ]
+}
+//-----------------------------------------------------------------

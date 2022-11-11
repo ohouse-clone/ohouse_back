@@ -17,10 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static com.clone.ohouse.store.domain.category.QItemCategory.itemCategory;
 import static com.clone.ohouse.store.domain.item.QItem.item;
@@ -111,10 +108,13 @@ public class StorePostsRepositoryImpl implements StorePostsRepositoryCustom {
         //Combination
         List<StorePosts> posts = new ArrayList<>();
         List<Long> postIds = new ArrayList<>();
+        Map<Long, Long> popularity = new HashMap<>();
         for (Tuple tuple : tuples) {
             StorePosts post = tuple.get(storePosts);
+            Long popularSum = tuple.get(product.popular.sum());
             postIds.add(post.getId());
             posts.add(post);
+            popularity.put(post.getId(), popularSum);
         }
         //Combination 2
         Map<Long, Product> productMap = queryFactory
@@ -127,7 +127,8 @@ public class StorePostsRepositoryImpl implements StorePostsRepositoryCustom {
         List<StorePostsViewDto> views = new ArrayList<>();
         for (StorePosts post : posts) {
             Product product = productMap.get(post.getId());
-            views.add(new StorePostsViewDto(post, product.getPrice(), product.getRateDiscount(), product.getPopular()));
+            Long popularSum = popularity.get(post.getId());
+            views.add(new StorePostsViewDto(post, product.getPrice(), product.getRateDiscount(), popularSum));
         }
 
         BundleVIewDto result = new BundleVIewDto(count, views.size(), views);
