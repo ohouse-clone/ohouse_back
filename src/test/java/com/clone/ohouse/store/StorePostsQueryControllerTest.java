@@ -16,10 +16,12 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -57,13 +59,14 @@ class StorePostsQueryControllerTest {
 
     @AfterEach
     public void clean(){
-        itemCategoryRepository.deleteAll();
-        categoryRepository.deleteAll();
-        productRepository.deleteAll();
-        itemRepository.deleteAll();
-        storePostsRepository.deleteAll();
+//        itemCategoryRepository.deleteAll();
+//        categoryRepository.deleteAll();
+//        productRepository.deleteAll();
+//        itemRepository.deleteAll();
+//        storePostsRepository.deleteAll();
     }
 
+    @Commit
     @Test
     void getBundleView() throws Exception{
         //given
@@ -76,14 +79,18 @@ class StorePostsQueryControllerTest {
         //when
         ResultActions perform = mvc.perform(MockMvcRequestBuilders.get(url)
                 .queryParam("category",category)
-                .queryParam(key, color1, color2));
+                .queryParam(key, color1, color2)
+                .queryParam("page", "1")
+                .queryParam("size", "1"));
 
         //then
         perform
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_VALUE));
-                //.andExpect(MockMvcResultMatchers.jsonPath("$."))
-
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.totalNum").value(3))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.postsNum").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.previewPosts[0].title").value("제목4"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.previewPosts[0].popular").value(6));
     }
 
 
