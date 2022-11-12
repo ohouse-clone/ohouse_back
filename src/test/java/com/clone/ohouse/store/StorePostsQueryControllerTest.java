@@ -59,16 +59,15 @@ class StorePostsQueryControllerTest {
 
     @AfterEach
     public void clean(){
-//        itemCategoryRepository.deleteAll();
-//        categoryRepository.deleteAll();
-//        productRepository.deleteAll();
-//        itemRepository.deleteAll();
-//        storePostsRepository.deleteAll();
+        itemCategoryRepository.deleteAll();
+        categoryRepository.deleteAll();
+        productRepository.deleteAll();
+        itemRepository.deleteAll();
+        storePostsRepository.deleteAll();
     }
 
-    @Commit
     @Test
-    void getBundleView() throws Exception{
+    void getBundleView1() throws Exception{
         //given
         String url = "http://localhost:" + port + mappingUrl + "/";
         String key = "bedcolor";
@@ -91,6 +90,31 @@ class StorePostsQueryControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.postsNum").value(1))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.previewPosts[0].title").value("제목4"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.previewPosts[0].popular").value(6));
+    }
+
+    @Test
+    void getBundleView2() throws Exception{
+        //given
+        String url = "http://localhost:" + port + mappingUrl + "/";
+        String category = "20_22_20";
+
+
+        //when
+        ResultActions perform = mvc.perform(MockMvcRequestBuilders.get(url)
+                .queryParam("category",category)
+                .queryParam("page", "0")
+                .queryParam("size", "3"));
+
+        //then
+        perform
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.totalNum").value(8))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.postsNum").value(3))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.previewPosts[0].title").value("제목8"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.previewPosts[1].title").value("제목6"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.previewPosts[0].popular").value(100))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.previewPosts[1].popular").value(99));
     }
 
 
