@@ -37,6 +37,7 @@ public class Category {
 
     public void addParent(Category parent){
         this.parent = parent;
+        if
         parent.getChild().add(this);
     }
     public void addChild(Category child){
