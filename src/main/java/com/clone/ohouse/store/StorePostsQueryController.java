@@ -8,13 +8,14 @@ import com.clone.ohouse.store.domain.item.ItemSearchCondition;
 import com.clone.ohouse.store.domain.item.bed.*;
 import com.clone.ohouse.store.domain.item.itemselector.ItemSelector;
 import com.clone.ohouse.store.domain.storeposts.dto.BundleVIewDto;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,22 @@ public class StorePostsQueryController {
     private final StorePostsQueryService storePostsQueryService;
     private final CategoryRepository categoryRepository;
 
+    @ApiOperation(
+            value = "CategoryTab 게시글 조회",
+            notes = "검색 조건과 함께 조회합니다. 검색 조건은 QueryParameter입니다.<br>" +
+                    "사용할 수 있는 검색 조건은 다음과 같습니다<br> + " +
+                    "1.필수조건<br>" +
+                    "- Category code XX_XX_XX_XX<br>" +
+                    "2.충분조건 (이 조건은 카테고리 코드가 오직 4개일 때만 사용 가능합니다)<br>" +
+                    "- Category code == 20_22_20_20 일 경우, bedcolor, bedsize<br>" +
+                    "- Category code == 20_22_20_21 일 경우, material<br>" +
+                    "<br>" +
+                    "    bedcolor는 String이며 다음 중 하나입니다. RED, BLUE, WHITE<br>" +
+                    "    bedsize는 String이며 다음 중 하나입니다. MS, S, SS, D, Q, K, LK, CK<br>" +
+                    "    material는 String이며 다음 중 하나입니다. WOOD, STEEL, FAKE_LEATHER, FAKE_WOOD<br>",
+            code = 200)
+    @ApiResponse(code = 500, message = "server error")
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/store/category")
     public BundleVIewDto getBundleView(@RequestParam MultiValueMap<String, Object> paramMap, Pageable pageable) throws Exception{
         List<Object> categories = paramMap.get("category");
