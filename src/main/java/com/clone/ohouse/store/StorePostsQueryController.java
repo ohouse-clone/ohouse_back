@@ -5,10 +5,7 @@ import com.clone.ohouse.store.domain.category.Category;
 import com.clone.ohouse.store.domain.category.CategoryRepository;
 import com.clone.ohouse.store.domain.category.CategorySearch;
 import com.clone.ohouse.store.domain.item.ItemSearchCondition;
-import com.clone.ohouse.store.domain.item.bed.Bed;
-import com.clone.ohouse.store.domain.item.bed.BedColor;
-import com.clone.ohouse.store.domain.item.bed.BedSearchCondition;
-import com.clone.ohouse.store.domain.item.bed.StorageBed;
+import com.clone.ohouse.store.domain.item.bed.*;
 import com.clone.ohouse.store.domain.item.itemselector.ItemSelector;
 import com.clone.ohouse.store.domain.storeposts.dto.BundleVIewDto;
 import lombok.RequiredArgsConstructor;
@@ -53,10 +50,18 @@ public class StorePostsQueryController {
                 for(int l = 0; l < bedColors.size(); ++l)
                     ((BedSearchCondition) condition).bedColor[l] = bedColors.get(l);
             }
-
+            if(paramMap.containsKey("bedsize")){
+                ArrayList<BedSize> bedSizes = paramMap.get("bedsize").stream().map(t -> BedSize.valueOf((String) t)).distinct().collect(Collectors.toCollection(ArrayList<BedSize>::new));
+                for(int l = 0; l < bedSizes.size(); ++l) ((BedSearchCondition) condition).bedSize[l] = bedSizes.get(l);
+            }
 
         }
         else if(classType == StorageBed.class){
+            condition = new StorageBedCondition();
+            if(paramMap.containsKey("material")){
+                ArrayList<Material> materials = paramMap.get("material").stream().map(t -> Material.valueOf((String) t)).distinct().collect(Collectors.toCollection(ArrayList<Material>::new));
+                for(int l = 0; l < materials.size(); ++l) ((StorageBedCondition) condition).material[l] = materials.get(l);
+            }
         }
         else {
             condition = new ItemSearchCondition();
@@ -74,10 +79,6 @@ public class StorePostsQueryController {
         if(s.length >= 2) categorySearch.setCode2(Long.parseLong(s[1]));
         if(s.length >= 3) categorySearch.setCode3(Long.parseLong(s[2]));
         if(s.length >= 4) categorySearch.setCode4(Long.parseLong(s[3]));
-        System.out.println("codes : " + categorySearch.getCode1() + ", "
-        + categorySearch.getCode2() +", "
-        + categorySearch.getCode3() + ", "
-        + categorySearch.getCode4());
 
         return categorySearch;
     }
