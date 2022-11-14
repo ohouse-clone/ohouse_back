@@ -1,54 +1,124 @@
-package com.clone.ohouse.store.domain;
+package com.clone.ohouse.store;
 
+import com.clone.ohouse.store.domain.ItemService;
+import com.clone.ohouse.store.domain.category.Category;
 import com.clone.ohouse.store.domain.category.CategoryRepository;
 import com.clone.ohouse.store.domain.category.CategorySearch;
 import com.clone.ohouse.store.domain.category.ItemCategoryRepository;
-import com.clone.ohouse.store.domain.item.ItemRepository;
-import com.clone.ohouse.store.domain.item.ItemSearchCondition;
-import com.clone.ohouse.store.domain.item.bed.*;
-import com.clone.ohouse.store.domain.product.ProductRepository;
-import com.clone.ohouse.store.domain.category.Category;
 import com.clone.ohouse.store.domain.item.Item;
+import com.clone.ohouse.store.domain.item.ItemRepository;
+import com.clone.ohouse.store.domain.item.bed.*;
 import com.clone.ohouse.store.domain.product.Product;
-import com.clone.ohouse.store.domain.storeposts.StorePostsRepository;
-import com.clone.ohouse.store.domain.storeposts.dto.StorePostsViewDto;
-import com.clone.ohouse.store.domain.storeposts.dto.BundleVIewDto;
+import com.clone.ohouse.store.domain.product.ProductRepository;
 import com.clone.ohouse.store.domain.storeposts.StorePosts;
-import org.assertj.core.api.Assertions;
+import com.clone.ohouse.store.domain.storeposts.StorePostsRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.MediaType;
+import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
-@Transactional
+import static org.junit.jupiter.api.Assertions.*;
+
 @ExtendWith(SpringExtension.class)
-@SpringBootTest
-class StorePostsQueryServiceTest {
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+class StorePostsQueryControllerTest {
 
-    @Autowired
-    StorePostsQueryService storePostsQueryService;
-    @Autowired
-    StorePostsRepository storePostsRepository;
-    @Autowired
-    ProductRepository productRepository;
-    @Autowired
-    CategoryRepository categoryRepository;
-    @Autowired
-    ItemService itemService;
-    @Autowired
-    ItemCategoryRepository itemCategoryRepository;
+    @LocalServerPort private int port;
+    @Autowired private WebApplicationContext context;
+    private MockMvc mvc;
+    private final String mappingUrl = "/store/category";
 
-    @Autowired
-    ItemRepository itemRepository;
+    @Autowired StorePostsRepository storePostsRepository;
+    @Autowired ProductRepository productRepository;
+    @Autowired CategoryRepository categoryRepository;
+    @Autowired ItemService itemService;
+    @Autowired ItemCategoryRepository itemCategoryRepository;
+    @Autowired ItemRepository itemRepository;
 
     @BeforeEach
-    void setup() throws Exception{
+    public void setup() throws Exception{
+        mvc = MockMvcBuilders
+                .webAppContextSetup(context)
+                .build();
+
+        saveData();
+    }
+
+    @AfterEach
+    public void clean(){
+        itemCategoryRepository.deleteAll();
+        categoryRepository.deleteAll();
+        productRepository.deleteAll();
+        itemRepository.deleteAll();
+        storePostsRepository.deleteAll();
+    }
+
+    @Test
+    void getBundleView1() throws Exception{
+        //given
+        String url = "http://localhost:" + port + mappingUrl + "/";
+        String key = "bedcolor";
+        String category = "20_22_20_20";
+        String color1 = "BLUE";
+        String color2 = "WHITE";
+
+        //when
+        ResultActions perform = mvc.perform(MockMvcRequestBuilders.get(url)
+                .queryParam("category",category)
+                .queryParam(key, color1, color2)
+                .queryParam("page", "1")
+                .queryParam("size", "1"));
+
+        //then
+        perform
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.totalNum").value(3))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.postsNum").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.previewPosts[0].title").value("제목4"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.previewPosts[0].popular").value(6));
+    }
+
+    @Test
+    void getBundleView2() throws Exception{
+        //given
+        String url = "http://localhost:" + port + mappingUrl + "/";
+        String category = "20_22_20";
+
+
+        //when
+        ResultActions perform = mvc.perform(MockMvcRequestBuilders.get(url)
+                .queryParam("category",category)
+                .queryParam("page", "0")
+                .queryParam("size", "3"));
+
+        //then
+        perform
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.totalNum").value(8))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.postsNum").value(3))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.previewPosts[0].title").value("제목8"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.previewPosts[1].title").value("제목6"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.previewPosts[0].popular").value(100))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.previewPosts[1].popular").value(99));
+    }
+
+
+    private void saveData() throws Exception{
         Category c1 = new Category("가구",20L);
         Category c2 = new Category("침대",22L);
         c2.addParent(c1);
@@ -163,117 +233,7 @@ class StorePostsQueryServiceTest {
         productRepository.save(product82);
         productRepository.save(product83);
         productRepository.save(product84);
-
-
-    }
-    @AfterEach
-    void clean(){
-        itemCategoryRepository.deleteAll();
-        categoryRepository.deleteAll();
-        productRepository.deleteAll();
-        itemRepository.deleteAll();
-        storePostsRepository.deleteAll();
     }
 
-    @Test
-    void getBundleViewWithFullCategory() throws Exception{
-        //given
-        int size = 2;
-        CategorySearch categoryCondition = new CategorySearch(20L, 22L, 20L, 20L);
-        Pageable pageable = PageRequest.of(0, size);
-        ItemSearchCondition itemCondition = new StorageBedCondition();
-        itemCondition.itemName = "가방!";
 
-
-        //when
-        BundleVIewDto bundle = storePostsQueryService.getBundleViewV3(categoryCondition, pageable, itemCondition);
-
-////         -- View --
-//        System.out.println("-- result --");
-//        System.out.println("postNum : " + bundle.getPostsNum());
-//        for (StorePostsViewDto viewDto : bundle.getPreviewPosts()) {
-//            System.out.println("viewDto = " + viewDto.getTitle() + ", price : " + viewDto.getPrice());
-//        }
-//        System.out.println("totalNum : " + bundle.getTotalNum());
-
-        //then
-        //itemCondition is not matched with categoryCondition. so result must get all with categoryId
-        Assertions.assertThat(bundle.getPostsNum()).isEqualTo(size);
-        Assertions.assertThat(bundle.getPreviewPosts()).extracting(StorePostsViewDto::getTitle).containsExactly("제목8", "제목6");
-        Assertions.assertThat(bundle.getTotalNum()).isEqualTo(8);
-    }
-    @Test
-    void getBundleViewWithThreeCategory() throws Exception{
-        //given
-        int size = 4;
-        CategorySearch condition = new CategorySearch(20L, 22L, 20L, null);
-        Pageable pageable = PageRequest.of(0, size);
-        BedSearchCondition bedSearchCondition = new BedSearchCondition();
-
-        //when
-        BundleVIewDto bundle = storePostsQueryService.getBundleViewV3(condition, pageable, bedSearchCondition);
-
-//         -- View --
-//        `System.out.println("-- result --");
-//        System.out.println("TotalNum : " + bundle.getTotalNum());
-//        System.out.println("postNum : " + bundle.getPostsNum());
-//        for (StorePostsViewDto viewDto : bundle.getPreviewPosts()) {
-//            System.out.println("viewDto = " + viewDto.getTitle() + ", price : " + viewDto.getPrice());
-//        }`
-
-        //then
-        Assertions.assertThat(bundle.getPostsNum()).isEqualTo(size);
-        Assertions.assertThat(bundle.getPreviewPosts()).extracting(StorePostsViewDto::getTitle).containsExactly("제목8", "제목6", "제목3", "제목4");
-    }
-
-    @Test
-    void getBundleViewWithBedCondition() throws Exception{
-//given
-        int size = 4;
-        CategorySearch condition = new CategorySearch(20L, 22L, 20L, 20L);
-        Pageable pageable = PageRequest.of(0, size);
-        BedSearchCondition itemSearchCondition = new BedSearchCondition();
-        itemSearchCondition.bedColor[0] = BedColor.RED;
-        itemSearchCondition.bedColor[1] = BedColor.BLUE;
-
-        //when
-        BundleVIewDto bundle = storePostsQueryService.getBundleViewV3(condition, pageable, itemSearchCondition);
-
-////         -- View --
-//        System.out.println("-- result --");
-//        System.out.println("postNum : " + bundle.getPostsNum());
-//        for (StorePostsViewDto viewDto : bundle.getPreviewPosts()) {
-//            System.out.println("viewDto = " + viewDto.getTitle() + ", price : " + viewDto.getPrice());
-//        }
-
-        //then
-        Assertions.assertThat(bundle.getPostsNum()).isEqualTo(2);
-        Assertions.assertThat(bundle.getPreviewPosts()).extracting(StorePostsViewDto::getTitle).containsExactly("제목3", "제목2");
-        Assertions.assertThat(bundle.getTotalNum()).isEqualTo(2);
-    }
-    @Test
-    void getBundleViewWithStorageBedCondition() throws Exception{
-//given
-        int size = 4;
-        CategorySearch condition = new CategorySearch(20L, 22L, 20L, 21L);
-        Pageable pageable = PageRequest.of(0, size);
-        StorageBedCondition itemCondition = new StorageBedCondition();
-        itemCondition.material[0] = Material.STEEL;
-
-
-        //when
-        BundleVIewDto bundle = storePostsQueryService.getBundleViewV3(condition, pageable, itemCondition);
-
-//         -- View --
-//        System.out.println("-- result --");
-//        System.out.println("postNum : " + bundle.getPostsNum());
-//        for (StorePostsViewDto viewDto : bundle.getPreviewPosts()) {
-//            System.out.println("viewDto = " + viewDto.getTitle() + ", price : " + viewDto.getPrice());
-//        }
-
-        //then
-        Assertions.assertThat(bundle.getPostsNum()).isEqualTo(1);
-        Assertions.assertThat(bundle.getPreviewPosts()).extracting(StorePostsViewDto::getTitle).containsExactly("제목8");
-        Assertions.assertThat(bundle.getTotalNum()).isEqualTo(1);
-    }
 }

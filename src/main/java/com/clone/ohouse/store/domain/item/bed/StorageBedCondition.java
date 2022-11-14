@@ -11,7 +11,7 @@ public class StorageBedCondition extends ItemSearchCondition {
     public BooleanExpression eqStorageBedCondition(){
         BooleanExpression materialExpr = eqMaterials();
         if(materialExpr == null) return null;
-        else if(materialExpr != null) return eqMaterials();
+        else if(materialExpr != null) return materialExpr;
 
         return null;
     }

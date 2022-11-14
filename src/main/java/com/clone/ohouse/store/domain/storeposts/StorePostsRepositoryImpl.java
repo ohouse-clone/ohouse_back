@@ -8,21 +8,21 @@ import com.clone.ohouse.store.domain.storeposts.dto.BundleVIewDto;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.group.GroupBy;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Wildcard;
 import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.impl.JPAProvider;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static com.clone.ohouse.store.domain.category.QItemCategory.itemCategory;
 import static com.clone.ohouse.store.domain.item.QItem.item;
 import static com.clone.ohouse.store.domain.item.bed.QBed.*;
+import static com.clone.ohouse.store.domain.item.bed.QStorageBed.*;
 import static com.clone.ohouse.store.domain.product.QProduct.product;
 import static com.clone.ohouse.store.domain.storeposts.QStorePosts.storePosts;
 
@@ -82,42 +82,16 @@ public class StorePostsRepositoryImpl implements StorePostsRepositoryCustom {
 
     @Override
     public BundleVIewDto getBundleViewByCategoryWithConditionV3(Long categoryId, Pageable pageable, Optional<Class> type, ItemSearchCondition condition) {
-        //validateCondition(condition, type);
+        //Count Query
+        JPAQuery<Long> postCountQuery = queryFactory
+                .select(storePosts.countDistinct())
+                .from(product)
+                .join(product.storePosts, storePosts)
+                .join(product.item, item)
+                .join(item.itemCategories, itemCategory);
+        Long count = addQueryByType(postCountQuery, categoryId, condition, type).fetchOne();
 
-        //Total Count
-        // 성능에 우려가 있지만 현재로선 별 다른 방법이 없음, 일대다 관계에서 groupby 이후에 재 계산될 수 있는 count쿼리가 필요함
-        Long count =
-                queryFactory
-                .select(storePosts.count()).distinct()
-                .from(storePosts)
-                .where(storePosts.id.in(
-                        JPAExpressions
-                                .select(product.storePosts.id)
-                                .from(product)
-                                .join(product.item, item)
-                                .join(item.itemCategories, itemCategory)
-//                                .join(bed).on(bed.eq(item))
-                                .where(itemCategory.category.id.eq(categoryId)
-//                                        .and(bed.size.eq(BedSize.SS))
-                                )
-                ))
-                .fetchOne();
-
-//        JPAQuery<Tuple> bundleQuery = queryFactory
-//                .select(storePosts,
-//                        product.popular.sum()).distinct()
-//                .from(storePosts)
-//                .offset(pageable.getOffset())
-//                .limit(pageable.getPageSize())
-//                .groupBy(storePosts.id)
-//                .orderBy(product.popular.sum().desc())
-//                .join(storePosts.productList, product)
-//                .join(product.item, item)
-//                .join(item.itemCategories, itemCategory);
-//                .where(itemCategory.category.id.eq(categoryId)
-////                        .and(bed.size.eq(BedSize.SS))
-//                )
-
+        //Data Query
         JPAQuery<Tuple> postQuery = queryFactory
                 .select(storePosts,
                         product.popular.sum()).distinct()
@@ -129,19 +103,20 @@ public class StorePostsRepositoryImpl implements StorePostsRepositoryCustom {
                 .orderBy(product.popular.sum().desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize());
-
         List<Tuple> tuples = addQueryByType(postQuery, categoryId, condition, type).fetch();
 
+        //Combination
         List<StorePosts> posts = new ArrayList<>();
         List<Long> postIds = new ArrayList<>();
+        Map<Long, Long> popularity = new HashMap<>();
         for (Tuple tuple : tuples) {
             StorePosts post = tuple.get(storePosts);
+            Long popularSum = tuple.get(product.popular.sum());
             postIds.add(post.getId());
             posts.add(post);
-            System.out.println("product.sum = " + tuple.get(product.popular.sum()).toString());
+            popularity.put(post.getId(), popularSum);
         }
-
-
+        //Combination 2
         Map<Long, Product> productMap = queryFactory
                 .select(storePosts.id, product)
                 .from(product)
@@ -149,26 +124,29 @@ public class StorePostsRepositoryImpl implements StorePostsRepositoryCustom {
                 .where(storePosts.id.in(postIds))
                 .orderBy(product.id.asc())
                 .transform(GroupBy.groupBy(storePosts.id).as(product));
-        //combine
         List<StorePostsViewDto> views = new ArrayList<>();
         for (StorePosts post : posts) {
             Product product = productMap.get(post.getId());
-            views.add(new StorePostsViewDto(post, product.getPrice(), product.getRateDiscount(), product.getPopular()));
+            Long popularSum = popularity.get(post.getId());
+            views.add(new StorePostsViewDto(post, product.getPrice(), product.getRateDiscount(), popularSum));
         }
 
         BundleVIewDto result = new BundleVIewDto(count, views.size(), views);
-
         return result;
     }
-    private JPAQuery<Tuple> addQueryByType(JPAQuery<Tuple> prevQuery, Long categoryId ,ItemSearchCondition condition, Optional<Class> type){
+    private <T> JPAQuery<T> addQueryByType(JPAQuery<T> prevQuery, Long categoryId ,ItemSearchCondition condition, Optional<Class> type){
         if(type.isEmpty()) return prevQuery.where(eqAll(categoryId, null));
         Class classType = type.get();
         Class conditionType = condition.getClass();
         if(classType == Bed.class && conditionType == BedSearchCondition.class){
             prevQuery.join(bed).on(bed.eq(item))
                             .where(eqAll(categoryId, ((BedSearchCondition) condition).eqBedCondition()));
+
         }
         else if(classType == StorageBed.class && conditionType == StorageBedCondition.class) {
+            prevQuery.join(storageBed).on(storageBed.eq(item))
+                    .where(eqAll(categoryId, ((StorageBedCondition) condition).eqStorageBedCondition()));
+
         }
 
 

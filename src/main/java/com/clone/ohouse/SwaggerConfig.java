@@ -15,9 +15,9 @@ public class SwaggerConfig {
     public Docket apiShop(){
         return new Docket(DocumentationType.OAS_30)
                 .useDefaultResponseMessages(true)
-                .groupName("shop")
+                .groupName("store")
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.clone.ohouse.shop"))
+                .apis(RequestHandlerSelectors.basePackage("com.clone.ohouse.store"))
                 .paths(PathSelectors.any())
                 .build()
                 .apiInfo(this.apiShopInfo());
@@ -26,7 +26,7 @@ public class SwaggerConfig {
         return new ApiInfoBuilder()
                 .title("swagger for ohouse clone project")
                 .description("store/production API")
-                .version("0.1")
+                .version("0.11")
                 .build();
     }
 }
