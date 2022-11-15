@@ -37,11 +37,16 @@ public class Category {
 
     public void addParent(Category parent){
         this.parent = parent;
-        if
         parent.getChild().add(this);
     }
     public void addChild(Category child){
         this.child.add(child);
         child.parent = this;
+    }
+
+    public void update(String name, Long code, Category parent){
+        if(name != null) this.name = name;
+        if(code != null) this.code = code;
+        if(parent != null) this.parent = parent;
     }
 }
