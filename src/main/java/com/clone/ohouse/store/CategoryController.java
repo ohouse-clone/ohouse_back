@@ -15,14 +15,15 @@ import org.springframework.web.bind.annotation.*;
 public class CategoryController {
     private final CategoryRepository categoryRepository;
 
-    @PostMapping("/api/v1/category")
-    public void save(@RequestBody CategoryRequestDto saveRequestDto){
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/store/api/v1/category")
+    public Long save(@RequestBody CategoryRequestDto saveRequestDto){
         Category category = new Category(saveRequestDto.getName(), saveRequestDto.getCode());
         if(saveRequestDto.getParentId() != null)
             category.addParent(categoryRepository.findById(saveRequestDto.getParentId()).orElse(null));
-        categoryRepository.save(category);
+        return categoryRepository.save(category).getId();
     }
-    @PutMapping("/api/v1/category/{id}")
+    @PutMapping("/store/api/v1/category/{id}")
     public HttpEntity<CategoryRequestDto> update(@PathVariable Long id, @RequestBody CategoryRequestDto updateRequestDto){
         Category category = categoryRepository.findById(id).orElse(null);
         if(category == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -34,8 +35,8 @@ public class CategoryController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/api/v1/category")
-    public HttpEntity<CategoryRequestDto> findById(Long id){
+    @GetMapping("/store/api/v1/category/{id}")
+    public HttpEntity<CategoryRequestDto> findById(@PathVariable Long id){
         Category category = categoryRepository.findById(id).orElse(null);
         if(category == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
@@ -43,7 +44,7 @@ public class CategoryController {
     }
 
 
-    @DeleteMapping("/api/v1/category/{id}")
+    @DeleteMapping("/store/api/v1/category/{id}")
     public void delete(@PathVariable Long id){
         Category category = categoryRepository.findById(id).orElse(null);
         if(category != null) categoryRepository.delete(category);
