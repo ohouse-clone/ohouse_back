@@ -1,6 +1,8 @@
 package com.clone.ohouse.store.domain.category.dto;
 
 import com.clone.ohouse.store.domain.category.Category;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,12 +10,33 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
+@ApiModel(
+        value = "Category API Request",
+        description = "카테고리를 등록, 수정, 삭제, 찾을때 DTO 로 사용됩니다."
+)
 @NoArgsConstructor
 @Getter
 public class CategoryRequestDto {
+
+    @ApiModelProperty(
+            value = "카테고리 설명",
+            required = true)
     private String name;
+
+    @ApiModelProperty(
+            value = "카테고리 코드",
+            required = true
+    )
     private Long code;
+
+    @ApiModelProperty(
+            value = "부모 카테고리가 있는 경우에 할당됩니다. 등록의 경우엔 부모카테고리 id를 입력해야합니다"
+    )
     private Long parentId;
+
+    @ApiModelProperty(
+            value = "카테고리의 자식 카테고리들입니다. 하지만 자식들의 카테고리의 자식까지 모두 가져오지않습니다."
+    )
     private List<Category> child = new ArrayList<>();
 
     public CategoryRequestDto(String name, Long code) {
