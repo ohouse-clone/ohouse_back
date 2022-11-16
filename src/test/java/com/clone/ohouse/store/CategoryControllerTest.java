@@ -195,12 +195,10 @@ class CategoryControllerTest {
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.CategoriesResponseDto[0].name").value("침대프레임"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.CategoriesResponseDto[0].code").value(20L)).andExpect(MockMvcResultMatchers.jsonPath("$.CategoriesResponseDto[0].name").value("침대프레임"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.CategoriesResponseDto[1].name").value(20L)).andExpect(MockMvcResultMatchers.jsonPath("$.CategoriesResponseDto[0].name").value("침대프레임"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.CategoriesResponseDto[0].code").value(20L)).andExpect(MockMvcResultMatchers.jsonPath("$.CategoriesResponseDto[0].name").value("침대프레임"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.CategoriesResponseDto[0].code").value(20L))
-
-
-
+                .andExpect(MockMvcResultMatchers.jsonPath("$.CategoriesResponseDto[1].name").value("침대+매트릭스")).andExpect(MockMvcResultMatchers.jsonPath("$.CategoriesResponseDto[0].name").value("침대프레임"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.CategoriesResponseDto[1].code").value(21L)).andExpect(MockMvcResultMatchers.jsonPath("$.CategoriesResponseDto[0].name").value("침대프레임"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.CategoriesResponseDto[2].name").value("침대부속가구"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.CategoriesResponseDto[2].code").value(22L));
 
     }
 }
