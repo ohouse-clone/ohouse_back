@@ -126,7 +126,7 @@ class ItemServiceTest {
 
         //when
         Item savedItem = itemRepository.findById(savedId).get();
-        itemService.delete(savedItem);
+        itemService.delete(savedItem.getId());
 
         //then
         Assertions.assertThat(itemRepository.count()).isEqualTo(0);
