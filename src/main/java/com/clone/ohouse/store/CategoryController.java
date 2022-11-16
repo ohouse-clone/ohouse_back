@@ -1,8 +1,7 @@
 package com.clone.ohouse.store;
 
-import com.clone.ohouse.store.domain.category.Category;
-import com.clone.ohouse.store.domain.category.CategoryRepository;
-import com.clone.ohouse.store.domain.category.CategoryRepositoryImpl;
+import com.clone.ohouse.store.domain.category.*;
+import com.clone.ohouse.store.domain.category.dto.CategoriesResponseDto;
 import com.clone.ohouse.store.domain.category.dto.CategoryRequestDto;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -11,6 +10,10 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
@@ -23,9 +26,9 @@ public class CategoryController {
     )
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/store/api/v1/category")
-    public Long save(@RequestBody CategoryRequestDto saveRequestDto){
+    public Long save(@RequestBody CategoryRequestDto saveRequestDto) {
         Category category = new Category(saveRequestDto.getName(), saveRequestDto.getCode());
-        if(saveRequestDto.getParentId() != null)
+        if (saveRequestDto.getParentId() != null)
             category.addParent(categoryRepository.findById(saveRequestDto.getParentId()).orElse(null));
         return categoryRepository.save(category).getId();
     }
@@ -36,9 +39,9 @@ public class CategoryController {
     )
     @ApiImplicitParam(name = "id", value = "수정할 카테고리의 id")
     @PutMapping("/store/api/v1/category/{id}")
-    public HttpEntity<CategoryRequestDto> update(@PathVariable Long id, @RequestBody CategoryRequestDto updateRequestDto){
+    public HttpEntity<CategoryRequestDto> update(@PathVariable Long id, @RequestBody CategoryRequestDto updateRequestDto) {
         Category category = categoryRepository.findById(id).orElse(null);
-        if(category == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if (category == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         Category parent = categoryRepository.findById(updateRequestDto.getParentId()).orElse(null);
 
@@ -53,9 +56,9 @@ public class CategoryController {
     )
     @ApiImplicitParam(name = "id", value = "찾을 카테고리의 id")
     @GetMapping("/store/api/v1/category/{id}")
-    public HttpEntity<CategoryRequestDto> findById(@PathVariable Long id){
+    public HttpEntity<CategoryRequestDto> findById(@PathVariable Long id) {
         Category category = categoryRepository.findById(id).orElse(null);
-        if(category == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if (category == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         return new ResponseEntity<>(new CategoryRequestDto(category), HttpStatus.OK);
     }
@@ -67,10 +70,29 @@ public class CategoryController {
     )
     @ApiImplicitParam(name = "id", value = "삭제할 카테고리 id")
     @DeleteMapping("/store/api/v1/category/{id}")
-    public void delete(@PathVariable Long id){
+    public void delete(@PathVariable Long id) {
         Category category = categoryRepository.findById(id).orElse(null);
-        if(category != null) categoryRepository.delete(category);
+        if (category != null) categoryRepository.delete(category);
     }
-    
+
     //TODO: CategorySearch 조건에 따른 카테고리 조회 API추가
+    @GetMapping("/store/api/v1/category/ids")
+    public List<CategoriesResponseDto> findCategories(@RequestParam String categories) {
+        CategorySearch categorySearch = CategoryParser.parseCategoryString(categories);
+
+        ArrayList<CategoriesResponseDto> result = categoryRepository.findCategories(categorySearch).stream().map((t) -> new CategoriesResponseDto(t)).collect(Collectors.toCollection(ArrayList<CategoriesResponseDto>::new));
+
+        return result;
+    }
+
+    @GetMapping("/store/api/v1/category/id")
+    public HttpEntity<CategoriesResponseDto> findCategoryOne(@RequestParam String categoryOne){
+        CategorySearch categorySearch = CategoryParser.parseCategoryString(categoryOne);
+
+        Category category = categoryRepository.findCategory(categorySearch);
+        if(category == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        return new ResponseEntity<CategoriesResponseDto>(new CategoriesResponseDto(category), HttpStatus.OK);
+    }
+
 }

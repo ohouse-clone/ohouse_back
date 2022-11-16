@@ -19,6 +19,10 @@ import java.util.List;
 public class CategoryRequestDto {
 
     @ApiModelProperty(
+            value = "카테고리 id"
+    )
+    private Long id;
+    @ApiModelProperty(
             value = "카테고리 설명",
             required = true)
     private String name;
@@ -51,6 +55,7 @@ public class CategoryRequestDto {
     }
 
     public CategoryRequestDto(Category entity) {
+        this.id = entity.getId();
         this.name = entity.getName();
         this.code = entity.getCode();
         this.parentId = entity.getParent().getId();
