@@ -1,7 +1,6 @@
 package com.clone.ohouse.store;
 
 import com.clone.ohouse.store.domain.category.*;
-import com.clone.ohouse.store.domain.category.dto.CategoriesResponseDto;
 import com.clone.ohouse.store.domain.category.dto.CategoryRequestDto;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -63,7 +62,6 @@ public class CategoryController {
         return new ResponseEntity<>(new CategoryRequestDto(category), HttpStatus.OK);
     }
 
-
     @ApiOperation(
             value = "카테고리 삭제",
             notes = "카테고리를 삭제합니다"
@@ -74,25 +72,4 @@ public class CategoryController {
         Category category = categoryRepository.findById(id).orElse(null);
         if (category != null) categoryRepository.delete(category);
     }
-
-    //TODO: CategorySearch 조건에 따른 카테고리 조회 API추가
-    @GetMapping("/store/api/v1/category/ids")
-    public List<CategoriesResponseDto> findCategories(@RequestParam String categories) {
-        CategorySearch categorySearch = CategoryParser.parseCategoryString(categories);
-
-        ArrayList<CategoriesResponseDto> result = categoryRepository.findCategories(categorySearch).stream().map((t) -> new CategoriesResponseDto(t)).collect(Collectors.toCollection(ArrayList<CategoriesResponseDto>::new));
-
-        return result;
-    }
-
-    @GetMapping("/store/api/v1/category/id")
-    public HttpEntity<CategoriesResponseDto> findCategoryOne(@RequestParam String categoryOne){
-        CategorySearch categorySearch = CategoryParser.parseCategoryString(categoryOne);
-
-        Category category = categoryRepository.findCategory(categorySearch);
-        if(category == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
-        return new ResponseEntity<CategoriesResponseDto>(new CategoriesResponseDto(category), HttpStatus.OK);
-    }
-
 }
