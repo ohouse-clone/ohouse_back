@@ -7,11 +7,14 @@ import com.clone.ohouse.store.domain.item.ItemRepository;
 import com.clone.ohouse.store.domain.category.Category;
 import com.clone.ohouse.store.domain.item.Item;
 import com.clone.ohouse.store.domain.category.ItemCategory;
+import com.clone.ohouse.store.domain.item.bed.Bed;
+import com.clone.ohouse.store.domain.item.bed.StorageBed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -27,6 +30,7 @@ public class ItemService {
 
         return id;
     }
+
 
     @Transactional
     public void delete(Item item){
