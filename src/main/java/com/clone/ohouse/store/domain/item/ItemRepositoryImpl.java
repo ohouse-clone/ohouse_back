@@ -1,18 +1,39 @@
 package com.clone.ohouse.store.domain.item;
 
-import com.clone.ohouse.store.domain.category.CategorySearch;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+
+import static com.clone.ohouse.store.domain.category.QItemCategory.itemCategory;
+import static com.clone.ohouse.store.domain.item.QItem.item;
 
 @RequiredArgsConstructor
 public class ItemRepositoryImpl implements ItemRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<Item> findByCategory(CategorySearch categorySearch) {
-        //TODO
-        return null;
+    public List<Item> findByCategory(Long categoryId, Pageable pageable) {
+        List<Item> result = queryFactory
+                .select(item)
+                .from(item)
+                .join(item.itemCategories, itemCategory)
+                .where(itemCategory.category.id.eq(categoryId))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        return result;
+    }
+
+    @Override
+    public Long findTotalNumByCategory(Long categoryId) {
+        return queryFactory
+                .select(item.count())
+                .from(item)
+                .join(item.itemCategories, itemCategory)
+                .where(itemCategory.category.id.eq(categoryId))
+                .fetchOne();
     }
 }

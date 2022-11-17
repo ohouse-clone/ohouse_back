@@ -40,6 +40,7 @@ public class ItemApiController {
 
 
     private HttpEntity<Long> saveWithValidate(String category, ItemRequestDto requestDto) throws Exception {
+        //TODO: categoryRepository로 찾는 로직은 Service 안으로 들어가야함, 추후 Fix 예정
         CategorySearch categorySearch = CategoryParser.parseCategoryString(category);
         Category categoryEntity = categoryRepository.findCategory(categorySearch);
         Item item = requestDto.toEntity();
