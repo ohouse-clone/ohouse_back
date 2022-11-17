@@ -41,6 +41,11 @@ public class ItemService {
         itemRepository.delete(item);
     }
 
+    @Transactional
+    public void findByCategory(CategorySearch condition){
+        
+    }
+
     private void attachCategoryTagWith(CategorySearch condition , Item item) throws Exception {
         if(condition.getCode1() == null || condition.getCode2() == null || condition.getCode3() == null || condition.getCode4() == null) throw new IllegalAccessException();
 
