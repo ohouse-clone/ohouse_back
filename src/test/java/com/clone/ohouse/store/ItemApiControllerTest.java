@@ -68,7 +68,7 @@ class ItemApiControllerTest {
     @Test
     void saveWithBed() throws Exception {
         //given
-        String url = "http://localhost:" + port + "/store/item/bed";
+        String url = "http://localhost:" + port + "/store/api/v1/item/bed";
         String category = "20_22_20_20";
         BedRequestDto requestDto = new BedRequestDto("testbed", "model", "emart", BedColor.BLUE, BedSize.K);
         //when
@@ -90,7 +90,7 @@ class ItemApiControllerTest {
     @Test
     void saveFailWithBedForTypeMiss() throws Exception{
         //given
-        String url = "http://localhost:" + port + "/store/item/bed";
+        String url = "http://localhost:" + port + "/store/api/v1/item/bed";
         String category = "20_22_20_21";
         BedRequestDto requestDto = new BedRequestDto("testbed", "model", "emart", BedColor.BLUE, BedSize.K);
 
@@ -107,7 +107,7 @@ class ItemApiControllerTest {
     @Test
     void saveWithStorageBed() throws Exception {
         //given
-        String url = "http://localhost:" + port + "/store/item/storagebed";
+        String url = "http://localhost:" + port + "/store/api/v1/item/storagebed";
         String category = "20_22_20_21";
         //BedRequestDto requestDto = new BedRequestDto("testbed", "model", "emart", BedColor.BLUE, BedSize.K);
         StorageBedRequestDto requestDto = new StorageBedRequestDto("testbed2", "model2", "emart2", Material.FAKE_WOOD);
@@ -131,7 +131,7 @@ class ItemApiControllerTest {
     @Test
     void findByCategory() throws Exception {
         //given
-        String url = "http://localhost:" + port + "/store/items";
+        String url = "http://localhost:" + port + "/store/api/v1/item/items";
         String category1 = "20_22_20_20";
         String category2 = "20_22_20_21";
         CategorySearch condition1 = CategoryParser.parseCategoryString(category1);
@@ -167,7 +167,7 @@ class ItemApiControllerTest {
     @Test
     void findByCategoryWith2Condition() throws Exception {
         //given
-        String url = "http://localhost:" + port + "/store/items";
+        String url = "http://localhost:" + port + "/store/api/v1/item/items";
         String category1 = "20_22_20_20";
         String category2 = "20_22_20_21";
         CategorySearch condition1 = CategoryParser.parseCategoryString(category1);
@@ -195,7 +195,7 @@ class ItemApiControllerTest {
     @Test
     void findByCategoryWith1Condition() throws Exception {
         //given
-        String url = "http://localhost:" + port + "/store/items";
+        String url = "http://localhost:" + port + "/store/api/v1/item/items";
         String category1 = "20_22_20_20";
         String category2 = "20_22_20_21";
         CategorySearch condition1 = CategoryParser.parseCategoryString(category1);
@@ -232,7 +232,7 @@ class ItemApiControllerTest {
     @Test
     void delete() throws Exception {
         //given
-        String url = "http://localhost:" + port + "/store/item/";
+        String url = "http://localhost:" + port + "/store/api/v1/item/";
         String category = "20_22_20_21";
         StorageBedRequestDto requestDto = new StorageBedRequestDto("testbed2", "model2", "emart2", Material.FAKE_WOOD);
         CategorySearch categorySearch = CategoryParser.parseCategoryString(category);

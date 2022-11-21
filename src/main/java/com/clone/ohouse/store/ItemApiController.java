@@ -12,6 +12,10 @@ import com.clone.ohouse.store.domain.item.bed.dto.BedRequestDto;
 import com.clone.ohouse.store.domain.item.bed.dto.StorageBedRequestDto;
 import com.clone.ohouse.store.domain.item.dto.ItemBundleViewDto;
 import com.clone.ohouse.store.domain.item.itemselector.ItemSelector;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -21,34 +25,72 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+@Api(
+        value = "Item 등록, 제거, 찾기에 대한 API<br><br>" +
+        "<h1> save interface </h1>" +
+        "save api는 카테고리의 의존적이라는 중요한 특징을 가집니다.<br>" +
+        "카테고리는 iteml의 세부항목을 결정짓는 중요한 parameter이며<br>" +
+        "저장하려는 DTO와 category code는 사전에 static하게 연관되어 있습니다.<br>" +
+        "따라서 정확하게 category와 dto를 사용해야 합니다.<br>" +
+        "예를 들어서 category 20_22_20_20은 bed를 의미하므로 BedRequestDto를 사용하며, post /store/item/bed 로 하여야 합니다."
+)
 @RequiredArgsConstructor
+@RequestMapping("/store/api/v1/item")
 @RestController
 public class ItemApiController {
     private final ItemService itemService;
     private final CategoryRepository categoryRepository;
 
+
+    @ApiOperation(
+            value = "item(bed) 저장",
+            notes = "카테고리와 함께 사용됩니다.",
+            code = 201
+    )
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/store/item/bed")
-    public HttpEntity<Long> save(@RequestParam String category, @RequestBody BedRequestDto requestDto) throws Exception {
+    @PostMapping("/bed")
+    public HttpEntity<Long> save(
+            @ApiParam(value = "category code") @RequestParam String category,
+            @RequestBody BedRequestDto requestDto) throws Exception {
         return saveWithValidate(category, requestDto);
     }
 
-
+    @ApiOperation(
+            value = "item(storagebed) 저장",
+            notes = "카테고리와 함께 사용됩니다.",
+            code = 201
+    )
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/store/item/storagebed")
-    public HttpEntity<Long> save(@RequestParam String category, @RequestBody StorageBedRequestDto requestDto) throws Exception {
+    @PostMapping("/storagebed")
+    public HttpEntity<Long> save(
+            @ApiParam(value = "category code") @RequestParam String category,
+            @RequestBody StorageBedRequestDto requestDto) throws Exception {
         return saveWithValidate(category, requestDto);
     }
 
+    @ApiOperation(
+            value = "등록된 item 제거",
+            code = 200
+    )
     @ResponseStatus(HttpStatus.OK)
-    @DeleteMapping("/store/item/{id}")
-    public void delete(@PathVariable Long id) throws Exception {
+    @DeleteMapping("/{id}")
+    public void delete(
+            @ApiParam(value = "item id") @PathVariable Long id) throws Exception {
         itemService.delete(id);
     }
 
+    @ApiOperation(
+            value = "저장된 items 보기",
+            code  = 200
+    )
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/store/items")
-    public HttpEntity<ItemBundleViewDto> findByCategory(@RequestParam String category, Pageable pageable, @RequestParam(required = false) String itemName, @RequestParam(required = false) String itemModelName, @RequestParam(required = false) String itemBrandName) throws Exception {
+    @GetMapping("/items")
+    public HttpEntity<ItemBundleViewDto> findByCategory(
+            @ApiParam(value = "category code") @RequestParam String category,
+            @ApiParam(required = false) Pageable pageable,
+            @ApiParam(required = false) @RequestParam(required = false) String itemName,
+            @ApiParam(required = false) @RequestParam(required = false) String itemModelName,
+            @ApiParam(required = false) @RequestParam(required = false) String itemBrandName) throws Exception {
         CategorySearch categorySearch = CategoryParser.parseCategoryString(category);
         ItemSearchCondition itemSearchCondition = new ItemSearchCondition();
         itemSearchCondition.itemName = itemName;
