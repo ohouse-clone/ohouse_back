@@ -4,6 +4,7 @@ import com.clone.ohouse.store.domain.category.CategoryRepository;
 import com.clone.ohouse.store.domain.category.CategorySearch;
 import com.clone.ohouse.store.domain.category.ItemCategoryRepository;
 import com.clone.ohouse.store.domain.item.ItemRepository;
+import com.clone.ohouse.store.domain.item.ItemRequestDto;
 import com.clone.ohouse.store.domain.item.bed.*;
 import com.clone.ohouse.store.domain.category.Category;
 import com.clone.ohouse.store.domain.item.Item;
@@ -120,7 +121,7 @@ class ItemServiceTest {
         itemService.save(new Bed("침대2", "모델2", "브랜드2", BedSize.K, BedColor.BLUE), condition1);
         itemService.save(new Bed("침대3", "모델3", "브랜드3", BedSize.K, BedColor.BLUE), condition1);
         itemService.save(new Bed("침대4", "모델4", "브랜드4", BedSize.K, BedColor.BLUE), condition1);
-        itemService.save(new StorageBed("수납침대1", "수납모델1", "수납브랜드1", Material.FAKE_LEATHER ), condition1);
+        itemService.save(new StorageBed("수납침대1", "수납모델1", "수납브랜드1", Material.FAKE_LEATHER ), condition2);
         itemService.save(new StorageBed("수납침대2", "수납모델2", "수납브랜드2", Material.FAKE_LEATHER ), condition2);
 
 
@@ -129,9 +130,12 @@ class ItemServiceTest {
         ItemBundleViewDto dto = itemService.findByCategory(condition1, pageable);
 
         //then
-        Assertions.assertThat(dto.getTotalNum()).isEqualTo(4);
-        Assertions.assertThat(dto.getItems()).extracting()
-
+        Assertions.assertThat(dto.getTotalNum()).isEqualTo(4L);
+        Assertions.assertThat(dto.getItemNum()).isEqualTo(3L);
+        Assertions.assertThat(dto.getItems())
+                .map((irdto) -> (BedRequestDto)irdto)
+                .extracting(BedRequestDto::getName)
+                .containsExactly("침대1", "침대2", "침대3");
     }
 
 }
