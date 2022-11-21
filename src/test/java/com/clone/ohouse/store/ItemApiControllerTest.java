@@ -16,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -24,6 +25,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.NoSuchElementException;
@@ -125,6 +127,42 @@ class ItemApiControllerTest {
         Assertions.assertThat(savedItem instanceof StorageBed).isTrue();
     }
 
+    @Transactional
+    @Test
+    void findByCategory() throws Exception {
+        //given
+        String url = "http://localhost:" + port + "/store/items";
+        String category1 = "20_22_20_20";
+        String category2 = "20_22_20_21";
+        CategorySearch condition1 = CategoryParser.parseCategoryString(category1);
+        CategorySearch condition2 = CategoryParser.parseCategoryString(category2);
+        itemService.save(new Bed("침대1","모델1","브랜드1",BedSize.K, BedColor.BLUE), condition1);
+        itemService.save(new Bed("침대2","모델2","브랜드2",BedSize.K, BedColor.BLUE), condition1);
+        itemService.save(new Bed("침대3","모델3","브랜드3",BedSize.K, BedColor.BLUE), condition1);
+        itemService.save(new Bed("침대4","모델4","브랜드4",BedSize.K, BedColor.BLUE), condition1);
+        itemService.save(new StorageBed("수납1", "수모1", "수모브1", Material.FAKE_LEATHER), condition2);
+        itemService.save(new StorageBed("수납2", "수모2", "수모브2", Material.FAKE_LEATHER), condition2);
+        itemService.save(new StorageBed("수납3", "수모3", "수모브3", Material.FAKE_LEATHER), condition2);
+
+        //when
+        ResultActions perform = mvc.perform(MockMvcRequestBuilders.get(url)
+                .queryParam("category", category1)
+                .queryParam("page", "0")
+                .queryParam("size", "3"));
+
+
+        //then
+        perform.andExpect(MockMvcResultMatchers.status().isOk());
+        perform.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_VALUE));
+        perform.andExpect(MockMvcResultMatchers.jsonPath("$.totalNum").value(4L));
+        perform.andExpect(MockMvcResultMatchers.jsonPath("$.itemNum").value(3L));
+        perform.andExpect(MockMvcResultMatchers.jsonPath("$.items[0].name").value("침대1"));
+        perform.andExpect(MockMvcResultMatchers.jsonPath("$.items[1].name").value("침대2"));
+        perform.andExpect(MockMvcResultMatchers.jsonPath("$.items[2].name").value("침대3"));
+        perform.andExpect(MockMvcResultMatchers.jsonPath("$.items[0].size").value("K"));
+        perform.andExpect(MockMvcResultMatchers.jsonPath("$.items[1].color").value("BLUE"));
+    }
+
     @Test
     void delete() throws Exception {
         //given
@@ -165,7 +203,8 @@ class ItemApiControllerTest {
         categoryRepository.save(savedCategory1_1_3);
         categoryRepository.save(savedCategory1_1_1_1);
         categoryRepository.save(savedCategory1_1_1_2);
-
     }
+
+
 
 }
