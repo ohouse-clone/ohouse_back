@@ -3,28 +3,22 @@ package com.clone.ohouse.store.domain.product.dto;
 import com.clone.ohouse.store.domain.item.Item;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 @Getter
 public class ProductUpdateRequestDto {
-    private Item item;
+    private Long itemId;
     private String productName;
     private Integer price;
     private Integer stock;
     private Integer rateDiscount;
-    private String size;
-    private String color;
 
-    private Character optionalYn;
-
-    @Builder
-    public ProductUpdateRequestDto(Item item, String productName, Integer price, Integer stock, Integer rateDiscount, String size, String color, Character optionalYn) {
-        this.item = item;
+    public ProductUpdateRequestDto(Long itemId, String productName, Integer price, Integer stock, Integer rateDiscount) {
+        this.itemId = itemId;
         this.productName = productName;
         this.price = price;
         this.stock = stock;
         this.rateDiscount = rateDiscount;
-        this.size = size;
-        this.color = color;
-        this.optionalYn = optionalYn;
     }
 }
