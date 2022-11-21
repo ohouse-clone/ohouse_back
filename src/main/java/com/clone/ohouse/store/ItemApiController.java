@@ -25,22 +25,26 @@ public class ItemApiController {
     private final ItemService itemService;
     private final CategoryRepository categoryRepository;
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/store/item/bed")
     HttpEntity<Long> save(@RequestParam String category, @RequestBody BedRequestDto requestDto) throws Exception {
         return saveWithValidate(category, requestDto);
     }
 
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/store/item/storagebed")
     HttpEntity<Long> save(@RequestParam String category, @RequestBody StorageBedRequestDto requestDto) throws Exception {
         return saveWithValidate(category, requestDto);
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/store/item/{id}")
     void delete(@PathVariable Long id) throws Exception{
         itemService.delete(id);
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/store/items")
     HttpEntity<ItemBundleViewDto> findByCategory(@RequestParam String category, Pageable pageable) throws Exception{
         CategorySearch categorySearch = CategoryParser.parseCategoryString(category);
