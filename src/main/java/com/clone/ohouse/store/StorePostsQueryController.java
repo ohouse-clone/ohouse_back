@@ -23,6 +23,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Api(
+        value = "등록된 게시글 조회 API"
+)
 @RequiredArgsConstructor
 @RestController
 public class StorePostsQueryController {

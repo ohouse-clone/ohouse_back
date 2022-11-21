@@ -2,8 +2,10 @@ package com.clone.ohouse.store;
 
 import com.clone.ohouse.store.domain.category.*;
 import com.clone.ohouse.store.domain.category.dto.CategoryRequestDto;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -14,6 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Api(
+        value = "Category API"
+)
+@RequestMapping("/store/api/v1/category")
 @RequiredArgsConstructor
 @RestController
 public class CategoryController {
@@ -24,7 +30,7 @@ public class CategoryController {
             notes = "카테고리를 등록합니다."
     )
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/store/api/v1/category")
+    @PostMapping("/")
     public Long save(@RequestBody CategoryRequestDto saveRequestDto) {
         Category category = new Category(saveRequestDto.getName(), saveRequestDto.getCode());
         if (saveRequestDto.getParentId() != null)
@@ -37,8 +43,10 @@ public class CategoryController {
             notes = "등록된 카테고리를 수정합니다."
     )
     @ApiImplicitParam(name = "id", value = "수정할 카테고리의 id")
-    @PutMapping("/store/api/v1/category/{id}")
-    public HttpEntity<CategoryRequestDto> update(@PathVariable Long id, @RequestBody CategoryRequestDto updateRequestDto) {
+    @PutMapping("/{id}")
+    public HttpEntity<CategoryRequestDto> update(
+            @ApiParam(value = "category id") @PathVariable Long id,
+            @RequestBody CategoryRequestDto updateRequestDto) {
         Category category = categoryRepository.findById(id).orElse(null);
         if (category == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
@@ -54,8 +62,9 @@ public class CategoryController {
             notes = "ID를 아는 카테고리를 찾고 그 자식 카테고리들을 찾습니다"
     )
     @ApiImplicitParam(name = "id", value = "찾을 카테고리의 id")
-    @GetMapping("/store/api/v1/category/{id}")
-    public HttpEntity<CategoryRequestDto> findById(@PathVariable Long id) {
+    @GetMapping("/{id}")
+    public HttpEntity<CategoryRequestDto> findById(
+            @ApiParam(value = "category id") @PathVariable Long id) {
         Category category = categoryRepository.findById(id).orElse(null);
         if (category == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
@@ -67,8 +76,9 @@ public class CategoryController {
             notes = "카테고리를 삭제합니다"
     )
     @ApiImplicitParam(name = "id", value = "삭제할 카테고리 id")
-    @DeleteMapping("/store/api/v1/category/{id}")
-    public void delete(@PathVariable Long id) {
+    @DeleteMapping("/{id}")
+    public void delete(
+            @ApiParam(value = "category id") @PathVariable Long id) {
         Category category = categoryRepository.findById(id).orElse(null);
         if (category != null) categoryRepository.delete(category);
     }

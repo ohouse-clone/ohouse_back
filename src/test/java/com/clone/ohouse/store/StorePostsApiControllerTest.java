@@ -39,7 +39,7 @@ class StorePostsApiControllerTest {
     @Autowired
     private WebApplicationContext context;
 
-    private final String mappingUrl = "/store/productions";
+    private final String mappingUrl = "/store/api/v1/productions";
 
     @BeforeEach
     public void setup() {
@@ -56,7 +56,7 @@ class StorePostsApiControllerTest {
     @Test
     void save() throws Exception {
         //given
-        String url = "http://localhost:" + port + mappingUrl;
+        String url = "http://localhost:" + port + mappingUrl + "/";
         String title = "상품제목";
         String content = "klasdfjlkj34t42363gjerwovm";
         String author = "JJH";

@@ -9,7 +9,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+@Api(
+        value = "제품게시글 API"
+)
 @RequiredArgsConstructor
+@RequestMapping("/store/api/v1/productions")
 @RestController
 public class StorePostsApiController {
     private final StorePostsService boardService;
@@ -22,7 +26,7 @@ public class StorePostsApiController {
             @ApiResponse(code = 500, message = "server error")
     })
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/store/productions")
+    @PostMapping("/")
     public void save(@RequestBody StorePostsSaveRequestDto saveRequestDto) {
         boardService.save(saveRequestDto);
     }
@@ -34,10 +38,10 @@ public class StorePostsApiController {
     @ApiResponse(code = 500, message = "server error")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "제품 게시글의 id (제품 id X)"),
-            @ApiImplicitParam(name = "updateRequestDto", value = " df dfsf")
+            @ApiImplicitParam(name = "updateRequestDto", value = "게시글 update dto")
     })
     @ResponseStatus(HttpStatus.OK)
-    @PutMapping("/store/productions/{id}")
+    @PutMapping("/{id}")
     public void update(@PathVariable Long id, @RequestBody StorePostsUpdateRequestDto updateRequestDto) {
         boardService.update(id, updateRequestDto);
     }
@@ -49,7 +53,7 @@ public class StorePostsApiController {
     @ApiResponse(code = 500, message = "server error")
     @ApiImplicitParam(name = "id", value = "제품 게시글의 id (제품 id X)")
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/store/productions/{id}")
+    @GetMapping("/{id}")
     public StorePostsResponseDto findById(@PathVariable Long id) {
         return boardService.findById(id);
     }
@@ -60,7 +64,7 @@ public class StorePostsApiController {
     @ApiResponse(code = 500, message = "server error")
     @ApiImplicitParam(name = "id", value = "제품 게시글의 id (제품 id X)")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping("/store/productions/{id}")
+    @DeleteMapping("/{id}")
 
     public Long delete(@PathVariable Long id){
         System.out.println("Call delete");
