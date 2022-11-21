@@ -14,12 +14,15 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<Item> findByCategory(Long categoryId, Pageable pageable) {
+    public List<Item> findByCategory(Long categoryId, Pageable pageable, ItemSearchCondition itemSearchCondition) {
         List<Item> result = queryFactory
                 .select(item)
                 .from(item)
                 .join(item.itemCategories, itemCategory)
-                .where(itemCategory.category.id.eq(categoryId))
+                .where(itemCategory.category.id.eq(categoryId),
+                        itemSearchCondition.eqItemName(),
+                        itemSearchCondition.eqBrandName(),
+                        itemSearchCondition.eqModelName())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -28,12 +31,15 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
     }
 
     @Override
-    public Long findTotalNumByCategory(Long categoryId) {
+    public Long findTotalNumByCategory(Long categoryId, ItemSearchCondition itemSearchCondition) {
         return queryFactory
                 .select(item.count())
                 .from(item)
                 .join(item.itemCategories, itemCategory)
-                .where(itemCategory.category.id.eq(categoryId))
+                .where(itemCategory.category.id.eq(categoryId),
+                        itemSearchCondition.eqItemName(),
+                        itemSearchCondition.eqBrandName(),
+                        itemSearchCondition.eqModelName())
                 .fetchOne();
     }
 }
