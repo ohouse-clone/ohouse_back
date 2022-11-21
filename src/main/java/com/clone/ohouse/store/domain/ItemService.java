@@ -68,7 +68,7 @@ public class ItemService {
             list = items.stream().map((i) -> new StorageBedRequestDto((StorageBed)i)).collect(Collectors.toCollection(ArrayList<StorageBedRequestDto>::new));
         else throw new RuntimeException("매칭되는 카테고리와 타입이 없습니다");
 
-        return new ItemBundleViewDto(totalNum, list);
+        return new ItemBundleViewDto(totalNum, Long.valueOf(list.size()) ,list);
     }
 
     private void attachCategoryTagWith(CategorySearch condition , Item item) throws Exception {
