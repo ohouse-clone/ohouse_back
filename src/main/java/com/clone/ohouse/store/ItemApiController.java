@@ -9,8 +9,11 @@ import com.clone.ohouse.store.domain.item.Item;
 import com.clone.ohouse.store.domain.item.ItemRequestDto;
 import com.clone.ohouse.store.domain.item.bed.dto.BedRequestDto;
 import com.clone.ohouse.store.domain.item.bed.dto.StorageBedRequestDto;
+import com.clone.ohouse.store.domain.item.dto.ItemBundleViewDto;
 import com.clone.ohouse.store.domain.item.itemselector.ItemSelector;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +39,15 @@ public class ItemApiController {
     @DeleteMapping("/store/item/{id}")
     void delete(@PathVariable Long id) throws Exception{
         itemService.delete(id);
+    }
+
+    @GetMapping("/store/items")
+    HttpEntity<ItemBundleViewDto> findByCategory(@RequestParam String category, Pageable pageable) throws Exception{
+        CategorySearch categorySearch = CategoryParser.parseCategoryString(category);
+
+        if(categorySearch.getCode1() == null || categorySearch.getCode2() == null || categorySearch.getCode3() == null || categorySearch.getCode4() == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        return new ResponseEntity<>(itemService.findByCategory(categorySearch, pageable), HttpStatus.OK);
     }
 
 
