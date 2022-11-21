@@ -5,6 +5,7 @@ import com.clone.ohouse.store.domain.category.CategorySearch;
 import com.clone.ohouse.store.domain.category.ItemCategoryRepository;
 import com.clone.ohouse.store.domain.item.ItemRepository;
 import com.clone.ohouse.store.domain.item.ItemRequestDto;
+import com.clone.ohouse.store.domain.item.ItemSearchCondition;
 import com.clone.ohouse.store.domain.item.bed.*;
 import com.clone.ohouse.store.domain.category.Category;
 import com.clone.ohouse.store.domain.item.Item;
@@ -112,7 +113,7 @@ class ItemServiceTest {
     }
 
     @Test
-    void findByCategory() throws Exception {
+    void findByCategoryWithNoParams() throws Exception {
         //given
         CategorySearch condition1 = new CategorySearch(20L, 22L, 20L, 20L);
         CategorySearch condition2 = new CategorySearch(20L, 22L, 20L, 21L);
@@ -127,7 +128,7 @@ class ItemServiceTest {
 
         //when
         Pageable pageable = PageRequest.of(0, 3);
-        ItemBundleViewDto dto = itemService.findByCategory(condition1, pageable);
+        ItemBundleViewDto dto = itemService.findByCategory(condition1, pageable, new ItemSearchCondition());
 
         //then
         Assertions.assertThat(dto.getTotalNum()).isEqualTo(4L);
@@ -137,5 +138,59 @@ class ItemServiceTest {
                 .extracting(BedRequestDto::getName)
                 .containsExactly("침대1", "침대2", "침대3");
     }
+    @Test
+    void findByCategoryWithParams1() throws Exception {
+        //given
+        CategorySearch condition1 = new CategorySearch(20L, 22L, 20L, 20L);
+        CategorySearch condition2 = new CategorySearch(20L, 22L, 20L, 21L);
+        CategorySearch condition3 = new CategorySearch(20L, 22L, 20L, 22L);
+        itemService.save(new Bed("침대1", "모델1", "브랜드1", BedSize.K, BedColor.BLUE), condition1);
+        itemService.save(new Bed("침대2", "모델2", "브랜드2", BedSize.K, BedColor.BLUE), condition1);
+        itemService.save(new Bed("침대3", "모델3", "브랜드3", BedSize.K, BedColor.BLUE), condition1);
+        itemService.save(new Bed("침대4", "모델4", "브랜드4", BedSize.K, BedColor.BLUE), condition1);
+        itemService.save(new StorageBed("수납침대1", "수납모델1", "수납브랜드1", Material.FAKE_LEATHER ), condition2);
+        itemService.save(new StorageBed("수납침대2", "수납모델2", "수납브랜드2", Material.FAKE_LEATHER ), condition2);
+        ItemSearchCondition itemSearchCondition = new ItemSearchCondition();
+        itemSearchCondition.itemName = "침대2";
 
+        //when
+        Pageable pageable = PageRequest.of(0, 3);
+        ItemBundleViewDto dto = itemService.findByCategory(condition1, pageable, itemSearchCondition);
+
+        //then
+        Assertions.assertThat(dto.getTotalNum()).isEqualTo(1L);
+        Assertions.assertThat(dto.getItemNum()).isEqualTo(1L);
+        Assertions.assertThat(dto.getItems())
+                .map((irdto) -> (BedRequestDto)irdto)
+                .extracting(BedRequestDto::getName)
+                .containsExactly("침대2");
+        Assertions.assertThat(dto.getItems())
+                .map((irdto) -> (BedRequestDto)irdto)
+                .extracting(BedRequestDto::getColor)
+                .containsExactly(BedColor.BLUE);
+    }
+    @Test
+    void findByCategoryWithParams2() throws Exception {
+        //given
+        CategorySearch condition1 = new CategorySearch(20L, 22L, 20L, 20L);
+        CategorySearch condition2 = new CategorySearch(20L, 22L, 20L, 21L);
+        CategorySearch condition3 = new CategorySearch(20L, 22L, 20L, 22L);
+        itemService.save(new Bed("침대1", "모델1", "브랜드1", BedSize.K, BedColor.BLUE), condition1);
+        itemService.save(new Bed("침대2", "모델2", "브랜드2", BedSize.K, BedColor.BLUE), condition1);
+        itemService.save(new Bed("침대3", "모델3", "브랜드3", BedSize.K, BedColor.BLUE), condition1);
+        itemService.save(new Bed("침대4", "모델4", "브랜드4", BedSize.K, BedColor.BLUE), condition1);
+        itemService.save(new StorageBed("수납침대1", "수납모델1", "수납브랜드1", Material.FAKE_LEATHER ), condition2);
+        itemService.save(new StorageBed("수납침대2", "수납모델2", "수납브랜드2", Material.FAKE_LEATHER ), condition2);
+        ItemSearchCondition itemSearchCondition = new ItemSearchCondition();
+        itemSearchCondition.itemName = "침대2";
+        itemSearchCondition.modelName = "모델1";
+
+        //when
+        Pageable pageable = PageRequest.of(0, 3);
+        ItemBundleViewDto dto = itemService.findByCategory(condition1, pageable, itemSearchCondition);
+
+        //then
+        Assertions.assertThat(dto.getTotalNum()).isEqualTo(0L);
+        Assertions.assertThat(dto.getItemNum()).isEqualTo(0L);
+    }
 }

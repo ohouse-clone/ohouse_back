@@ -163,6 +163,72 @@ class ItemApiControllerTest {
         perform.andExpect(MockMvcResultMatchers.jsonPath("$.items[1].color").value("BLUE"));
     }
 
+    @Transactional
+    @Test
+    void findByCategoryWith2Condition() throws Exception {
+        //given
+        String url = "http://localhost:" + port + "/store/items";
+        String category1 = "20_22_20_20";
+        String category2 = "20_22_20_21";
+        CategorySearch condition1 = CategoryParser.parseCategoryString(category1);
+        CategorySearch condition2 = CategoryParser.parseCategoryString(category2);
+        itemService.save(new Bed("침대1","모델1","브랜드1",BedSize.K, BedColor.BLUE), condition1);
+        itemService.save(new Bed("침대2","모델2","브랜드2",BedSize.K, BedColor.BLUE), condition1);
+        itemService.save(new Bed("침대3","모델3","브랜드3",BedSize.K, BedColor.BLUE), condition1);
+        itemService.save(new Bed("침대4","모델4","브랜드4",BedSize.K, BedColor.BLUE), condition1);
+        itemService.save(new StorageBed("수납1", "수모1", "수모브1", Material.FAKE_LEATHER), condition2);
+        itemService.save(new StorageBed("수납2", "수모2", "수모브2", Material.FAKE_LEATHER), condition2);
+        itemService.save(new StorageBed("수납3", "수모3", "수모브3", Material.FAKE_LEATHER), condition2);
+
+        //when
+        ResultActions perform = mvc.perform(MockMvcRequestBuilders.get(url)
+                .queryParam("category", category1)
+                .queryParam("page", "0")
+                .queryParam("size", "3")
+                .queryParam("itemName", "침대3")
+                .queryParam("itemBrandName", "모델2"));
+
+        //then
+        perform.andExpect(MockMvcResultMatchers.status().is4xxClientError());
+    }
+    @Transactional
+    @Test
+    void findByCategoryWith1Condition() throws Exception {
+        //given
+        String url = "http://localhost:" + port + "/store/items";
+        String category1 = "20_22_20_20";
+        String category2 = "20_22_20_21";
+        CategorySearch condition1 = CategoryParser.parseCategoryString(category1);
+        CategorySearch condition2 = CategoryParser.parseCategoryString(category2);
+        itemService.save(new Bed("침대1","모델1","브랜드1",BedSize.K, BedColor.BLUE), condition1);
+        itemService.save(new Bed("침대2","모델2","브랜드2",BedSize.K, BedColor.BLUE), condition1);
+        itemService.save(new Bed("침대3","모델3-1","브랜드3",BedSize.K, BedColor.BLUE), condition1);
+        itemService.save(new Bed("침대3","모델3-2","브랜드3",BedSize.CK, BedColor.BLUE), condition1);
+        itemService.save(new Bed("침대3","모델3-3","브랜드3",BedSize.LK, BedColor.BLUE), condition1);
+        itemService.save(new Bed("침대4","모델4","브랜드4",BedSize.K, BedColor.BLUE), condition1);
+        itemService.save(new StorageBed("수납1", "수모1", "수모브1", Material.FAKE_LEATHER), condition2);
+        itemService.save(new StorageBed("수납2", "수모2", "수모브2", Material.FAKE_LEATHER), condition2);
+        itemService.save(new StorageBed("수납3", "수모3", "수모브3", Material.FAKE_LEATHER), condition2);
+
+        //when
+        ResultActions perform = mvc.perform(MockMvcRequestBuilders.get(url)
+                .queryParam("category", category1)
+                .queryParam("page", "0")
+                .queryParam("size", "3")
+                .queryParam("itemName", "침대3"));
+
+        //then
+        perform.andExpect(MockMvcResultMatchers.status().isOk());
+        perform.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_VALUE));
+        perform.andExpect(MockMvcResultMatchers.jsonPath("$.totalNum").value(3L));
+        perform.andExpect(MockMvcResultMatchers.jsonPath("$.itemNum").value(3L));
+        perform.andExpect(MockMvcResultMatchers.jsonPath("$.items[0].name").value("침대3"));
+        perform.andExpect(MockMvcResultMatchers.jsonPath("$.items[1].name").value("침대3"));
+        perform.andExpect(MockMvcResultMatchers.jsonPath("$.items[2].name").value("침대3"));
+        perform.andExpect(MockMvcResultMatchers.jsonPath("$.items[0].size").value("K"));
+        perform.andExpect(MockMvcResultMatchers.jsonPath("$.items[2].size").value("LK"));
+    }
+
     @Test
     void delete() throws Exception {
         //given
