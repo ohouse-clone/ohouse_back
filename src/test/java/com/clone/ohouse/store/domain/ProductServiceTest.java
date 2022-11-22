@@ -8,6 +8,7 @@ import com.clone.ohouse.store.domain.item.bed.BedColor;
 import com.clone.ohouse.store.domain.item.bed.BedSize;
 import com.clone.ohouse.store.domain.product.Product;
 import com.clone.ohouse.store.domain.product.ProductRepository;
+import com.clone.ohouse.store.domain.product.dto.ProductDto;
 import com.clone.ohouse.store.domain.product.dto.ProductSaveRequestDto;
 import com.clone.ohouse.store.domain.product.dto.ProductUpdateRequestDto;
 import org.assertj.core.api.Assertions;
@@ -55,6 +56,7 @@ class ProductServiceTest {
         c5.addParent(c3);
         Category c6 = new Category("저상형침대",22L);
         c6.addParent(c3);
+
 
         categoryRepository.save(c1);
         categoryRepository.save(c2);
@@ -138,5 +140,25 @@ class ProductServiceTest {
 
         //then
         Assertions.assertThat(productRepository.count()).isEqualTo(0);
+    }
+    @Test
+    void findByIdWithFetch() throws Exception {
+        //given
+        ProductSaveRequestDto dto1 = new ProductSaveRequestDto(
+                saveItemId1,
+                "제품1",
+                1000,
+                100,
+                50);
+        Long saveProductId1 = productService.save(dto1);
+
+        //when
+        ProductDto result = productService.findByIdWithFetch(saveProductId1);
+
+        //then
+        Assertions.assertThat(result.getId()).isEqualTo(saveProductId1);
+        Assertions.assertThat(result.getProductName()).isEqualTo("제품1");
+        Assertions.assertThat(result.getPrice()).isEqualTo(1000);
+        Assertions.assertThat(result.getItemId()).isEqualTo(saveItemId1);
     }
 }

@@ -4,6 +4,7 @@ import com.clone.ohouse.store.domain.item.Item;
 import com.clone.ohouse.store.domain.item.ItemRepository;
 import com.clone.ohouse.store.domain.product.ProductRepository;
 import com.clone.ohouse.store.domain.product.dto.ProductAllListResponseDto;
+import com.clone.ohouse.store.domain.product.dto.ProductDto;
 import com.clone.ohouse.store.domain.product.dto.ProductSaveRequestDto;
 import com.clone.ohouse.store.domain.product.dto.ProductUpdateRequestDto;
 import com.clone.ohouse.store.domain.product.Product;
@@ -55,8 +56,9 @@ public class ProductService {
         productRepository.deleteById(id);
     }
 
-    public void findById(Long id){
-        return productRepository.findById(id).orElseThrow(() -> new NoSuchElementException("잘못된 product id : " + id));
+    public ProductDto findByIdWithFetch(Long id) throws Exception{
+        Product product = productRepository.findByIdWithFetch(id).orElseThrow(() -> new NoSuchElementException("잘못된 product id : " + id));
+        return new ProductDto(product);
     }
 
 
