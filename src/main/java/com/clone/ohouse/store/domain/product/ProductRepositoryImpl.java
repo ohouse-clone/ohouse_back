@@ -50,7 +50,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom{
         return queryFactory
                 .select(product.count())
                 .from(product)
-                .join(product.item, item).fetchJoin()
+                .join(product.item, item)
                 .where(item.id.eq(itemId),
                         productSearchCondition.eqProductName(),
                         productSearchCondition.goePriceBegin(),
