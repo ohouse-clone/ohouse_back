@@ -48,11 +48,13 @@ public class ProductService {
 
 
     public void update(Long productId, ProductUpdateRequestDto requestDto) throws Exception{
+        Item item = null;
+        StorePosts post = null;
+
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 Product : " + productId));
-        Item item = itemRepository.findById(requestDto.getItemId())
+        if(requestDto.getItemId() != null) item = itemRepository.findById(requestDto.getItemId())
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 item : " + requestDto.getItemId()));
-        StorePosts post = null;
         if(requestDto.getStorePostId() != null) post = storePostsRepository.findById(requestDto.getStorePostId())
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 post id : " + requestDto.getStorePostId()));
 
