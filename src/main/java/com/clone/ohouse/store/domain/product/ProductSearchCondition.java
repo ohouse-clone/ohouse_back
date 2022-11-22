@@ -1,6 +1,7 @@
 package com.clone.ohouse.store.domain.product;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,6 +15,18 @@ public class ProductSearchCondition {
     private Integer priceEnd;
     private Integer stockBegin;
     private Long popularBegin;
+
+    @Builder
+    public ProductSearchCondition(String productName, Integer priceBegin, Integer priceEnd, Integer stockBegin, Long popularBegin) {
+        this.productName = productName;
+        this.priceBegin = priceBegin;
+        this.priceEnd = priceEnd;
+        this.stockBegin = stockBegin;
+        this.popularBegin = popularBegin;
+    }
+
+    public ProductSearchCondition() {
+    }
 
     public BooleanExpression eqProductName(){
         if(productName == null) return  null;

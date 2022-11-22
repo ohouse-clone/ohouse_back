@@ -15,6 +15,7 @@ public class ProductUpdateRequestDto {
     private Integer rateDiscount;
     private Long storePostId;
 
+    @Builder
     public ProductUpdateRequestDto(Long itemId, String productName, Integer price, Integer stock, Integer rateDiscount, Long storePostId) {
         this.itemId = itemId;
         this.productName = productName;

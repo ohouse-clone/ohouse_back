@@ -16,6 +16,7 @@ public class ProductSaveRequestDto {
     private Integer rateDiscount;
     private Long storePostId;
 
+    @Builder
     public ProductSaveRequestDto(Long itemId, String productName, Integer price, Integer stock, Integer rateDiscount, Long storePostId) {
         this.itemId = itemId;
         this.productName = productName;
