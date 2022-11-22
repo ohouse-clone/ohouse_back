@@ -4,7 +4,7 @@ import com.clone.ohouse.store.domain.product.Product;
 import lombok.Getter;
 
 @Getter
-public class ProductDto {
+public class ProductDetailDto {
     private Long id;
     private Long itemId;
     private String productName;
@@ -14,7 +14,7 @@ public class ProductDto {
     private Long popular;
     private Long storePostId;
 
-    public ProductDto(Product entity){
+    public ProductDetailDto(Product entity){
         id = entity.getId();
         if(entity.getItem() != null) itemId = entity.getItem().getId();
         productName = entity.getProductName();

@@ -8,7 +8,7 @@ import com.clone.ohouse.store.domain.item.bed.BedColor;
 import com.clone.ohouse.store.domain.item.bed.BedSize;
 import com.clone.ohouse.store.domain.product.Product;
 import com.clone.ohouse.store.domain.product.ProductRepository;
-import com.clone.ohouse.store.domain.product.dto.ProductDto;
+import com.clone.ohouse.store.domain.product.dto.ProductDetailDto;
 import com.clone.ohouse.store.domain.product.dto.ProductSaveRequestDto;
 import com.clone.ohouse.store.domain.product.dto.ProductUpdateRequestDto;
 import org.assertj.core.api.Assertions;
@@ -22,11 +22,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
 import java.util.NoSuchElementException;
 
-import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -166,7 +164,7 @@ class ProductServiceTest {
 
 
         //when
-        ProductDto result = productService.findByIdWithFetchJoin(saveProductId1);
+        ProductDetailDto result = productService.findByIdWithFetchJoin(saveProductId1);
 
 
         //then
