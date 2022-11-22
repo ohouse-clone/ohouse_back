@@ -8,9 +8,8 @@ import com.clone.ohouse.store.domain.item.bed.BedColor;
 import com.clone.ohouse.store.domain.item.bed.BedSize;
 import com.clone.ohouse.store.domain.product.Product;
 import com.clone.ohouse.store.domain.product.ProductRepository;
-import com.clone.ohouse.store.domain.product.dto.ProductDetailDto;
-import com.clone.ohouse.store.domain.product.dto.ProductSaveRequestDto;
-import com.clone.ohouse.store.domain.product.dto.ProductUpdateRequestDto;
+import com.clone.ohouse.store.domain.product.ProductSearchCondition;
+import com.clone.ohouse.store.domain.product.dto.*;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -172,5 +172,149 @@ class ProductServiceTest {
         Assertions.assertThat(result.getProductName()).isEqualTo("제품1");
         Assertions.assertThat(result.getPrice()).isEqualTo(1000);
         Assertions.assertThat(result.getItemId()).isEqualTo(saveItemId1);
+    }
+
+    @Transactional
+    @Test
+    void findByItem() throws Exception{
+        //given
+        ProductSaveRequestDto dto1_1 = new ProductSaveRequestDto(saveItemId1, "제품1-1", 1100, 110, 50, null);
+        ProductSaveRequestDto dto1_2 = new ProductSaveRequestDto(saveItemId1, "제품1-2", 1200, 120, 55, null);
+        ProductSaveRequestDto dto1_3 = new ProductSaveRequestDto(saveItemId1, "제품1-2", 1300, 130, 55, null);
+        ProductSaveRequestDto dto2_1 = new ProductSaveRequestDto(saveItemId2, "제품2-1", 2100, 210, 55, null);
+        ProductSaveRequestDto dto2_2 = new ProductSaveRequestDto(saveItemId2, "제품2-2", 2200, 220, 55, null);
+        ProductSaveRequestDto dto2_3 = new ProductSaveRequestDto(saveItemId2, "제품2-3", 2300, 230, 55, null);
+        Long saveProductId1_1 = productService.save(dto1_1);
+        Long saveProductId1_2 = productService.save(dto1_2);
+        Long saveProductId1_3 = productService.save(dto1_3);
+        Long saveProductId2_1 = productService.save(dto2_1);
+        Long saveProductId2_2 = productService.save(dto2_2);
+        Long saveProductId2_3 = productService.save(dto2_3);
+        ProductSearchCondition productSearchCondition = new ProductSearchCondition();
+        //when
+        ProductListResponseDto result = productService.findByItemWithProductCondition(PageRequest.of(0, 2), saveItemId2, productSearchCondition);
+
+
+        //then
+        Assertions.assertThat(result.getTotalNum()).isEqualTo(3);
+        Assertions.assertThat(result.getProductNum()).isEqualTo(2);
+        Assertions.assertThat(result.getProducts()).extracting(ProductResponseDto::getProductName)
+                .containsExactly("제품2-1", "제품2-2");
+    }
+    @Transactional
+    @Test
+    void findByItemWithProductCondition() throws Exception{
+        //given
+        ProductSaveRequestDto dto1_1 = new ProductSaveRequestDto(saveItemId1, "제품1-1", 1100, 110, 50, null);
+        ProductSaveRequestDto dto1_2 = new ProductSaveRequestDto(saveItemId1, "제품1-2", 1200, 120, 55, null);
+        ProductSaveRequestDto dto1_3 = new ProductSaveRequestDto(saveItemId1, "제품1-2", 1300, 130, 55, null);
+        ProductSaveRequestDto dto2_1 = new ProductSaveRequestDto(saveItemId2, "제품2-1", 2100, 210, 55, null);
+        ProductSaveRequestDto dto2_2 = new ProductSaveRequestDto(saveItemId2, "제품2-2", 2200, 220, 55, null);
+        ProductSaveRequestDto dto2_3 = new ProductSaveRequestDto(saveItemId2, "제품2-3", 2300, 230, 55, null);
+        Long saveProductId1_1 = productService.save(dto1_1);
+        Long saveProductId1_2 = productService.save(dto1_2);
+        Long saveProductId1_3 = productService.save(dto1_3);
+        Long saveProductId2_1 = productService.save(dto2_1);
+        Long saveProductId2_2 = productService.save(dto2_2);
+        Long saveProductId2_3 = productService.save(dto2_3);
+        ProductSearchCondition productSearchCondition = new ProductSearchCondition();
+        productSearchCondition.setProductName("제품2-3");
+        //when
+        ProductListResponseDto result = productService.findByItemWithProductCondition(PageRequest.of(0, 2), saveItemId2, productSearchCondition);
+
+
+        //then
+        Assertions.assertThat(result.getTotalNum()).isEqualTo(1);
+        Assertions.assertThat(result.getProductNum()).isEqualTo(1);
+        Assertions.assertThat(result.getProducts()).extracting(ProductResponseDto::getProductName)
+                .containsExactly("제품2-3");
+    }
+
+    @Transactional
+    @Test
+    void findByItemWithProductConditionWithConditionDetail1() throws Exception{
+        //given
+        ProductSaveRequestDto dto1_1 = new ProductSaveRequestDto(saveItemId1, "제품1-1", 1100, 110, 50, null);
+        ProductSaveRequestDto dto1_2 = new ProductSaveRequestDto(saveItemId1, "제품1-2", 1200, 120, 55, null);
+        ProductSaveRequestDto dto1_3 = new ProductSaveRequestDto(saveItemId1, "제품1-2", 1300, 130, 55, null);
+        ProductSaveRequestDto dto2_1 = new ProductSaveRequestDto(saveItemId2, "제품2-1", 2100, 210, 55, null);
+        ProductSaveRequestDto dto2_2 = new ProductSaveRequestDto(saveItemId2, "제품2-2", 2200, 220, 55, null);
+        ProductSaveRequestDto dto2_3 = new ProductSaveRequestDto(saveItemId2, "제품2-3", 2300, 230, 55, null);
+        Long saveProductId1_1 = productService.save(dto1_1);
+        Long saveProductId1_2 = productService.save(dto1_2);
+        Long saveProductId1_3 = productService.save(dto1_3);
+        Long saveProductId2_1 = productService.save(dto2_1);
+        Long saveProductId2_2 = productService.save(dto2_2);
+        Long saveProductId2_3 = productService.save(dto2_3);
+        ProductSearchCondition productSearchCondition = new ProductSearchCondition();
+        productSearchCondition.setPriceBegin(1000);
+        productSearchCondition.setPriceEnd(1200);
+        //when
+        ProductListResponseDto result = productService.findByItemWithProductCondition(PageRequest.of(0, 3), saveItemId1, productSearchCondition);
+
+
+        //then
+        Assertions.assertThat(result.getTotalNum()).isEqualTo(2);
+        Assertions.assertThat(result.getProductNum()).isEqualTo(2);
+        Assertions.assertThat(result.getProducts()).extracting(ProductResponseDto::getProductName)
+                .containsExactly("제품1-1", "제품1-2");
+    }
+
+    @Transactional
+    @Test
+    void findByItemWithProductConditionWithConditionDetail2() throws Exception{
+        //given
+        ProductSaveRequestDto dto1_1 = new ProductSaveRequestDto(saveItemId1, "제품1-1", 1100, 110, 50, null);
+        ProductSaveRequestDto dto1_2 = new ProductSaveRequestDto(saveItemId1, "제품1-2", 1200, 120, 55, null);
+        ProductSaveRequestDto dto1_3 = new ProductSaveRequestDto(saveItemId1, "제품1-2", 1300, 130, 55, null);
+        ProductSaveRequestDto dto2_1 = new ProductSaveRequestDto(saveItemId2, "제품2-1", 2100, 210, 55, null);
+        ProductSaveRequestDto dto2_2 = new ProductSaveRequestDto(saveItemId2, "제품2-2", 2200, 220, 55, null);
+        ProductSaveRequestDto dto2_3 = new ProductSaveRequestDto(saveItemId2, "제품2-3", 2300, 230, 55, null);
+        Long saveProductId1_1 = productService.save(dto1_1);
+        Long saveProductId1_2 = productService.save(dto1_2);
+        Long saveProductId1_3 = productService.save(dto1_3);
+        Long saveProductId2_1 = productService.save(dto2_1);
+        Long saveProductId2_2 = productService.save(dto2_2);
+        Long saveProductId2_3 = productService.save(dto2_3);
+        ProductSearchCondition productSearchCondition = new ProductSearchCondition();
+        productSearchCondition.setStockBegin(220);
+
+        //when
+        ProductListResponseDto result = productService.findByItemWithProductCondition(PageRequest.of(0, 3), saveItemId2, productSearchCondition);
+
+
+        //then
+        Assertions.assertThat(result.getTotalNum()).isEqualTo(2);
+        Assertions.assertThat(result.getProductNum()).isEqualTo(2);
+        Assertions.assertThat(result.getProducts()).extracting(ProductResponseDto::getProductName)
+                .containsExactly("제품2-2", "제품2-3");
+    }
+    @Transactional
+    @Test
+    void findByItemWithProductConditionWithConditionDetail3() throws Exception{
+        //given
+        ProductSaveRequestDto dto1_1 = new ProductSaveRequestDto(saveItemId1, "제품1-1", 1100, 110, 50, null);
+        ProductSaveRequestDto dto1_2 = new ProductSaveRequestDto(saveItemId1, "제품1-2", 1200, 120, 55, null);
+        ProductSaveRequestDto dto1_3 = new ProductSaveRequestDto(saveItemId1, "제품1-2", 1300, 130, 55, null);
+        ProductSaveRequestDto dto2_1 = new ProductSaveRequestDto(saveItemId2, "제품2-1", 2100, 210, 55, null);
+        ProductSaveRequestDto dto2_2 = new ProductSaveRequestDto(saveItemId2, "제품2-2", 2200, 220, 55, null);
+        ProductSaveRequestDto dto2_3 = new ProductSaveRequestDto(saveItemId2, "제품2-3", 2300, 230, 55, null);
+        Long saveProductId1_1 = productService.save(dto1_1);
+        Long saveProductId1_2 = productService.save(dto1_2);
+        Long saveProductId1_3 = productService.save(dto1_3);
+        Long saveProductId2_1 = productService.save(dto2_1);
+        Long saveProductId2_2 = productService.save(dto2_2);
+        Long saveProductId2_3 = productService.save(dto2_3);
+        ProductSearchCondition productSearchCondition = new ProductSearchCondition();
+        productSearchCondition.setStockBegin(220);
+        productSearchCondition.setProductName("제품2-1");
+
+        //when
+        ProductListResponseDto result = productService.findByItemWithProductCondition(PageRequest.of(0, 3), saveItemId2, productSearchCondition);
+
+
+        //then
+        Assertions.assertThat(result.getTotalNum()).isEqualTo(0);
+        Assertions.assertThat(result.getProductNum()).isEqualTo(0);
     }
 }
