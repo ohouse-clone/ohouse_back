@@ -3,17 +3,17 @@ package com.clone.ohouse.store.domain;
 import com.clone.ohouse.store.domain.item.Item;
 import com.clone.ohouse.store.domain.item.ItemRepository;
 import com.clone.ohouse.store.domain.product.ProductRepository;
-import com.clone.ohouse.store.domain.product.dto.ProductAllListResponseDto;
-import com.clone.ohouse.store.domain.product.dto.ProductDetailDto;
-import com.clone.ohouse.store.domain.product.dto.ProductSaveRequestDto;
-import com.clone.ohouse.store.domain.product.dto.ProductUpdateRequestDto;
+import com.clone.ohouse.store.domain.product.ProductSearchCondition;
+import com.clone.ohouse.store.domain.product.dto.*;
 import com.clone.ohouse.store.domain.product.Product;
 import com.clone.ohouse.store.domain.storeposts.StorePosts;
 import com.clone.ohouse.store.domain.storeposts.StorePostsRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -75,12 +75,16 @@ public class ProductService {
         return new ProductDetailDto(product);
     }
 
+    public ProductListResponseDto findByItemWithProductCondition(Pageable pageable,Long itemId, ProductSearchCondition productSearchCondition){
+        //TODO: Working on
+        Item item = itemRepository.findById(itemId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 item id : " + itemId));
 
-    @Transactional(readOnly = true)
-    public List<ProductAllListResponseDto> findAllAsc() {
-        return productRepository.findAll().stream()
-                .map(ProductAllListResponseDto::new)
-                .collect(Collectors.toList());
+        Long total = productRepository.countByItemId(itemId, productSearchCondition);
+        List<Product> products = productRepository.findByItemId(pageable, itemId, productSearchCondition);
+
+        List<ProductResponseDto> list = products.stream().map((p)->new ProductResponseDto(p)).collect(Collectors.toCollection(ArrayList<ProductResponseDto>::new));
+
+        return new ProductListResponseDto(total, Long.valueOf(list.size()), list);
     }
 
 
