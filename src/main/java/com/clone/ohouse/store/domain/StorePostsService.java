@@ -43,5 +43,5 @@ public class StorePostsService {
         return new StorePostsResponseDto(entity);
     }
 
-
+    //TODO: StorePostsRepository.findByIdWithFetchJoinProduct 를 사용할 service method 및 testcode 및 controller 필요
 }

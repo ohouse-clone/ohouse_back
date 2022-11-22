@@ -12,4 +12,5 @@ public interface StorePostsRepositoryCustom {
     List<StorePosts> getBundleViewByCategoryWithConditionV1(Long categoryId, Pageable pageable);
     List<StorePosts> getBundleViewByCategoryWithConditionV2(Long categoryId, Pageable pageable);
     BundleVIewDto getBundleViewByCategoryWithConditionV3(Long categoryId, Pageable pageable, Optional<Class> type, ItemSearchCondition condition);
+    StorePosts findByIdWithFetchJoinProduct(Long id);
 }
