@@ -21,6 +21,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceContext;
 import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,6 +31,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 class ProductServiceTest {
+    @PersistenceContext
+    EntityManager em;
 
     @Autowired ProductService productService;
     @Autowired ItemService itemService;
@@ -88,7 +93,8 @@ class ProductServiceTest {
                 "제품1",
                 1000,
                 100,
-                50);
+                50,
+                null);
         //when
         Long saveProductId1 = productService.save(dto1);
 
@@ -109,9 +115,10 @@ class ProductServiceTest {
                 "제품1",
                 1000,
                 100,
-                50);
+                50,
+                null);
         Long saveProductId1 = productService.save(dto1);
-        ProductUpdateRequestDto requestDto = new ProductUpdateRequestDto(saveItemId2, "바뀐제품1", 2000, 50, 0);
+        ProductUpdateRequestDto requestDto = new ProductUpdateRequestDto(saveItemId2, "바뀐제품1", 2000, 50, 0, null);
 
         //when
         productService.update(saveProductId1, requestDto);
@@ -132,7 +139,8 @@ class ProductServiceTest {
                 "제품1",
                 1000,
                 100,
-                50);
+                50,
+                null);
         Long saveProductId1 = productService.save(dto1);
 
         //when
@@ -141,19 +149,25 @@ class ProductServiceTest {
         //then
         Assertions.assertThat(productRepository.count()).isEqualTo(0);
     }
+
+
+    @Transactional
     @Test
-    void findByIdWithFetch() throws Exception {
+    void findByIdWithFetchJoin() throws Exception {
         //given
         ProductSaveRequestDto dto1 = new ProductSaveRequestDto(
                 saveItemId1,
                 "제품1",
                 1000,
                 100,
-                50);
+                50,
+                null);
         Long saveProductId1 = productService.save(dto1);
 
+
         //when
-        ProductDto result = productService.findByIdWithFetch(saveProductId1);
+        ProductDto result = productService.findByIdWithFetchJoin(saveProductId1);
+
 
         //then
         Assertions.assertThat(result.getId()).isEqualTo(saveProductId1);

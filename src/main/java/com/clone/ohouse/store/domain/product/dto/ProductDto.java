@@ -16,12 +16,12 @@ public class ProductDto {
 
     public ProductDto(Product entity){
         id = entity.getId();
-        itemId = entity.getItem().getId();
+        if(entity.getItem() != null) itemId = entity.getItem().getId();
         productName = entity.getProductName();
         price = entity.getPrice();
         stock = entity.getStock();
         rateDiscount = entity.getRateDiscount();
         popular = entity.getPopular();
-        storePostId = entity.getStorePosts().getId();
+        if(entity.getStorePosts() != null) storePostId = entity.getStorePosts().getId();
     }
 }

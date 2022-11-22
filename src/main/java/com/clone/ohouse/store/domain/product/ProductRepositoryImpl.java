@@ -16,12 +16,12 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom{
 
     private final JPAQueryFactory queryFactory;
     @Override
-    public Optional<Product> findByIdWithFetch(Long id) {
-        return Optional.of(queryFactory
+    public Optional<Product> findByIdWithFetchJoin(Long id) {
+        return Optional.ofNullable(queryFactory
                 .select(product)
                 .from(product)
-                .join(product.storePosts, storePosts).fetchJoin()
-                .join(product.item, item).fetchJoin()
+                .leftJoin(product.storePosts, storePosts).fetchJoin()
+                .leftJoin(product.item, item).fetchJoin()
                 .where(product.id.eq(id))
                 .fetchOne());
     }

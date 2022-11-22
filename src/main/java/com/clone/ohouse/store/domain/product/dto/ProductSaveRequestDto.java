@@ -14,13 +14,15 @@ public class ProductSaveRequestDto {
     private Integer price;
     private Integer stock;
     private Integer rateDiscount;
+    private Long storePostId;
 
-    public ProductSaveRequestDto(Long itemId, String productName, Integer price, Integer stock, Integer rateDiscount) {
+    public ProductSaveRequestDto(Long itemId, String productName, Integer price, Integer stock, Integer rateDiscount, Long storePostId) {
         this.itemId = itemId;
         this.productName = productName;
         this.price = price;
         this.stock = stock;
         this.rateDiscount = rateDiscount;
+        this.storePostId = storePostId;
     }
 
 
