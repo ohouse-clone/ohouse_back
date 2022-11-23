@@ -2,8 +2,12 @@ package com.clone.ohouse.store.domain.product.dto;
 
 import com.clone.ohouse.store.domain.item.Item;
 import com.clone.ohouse.store.domain.product.Product;
+import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 
+@ApiModel(
+        value = "item 정보를 포함한 product 상세"
+)
 @Getter
 public class ProductResponseDto {
     private Long id;
