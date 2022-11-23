@@ -1,6 +1,7 @@
 package com.clone.ohouse.store;
 
 import com.clone.ohouse.store.domain.StorePostsService;
+import com.clone.ohouse.store.domain.storeposts.dto.StorePostWithProductsDto;
 import com.clone.ohouse.store.domain.storeposts.dto.StorePostsResponseDto;
 import com.clone.ohouse.store.domain.storeposts.dto.StorePostsSaveRequestDto;
 import com.clone.ohouse.store.domain.storeposts.dto.StorePostsUpdateRequestDto;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
         value = "제품게시글 API"
 )
 @RequiredArgsConstructor
-@RequestMapping("/store/api/v1/productions")
+@RequestMapping("/store/api/v1/post")
 @RestController
 public class StorePostsApiController {
     private final StorePostsService boardService;
@@ -65,10 +66,16 @@ public class StorePostsApiController {
     @ApiImplicitParam(name = "id", value = "제품 게시글의 id (제품 id X)")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
-
     public Long delete(@PathVariable Long id){
         System.out.println("Call delete");
         return boardService.delete(id);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/productswith/{id}")
+    public StorePostWithProductsDto findByIdWIthProduct(
+            @PathVariable Long id) throws Exception{
+        return boardService.findByIdWithProduct(id);
     }
 
 }
