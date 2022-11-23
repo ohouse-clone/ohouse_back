@@ -112,7 +112,7 @@ public class ProductApiController {
     }
     @ApiOperation(
             value = "storepost에 product를 등록",
-            notes = "특정 post에 products를 등록합니다.",
+            notes = "특정 post에 products를 등록합니다. products는 Long type array입니다",
             code = 200
     )
     @PostMapping("/products")
