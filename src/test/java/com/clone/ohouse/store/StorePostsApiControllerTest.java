@@ -1,6 +1,10 @@
 package com.clone.ohouse.store;
 
+import com.clone.ohouse.store.domain.ProductService;
 import com.clone.ohouse.store.domain.StorePostsService;
+import com.clone.ohouse.store.domain.product.ProductRepository;
+import com.clone.ohouse.store.domain.product.dto.ProductSaveRequestDto;
+import com.clone.ohouse.store.domain.product.dto.ProductStorePostIdUpdateRequestDto;
 import com.clone.ohouse.store.domain.storeposts.StorePostsRepository;
 import com.clone.ohouse.store.domain.storeposts.dto.StorePostsSaveRequestDto;
 import com.clone.ohouse.store.domain.storeposts.dto.StorePostsUpdateRequestDto;
@@ -17,11 +21,15 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
+import javax.print.attribute.standard.Media;
+import java.util.ArrayList;
 import java.util.List;
 
 @ExtendWith(SpringExtension.class)
@@ -32,6 +40,10 @@ class StorePostsApiControllerTest {
     private StorePostsRepository storePostsRepository;
     @Autowired
     private StorePostsService boardService;
+    @Autowired
+    private ProductService productService;
+    @Autowired
+    private ProductRepository productRepository;
 
     @LocalServerPort
     private int port;
@@ -39,7 +51,7 @@ class StorePostsApiControllerTest {
     @Autowired
     private WebApplicationContext context;
 
-    private final String mappingUrl = "/store/productions";
+    private final String mappingUrl = "/store/api/v1/post";
 
     @BeforeEach
     public void setup() {
@@ -50,13 +62,14 @@ class StorePostsApiControllerTest {
 
     @AfterEach
     public void clean() {
+        productRepository.deleteAll();
         storePostsRepository.deleteAll();
     }
 
     @Test
     void save() throws Exception {
         //given
-        String url = "http://localhost:" + port + mappingUrl;
+        String url = "http://localhost:" + port + mappingUrl + "/";
         String title = "상품제목";
         String content = "klasdfjlkj34t42363gjerwovm";
         String author = "JJH";
@@ -152,5 +165,33 @@ class StorePostsApiControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
         Assertions.assertThat(storePostsRepository.count()).isEqualTo(0);
+    }
+
+    @Transactional
+    @Test
+    void findByIdWithProduct() throws Exception{
+        //given
+        String url = "http://localhost:" + port + mappingUrl + "/productswith/";
+        Long saveProductId1 = productService.save(new ProductSaveRequestDto(null, "제품1", 1000, 100, 10, null));
+        Long saveProductId2 = productService.save(new ProductSaveRequestDto(null, "제품2", 2000, 200, 20, null));
+        Long saveProductId3 = productService.save(new ProductSaveRequestDto(null, "제품3", 3000, 300, 30, null));
+        Long savePostId1 = boardService.save(new StorePostsSaveRequestDto("제목1", null, null, "jh1"));
+        productService.updateWithStorePostId(new ProductStorePostIdUpdateRequestDto(savePostId1, new ArrayList<>(
+                List.of(saveProductId1, saveProductId2, saveProductId3)
+        )));
+
+        //when
+        ResultActions perform = mvc.perform(MockMvcRequestBuilders.get(url + String.valueOf(savePostId1)));
+
+        //then
+        perform.andExpect(MockMvcResultMatchers.status().isOk());
+        perform.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_VALUE));
+        perform.andExpect(MockMvcResultMatchers.jsonPath("$.title").value("제목1"));
+        perform.andExpect(MockMvcResultMatchers.jsonPath("$.author").value("jh1"));
+        perform.andExpect(MockMvcResultMatchers.jsonPath("$.productNum").value(3));
+        perform.andExpect(MockMvcResultMatchers.jsonPath("$.products[0].productName").value("제품1"));
+        perform.andExpect(MockMvcResultMatchers.jsonPath("$.products[1].productName").value("제품2"));
+        perform.andExpect(MockMvcResultMatchers.jsonPath("$.products[2].productName").value("제품3"));
+
     }
 }

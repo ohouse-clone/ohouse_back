@@ -81,6 +81,16 @@ public class StorePostsRepositoryImpl implements StorePostsRepositoryCustom {
     }
 
     @Override
+    public StorePosts findByIdWithFetchJoinProduct(Long id) {
+        return queryFactory
+                .select(storePosts)
+                .from(storePosts)
+                .leftJoin(storePosts.productList, product).fetchJoin()
+                .where(storePosts.id.eq(id))
+                .fetchOne();
+    }
+
+    @Override
     public BundleVIewDto getBundleViewByCategoryWithConditionV3(Long categoryId, Pageable pageable, Optional<Class> type, ItemSearchCondition condition) {
         //Count Query
         JPAQuery<Long> postCountQuery = queryFactory

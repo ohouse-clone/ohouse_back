@@ -2,6 +2,7 @@ package com.clone.ohouse.store;
 
 import com.clone.ohouse.store.domain.StorePostsQueryService;
 import com.clone.ohouse.store.domain.category.Category;
+import com.clone.ohouse.store.domain.category.CategoryParser;
 import com.clone.ohouse.store.domain.category.CategoryRepository;
 import com.clone.ohouse.store.domain.category.CategorySearch;
 import com.clone.ohouse.store.domain.item.ItemSearchCondition;
@@ -22,6 +23,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Api(
+        value = "등록된 게시글 조회 API"
+)
 @RequiredArgsConstructor
 @RestController
 public class StorePostsQueryController {
@@ -51,7 +55,8 @@ public class StorePostsQueryController {
         if(categories.size() <= 0){
             return null;
         }
-        CategorySearch categorySearch = parseCategoryString(categories);
+
+        CategorySearch categorySearch = CategoryParser.parseCategoryString((String) categories.get(0));
 
         Category category = categoryRepository.findCategory(categorySearch);
         if(category == null){
@@ -84,20 +89,6 @@ public class StorePostsQueryController {
             condition = new ItemSearchCondition();
         }
         return storePostsQueryService.getBundleViewV3(categorySearch, pageable, condition);
-    }
-
-    private CategorySearch parseCategoryString(List<Object> category) {
-        CategorySearch categorySearch = new CategorySearch(null, null, null, null);
-
-        String categoryCodes = (String) category.get(0);
-        String[] s = categoryCodes.split("_");
-
-        if(s.length >= 1) categorySearch.setCode1(Long.parseLong(s[0]));
-        if(s.length >= 2) categorySearch.setCode2(Long.parseLong(s[1]));
-        if(s.length >= 3) categorySearch.setCode3(Long.parseLong(s[2]));
-        if(s.length >= 4) categorySearch.setCode4(Long.parseLong(s[3]));
-
-        return categorySearch;
     }
 
 }

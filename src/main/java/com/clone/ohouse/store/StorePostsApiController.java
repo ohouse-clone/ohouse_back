@@ -1,6 +1,7 @@
 package com.clone.ohouse.store;
 
 import com.clone.ohouse.store.domain.StorePostsService;
+import com.clone.ohouse.store.domain.storeposts.dto.StorePostWithProductsDto;
 import com.clone.ohouse.store.domain.storeposts.dto.StorePostsResponseDto;
 import com.clone.ohouse.store.domain.storeposts.dto.StorePostsSaveRequestDto;
 import com.clone.ohouse.store.domain.storeposts.dto.StorePostsUpdateRequestDto;
@@ -9,7 +10,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+@Api(
+        value = "제품게시글 API"
+)
 @RequiredArgsConstructor
+@RequestMapping("/store/api/v1/post")
 @RestController
 public class StorePostsApiController {
     private final StorePostsService boardService;
@@ -22,7 +27,7 @@ public class StorePostsApiController {
             @ApiResponse(code = 500, message = "server error")
     })
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/store/productions")
+    @PostMapping("/")
     public void save(@RequestBody StorePostsSaveRequestDto saveRequestDto) {
         boardService.save(saveRequestDto);
     }
@@ -34,10 +39,10 @@ public class StorePostsApiController {
     @ApiResponse(code = 500, message = "server error")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "제품 게시글의 id (제품 id X)"),
-            @ApiImplicitParam(name = "updateRequestDto", value = " df dfsf")
+            @ApiImplicitParam(name = "updateRequestDto", value = "게시글 update dto")
     })
     @ResponseStatus(HttpStatus.OK)
-    @PutMapping("/store/productions/{id}")
+    @PutMapping("/{id}")
     public void update(@PathVariable Long id, @RequestBody StorePostsUpdateRequestDto updateRequestDto) {
         boardService.update(id, updateRequestDto);
     }
@@ -49,7 +54,7 @@ public class StorePostsApiController {
     @ApiResponse(code = 500, message = "server error")
     @ApiImplicitParam(name = "id", value = "제품 게시글의 id (제품 id X)")
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/store/productions/{id}")
+    @GetMapping("/{id}")
     public StorePostsResponseDto findById(@PathVariable Long id) {
         return boardService.findById(id);
     }
@@ -60,11 +65,22 @@ public class StorePostsApiController {
     @ApiResponse(code = 500, message = "server error")
     @ApiImplicitParam(name = "id", value = "제품 게시글의 id (제품 id X)")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping("/store/productions/{id}")
-
+    @DeleteMapping("/{id}")
     public Long delete(@PathVariable Long id){
         System.out.println("Call delete");
         return boardService.delete(id);
+    }
+
+    @ApiOperation(
+            value = "게시글 조회 (with products)",
+            notes = "게시글을 조회합니다. 연관된 product를 모두 가져옵니다",
+            code = 200
+    )
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/productswith/{id}")
+    public StorePostWithProductsDto findByIdWIthProduct(
+           @ApiParam(name = "storepost id") @PathVariable Long id) throws Exception{
+        return boardService.findByIdWithProduct(id);
     }
 
 }

@@ -4,12 +4,14 @@ import com.clone.ohouse.store.domain.category.CategoryRepository;
 import com.clone.ohouse.store.domain.category.CategorySearch;
 import com.clone.ohouse.store.domain.category.ItemCategoryRepository;
 import com.clone.ohouse.store.domain.item.ItemRepository;
-import com.clone.ohouse.store.domain.item.bed.Bed;
+import com.clone.ohouse.store.domain.item.ItemRequestDto;
+import com.clone.ohouse.store.domain.item.ItemSearchCondition;
+import com.clone.ohouse.store.domain.item.bed.*;
 import com.clone.ohouse.store.domain.category.Category;
 import com.clone.ohouse.store.domain.item.Item;
 import com.clone.ohouse.store.domain.category.ItemCategory;
-import com.clone.ohouse.store.domain.item.bed.BedColor;
-import com.clone.ohouse.store.domain.item.bed.BedSize;
+import com.clone.ohouse.store.domain.item.bed.dto.BedRequestDto;
+import com.clone.ohouse.store.domain.item.dto.ItemBundleViewDto;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +19,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,30 +46,13 @@ class ItemServiceTest {
         c2.addParent(c1);
         Category c3 = new Category("침대프레임",20L);
         c3.addParent(c2);
-        Category c4 = new Category("일반침대",19L);
+        Category c4 = new Category("일반침대",20L);
         c4.addParent(c3);
-        Category c5 = new Category("수납침대",18L);
+        Category c5 = new Category("수납침대",21L);
         c5.addParent(c3);
-        Category c6 = new Category("저상형침대",17L);
+        Category c6 = new Category("저상형침대",22L);
         c6.addParent(c3);
-        Category c7 = new Category("침대+메트릭스",21L);
-        c7.addParent(c2);
-        Category c8 = new Category("일반침대",20L);
-        c8.addParent(c7);
-        Category c9 = new Category("수납침대",21L);
-        c9.addParent(c7);
-        Category c10 = new Category("저상형침대",22L);
-        c10.addParent(c7);
-        Category c11 = new Category("매트릭스토퍼",23L);
-        c11.addParent(c2);
-        Category c12 = new Category("매트리스",20L);
-        c12.addParent(c11);
-        Category c13 = new Category("토퍼",21L);
-        c13.addParent(c12);
-        Category c14 = new Category("스프링매트리스",20L);
-        c14.addParent(c12);
-        Category c15 = new Category("라텍스매트리스",21L);
-        c14.addParent(c12);
+
 
         categoryRepository.save(c1);
         categoryRepository.save(c2);
@@ -73,15 +60,7 @@ class ItemServiceTest {
         categoryRepository.save(c4);
         categoryRepository.save(c5);
         categoryRepository.save(c6);
-        categoryRepository.save(c7);
-        categoryRepository.save(c8);
-        categoryRepository.save(c9);
-        categoryRepository.save(c10);
-        categoryRepository.save(c11);
-        categoryRepository.save(c12);
-        categoryRepository.save(c13);
-        categoryRepository.save(c14);
-        categoryRepository.save(c15);
+
     }
     @AfterEach
     void clean(){
@@ -93,7 +72,7 @@ class ItemServiceTest {
     @Test
     void save() throws Exception{
         //given
-        CategorySearch condition = new CategorySearch(20L, 22L, 20L, 17L);
+        CategorySearch condition = new CategorySearch(20L, 22L, 20L, 20L);
         String name = "나무침대";
         BedSize size = BedSize.CK;
         BedColor color = BedColor.WHITE;
@@ -117,7 +96,7 @@ class ItemServiceTest {
     @Test
     void delete() throws Exception {
         //given
-        CategorySearch condition = new CategorySearch(20L, 22L, 20L, 17L);
+        CategorySearch condition = new CategorySearch(20L, 22L, 20L, 20L);
         String name = "나무침대";
         BedSize size = BedSize.MS;
         BedColor color = BedColor.WHITE;
@@ -126,11 +105,92 @@ class ItemServiceTest {
 
         //when
         Item savedItem = itemRepository.findById(savedId).get();
-        itemService.delete(savedItem);
+        itemService.delete(savedItem.getId());
 
         //then
         Assertions.assertThat(itemRepository.count()).isEqualTo(0);
         Assertions.assertThat(itemCategoryRepository.count()).isEqualTo(0);
     }
 
+    @Test
+    void findByCategoryWithNoParams() throws Exception {
+        //given
+        CategorySearch condition1 = new CategorySearch(20L, 22L, 20L, 20L);
+        CategorySearch condition2 = new CategorySearch(20L, 22L, 20L, 21L);
+        CategorySearch condition3 = new CategorySearch(20L, 22L, 20L, 22L);
+        itemService.save(new Bed("침대1", "모델1", "브랜드1", BedSize.K, BedColor.BLUE), condition1);
+        itemService.save(new Bed("침대2", "모델2", "브랜드2", BedSize.K, BedColor.BLUE), condition1);
+        itemService.save(new Bed("침대3", "모델3", "브랜드3", BedSize.K, BedColor.BLUE), condition1);
+        itemService.save(new Bed("침대4", "모델4", "브랜드4", BedSize.K, BedColor.BLUE), condition1);
+        itemService.save(new StorageBed("수납침대1", "수납모델1", "수납브랜드1", Material.FAKE_LEATHER ), condition2);
+        itemService.save(new StorageBed("수납침대2", "수납모델2", "수납브랜드2", Material.FAKE_LEATHER ), condition2);
+
+
+        //when
+        Pageable pageable = PageRequest.of(0, 3);
+        ItemBundleViewDto dto = itemService.findByCategory(condition1, pageable, new ItemSearchCondition());
+
+        //then
+        Assertions.assertThat(dto.getTotalNum()).isEqualTo(4L);
+        Assertions.assertThat(dto.getItemNum()).isEqualTo(3L);
+        Assertions.assertThat(dto.getItems())
+                .map((irdto) -> (BedRequestDto)irdto)
+                .extracting(BedRequestDto::getName)
+                .containsExactly("침대1", "침대2", "침대3");
+    }
+    @Test
+    void findByCategoryWithParams1() throws Exception {
+        //given
+        CategorySearch condition1 = new CategorySearch(20L, 22L, 20L, 20L);
+        CategorySearch condition2 = new CategorySearch(20L, 22L, 20L, 21L);
+        CategorySearch condition3 = new CategorySearch(20L, 22L, 20L, 22L);
+        itemService.save(new Bed("침대1", "모델1", "브랜드1", BedSize.K, BedColor.BLUE), condition1);
+        itemService.save(new Bed("침대2", "모델2", "브랜드2", BedSize.K, BedColor.BLUE), condition1);
+        itemService.save(new Bed("침대3", "모델3", "브랜드3", BedSize.K, BedColor.BLUE), condition1);
+        itemService.save(new Bed("침대4", "모델4", "브랜드4", BedSize.K, BedColor.BLUE), condition1);
+        itemService.save(new StorageBed("수납침대1", "수납모델1", "수납브랜드1", Material.FAKE_LEATHER ), condition2);
+        itemService.save(new StorageBed("수납침대2", "수납모델2", "수납브랜드2", Material.FAKE_LEATHER ), condition2);
+        ItemSearchCondition itemSearchCondition = new ItemSearchCondition();
+        itemSearchCondition.itemName = "침대2";
+
+        //when
+        Pageable pageable = PageRequest.of(0, 3);
+        ItemBundleViewDto dto = itemService.findByCategory(condition1, pageable, itemSearchCondition);
+
+        //then
+        Assertions.assertThat(dto.getTotalNum()).isEqualTo(1L);
+        Assertions.assertThat(dto.getItemNum()).isEqualTo(1L);
+        Assertions.assertThat(dto.getItems())
+                .map((irdto) -> (BedRequestDto)irdto)
+                .extracting(BedRequestDto::getName)
+                .containsExactly("침대2");
+        Assertions.assertThat(dto.getItems())
+                .map((irdto) -> (BedRequestDto)irdto)
+                .extracting(BedRequestDto::getColor)
+                .containsExactly(BedColor.BLUE);
+    }
+    @Test
+    void findByCategoryWithParams2() throws Exception {
+        //given
+        CategorySearch condition1 = new CategorySearch(20L, 22L, 20L, 20L);
+        CategorySearch condition2 = new CategorySearch(20L, 22L, 20L, 21L);
+        CategorySearch condition3 = new CategorySearch(20L, 22L, 20L, 22L);
+        itemService.save(new Bed("침대1", "모델1", "브랜드1", BedSize.K, BedColor.BLUE), condition1);
+        itemService.save(new Bed("침대2", "모델2", "브랜드2", BedSize.K, BedColor.BLUE), condition1);
+        itemService.save(new Bed("침대3", "모델3", "브랜드3", BedSize.K, BedColor.BLUE), condition1);
+        itemService.save(new Bed("침대4", "모델4", "브랜드4", BedSize.K, BedColor.BLUE), condition1);
+        itemService.save(new StorageBed("수납침대1", "수납모델1", "수납브랜드1", Material.FAKE_LEATHER ), condition2);
+        itemService.save(new StorageBed("수납침대2", "수납모델2", "수납브랜드2", Material.FAKE_LEATHER ), condition2);
+        ItemSearchCondition itemSearchCondition = new ItemSearchCondition();
+        itemSearchCondition.itemName = "침대2";
+        itemSearchCondition.modelName = "모델1";
+
+        //when
+        Pageable pageable = PageRequest.of(0, 3);
+        ItemBundleViewDto dto = itemService.findByCategory(condition1, pageable, itemSearchCondition);
+
+        //then
+        Assertions.assertThat(dto.getTotalNum()).isEqualTo(0L);
+        Assertions.assertThat(dto.getItemNum()).isEqualTo(0L);
+    }
 }

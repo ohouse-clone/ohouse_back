@@ -75,6 +75,7 @@ public class CategoryRepositoryImpl implements CategoryRepositoryCustom {
         return result;
     }
 
+
     @Override
     public List<Category> findCategories(CategorySearch condition) {
         List<Category> result = new ArrayList<>();

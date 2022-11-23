@@ -35,24 +35,28 @@ public class Product {
     private StorePosts storePosts;
 
     @Builder
-    public Product(Item item, String productName, Integer price, Integer stock, Integer rateDiscount, Long popular) {
+    public Product(Item item, String productName, Integer price, Integer stock, Integer rateDiscount, Long popular, StorePosts storePosts) {
         this.item = item;
         this.productName = productName;
         this.price = price;
         this.stock = stock;
         this.rateDiscount = rateDiscount;
         this.popular = popular;
+        this.storePosts = storePosts;
     }
+
     public void GainPopular() {
         this.popular++;
     }
 
-    public void update(Item item, String productName, Integer stock, Integer price, Integer rateDiscount) {
+    public void update(Item item, String productName, Integer stock, Integer price, Integer rateDiscount,StorePosts storePosts) {
         if(item != null) this.item = item;
         if(productName != null) this.productName = productName;
         if(price != null) this.price = price;
         if(stock != null) this.stock = stock;
         if(rateDiscount != null) this.rateDiscount = rateDiscount;
+        if(storePosts != null) this.storePosts = storePosts;
+
 
     }
 

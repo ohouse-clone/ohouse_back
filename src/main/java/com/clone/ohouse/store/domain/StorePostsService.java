@@ -1,7 +1,10 @@
 package com.clone.ohouse.store.domain;
 
 
+import com.clone.ohouse.store.domain.product.dto.ProductDetailDto;
+import com.clone.ohouse.store.domain.product.dto.ProductResponseDto;
 import com.clone.ohouse.store.domain.storeposts.StorePostsRepository;
+import com.clone.ohouse.store.domain.storeposts.dto.StorePostWithProductsDto;
 import com.clone.ohouse.store.domain.storeposts.dto.StorePostsResponseDto;
 import com.clone.ohouse.store.domain.storeposts.dto.StorePostsSaveRequestDto;
 import com.clone.ohouse.store.domain.storeposts.dto.StorePostsUpdateRequestDto;
@@ -10,7 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -43,5 +48,16 @@ public class StorePostsService {
         return new StorePostsResponseDto(entity);
     }
 
+    // TODO: controller 필요
+    @Transactional
+    public StorePostWithProductsDto findByIdWithProduct(Long id) throws Exception{
+        StorePosts post = storePostsRepository.findByIdWithFetchJoinProduct(id);
+        if(post == null) throw new NoSuchElementException("잘못된 Storepost id : " + id);
 
+        return new StorePostWithProductsDto(post,
+                post.getProductList()
+                        .stream()
+                        .map((p) -> new ProductDetailDto(p))
+                        .collect(Collectors.toCollection(ArrayList<ProductDetailDto>::new)));
+    }
 }
