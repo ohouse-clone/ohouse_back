@@ -10,6 +10,10 @@ import com.clone.ohouse.store.domain.product.Product;
 import com.clone.ohouse.store.domain.product.ProductRepository;
 import com.clone.ohouse.store.domain.product.ProductSearchCondition;
 import com.clone.ohouse.store.domain.product.dto.*;
+import com.clone.ohouse.store.domain.storeposts.StorePosts;
+import com.clone.ohouse.store.domain.storeposts.StorePostsRepository;
+import com.clone.ohouse.store.domain.storeposts.dto.StorePostWithProductsDto;
+import com.clone.ohouse.store.domain.storeposts.dto.StorePostsSaveRequestDto;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,6 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Transactional
@@ -41,6 +47,8 @@ class ProductServiceTest {
     @Autowired
     ItemRepository itemRepository;
     @Autowired ProductRepository productRepository;
+    @Autowired StorePostsRepository storePostsRepository;
+    @Autowired StorePostsService storePostsService;
 
     Long saveItemId1 = null;
     Long saveItemId2 = null;
@@ -81,6 +89,7 @@ class ProductServiceTest {
         categoryRepository.deleteAll();
         itemRepository.deleteAll();
         productRepository.deleteAll();
+        storePostsRepository.deleteAll();
     }
 
     @Test
@@ -316,5 +325,39 @@ class ProductServiceTest {
         //then
         Assertions.assertThat(result.getTotalNum()).isEqualTo(0);
         Assertions.assertThat(result.getProductNum()).isEqualTo(0);
+    }
+
+    @Test
+    void updateWithStorePostId() throws Exception{
+        //given
+        ProductSaveRequestDto dto1_1 = new ProductSaveRequestDto(saveItemId1, "제품1-1", 1100, 110, 50, null);
+        ProductSaveRequestDto dto1_2 = new ProductSaveRequestDto(saveItemId1, "제품1-2", 1200, 120, 55, null);
+        ProductSaveRequestDto dto1_3 = new ProductSaveRequestDto(saveItemId1, "제품1-2", 1300, 130, 55, null);
+        ProductSaveRequestDto dto2_1 = new ProductSaveRequestDto(saveItemId2, "제품2-1", 2100, 210, 55, null);
+        ProductSaveRequestDto dto2_2 = new ProductSaveRequestDto(saveItemId2, "제품2-2", 2200, 220, 55, null);
+        ProductSaveRequestDto dto2_3 = new ProductSaveRequestDto(saveItemId2, "제품2-3", 2300, 230, 55, null);
+        Long saveProductId1_1 = productService.save(dto1_1);
+        Long saveProductId1_2 = productService.save(dto1_2);
+        Long saveProductId1_3 = productService.save(dto1_3);
+        Long saveProductId2_1 = productService.save(dto2_1);
+        Long saveProductId2_2 = productService.save(dto2_2);
+        Long saveProductId2_3 = productService.save(dto2_3);
+        StorePostsSaveRequestDto requestDto1 = new StorePostsSaveRequestDto("제목1", null, null, "jjh1");
+        StorePostsSaveRequestDto requestDto2 = new StorePostsSaveRequestDto("제목2", null, null, "jjh2");
+        Long savePostId1 = storePostsService.save(requestDto1);
+        Long savePostId2 = storePostsService.save(requestDto2);
+
+        //when
+        productService.updateWithStorePostId(new ProductStorePostIdUpdateRequestDto(savePostId1, new ArrayList<>(List.of(saveProductId1_2, saveProductId1_3, saveProductId2_1))));
+
+        //then
+        StorePostWithProductsDto result = storePostsService.findByIdWithProduct(savePostId1);
+        Assertions.assertThat(result.getAuthor()).isEqualTo("jjh1");
+        Assertions.assertThat(result.getTitle()).isEqualTo("제목1");
+        Assertions.assertThat(result.getProductNum()).isEqualTo(3);
+        Assertions.assertThat(result.getProducts().get(0).getId()).isEqualTo(saveProductId1_2);
+        Assertions.assertThat(result.getProducts().get(1).getId()).isEqualTo(saveProductId1_3);
+        Assertions.assertThat(result.getProducts().get(2).getId()).isEqualTo(saveProductId2_1);
+        Assertions.assertThat(result.getProducts().get(0).getProductName()).isEqualTo("제품1-2");
     }
 }
