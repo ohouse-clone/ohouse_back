@@ -6,6 +6,8 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +18,8 @@ import static com.clone.ohouse.store.domain.storeposts.QStorePosts.*;
 @RequiredArgsConstructor
 public class ProductRepositoryImpl implements ProductRepositoryCustom{
 
+    @PersistenceContext
+    private final EntityManager em;
     private final JPAQueryFactory queryFactory;
     @Override
     public Optional<Product> findByIdWithFetchJoin(Long id) {
@@ -58,5 +62,17 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom{
                         productSearchCondition.goeStock(),
                         productSearchCondition.goePopular())
                 .fetchOne();
+    }
+
+    @Override
+    public void updateBulkWithStorePostId(Long storePostId, List<Long> productIds) {
+        queryFactory
+                .update(product)
+                .set(product.storePosts.id, storePostId)
+                .where(product.id.in(productIds))
+                .execute();
+
+        em.flush();
+        em.clear();
     }
 }

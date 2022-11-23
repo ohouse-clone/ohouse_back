@@ -27,8 +27,10 @@ public class ProductService {
     private final StorePostsRepository storePostsRepository;
 
     public Long save(ProductSaveRequestDto requestDto) throws Exception {
-        Item item = itemRepository.findById(requestDto.getItemId()).orElseThrow(() -> new NoSuchElementException("item id가 잘못되었습니다."));
         StorePosts post = null;
+        Item item = null;
+        if(requestDto.getItemId() != null)
+            item = itemRepository.findById(requestDto.getItemId()).orElseThrow(() -> new NoSuchElementException("item id가 잘못되었습니다."));
         if(requestDto.getStorePostId() != null)
             post = storePostsRepository.findById(requestDto.getStorePostId()).orElseThrow(() -> new NoSuchElementException("StorePost id가 잘못되었습니다. : " + requestDto.getStorePostId()));
 
@@ -78,7 +80,6 @@ public class ProductService {
     }
 
     public ProductListResponseDto findByItemWithProductCondition(Pageable pageable,Long itemId, ProductSearchCondition productSearchCondition){
-        //TODO: Working on
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 item id : " + itemId));
 
         Long total = productRepository.countByItemId(itemId, productSearchCondition);
@@ -87,6 +88,10 @@ public class ProductService {
         List<ProductResponseDto> list = products.stream().map((p)->new ProductResponseDto(p)).collect(Collectors.toCollection(ArrayList<ProductResponseDto>::new));
 
         return new ProductListResponseDto(total, Long.valueOf(list.size()), list);
+    }
+
+    public void updateWithStorePostId(ProductStorePostIdUpdateRequestDto requestDto) throws Exception{
+        productRepository.updateBulkWithStorePostId(requestDto.getStorePostId(), requestDto.getProductIds());
     }
 
 
