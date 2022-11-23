@@ -2,12 +2,17 @@ package com.clone.ohouse.store.domain.storeposts.dto;
 
 import com.clone.ohouse.store.domain.product.dto.ProductDetailDto;
 import com.clone.ohouse.store.domain.storeposts.StorePosts;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@ApiModel(
+        value = "StorePost에 등록된 product를 함께 조회한 결과"
+)
 @Getter
 public class StorePostWithProductsDto {
     private Long id;
