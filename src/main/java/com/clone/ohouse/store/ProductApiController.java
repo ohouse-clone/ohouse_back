@@ -2,10 +2,7 @@ package com.clone.ohouse.store;
 
 import com.clone.ohouse.store.domain.ProductService;
 import com.clone.ohouse.store.domain.product.ProductSearchCondition;
-import com.clone.ohouse.store.domain.product.dto.ProductDetailDto;
-import com.clone.ohouse.store.domain.product.dto.ProductListResponseDto;
-import com.clone.ohouse.store.domain.product.dto.ProductSaveRequestDto;
-import com.clone.ohouse.store.domain.product.dto.ProductUpdateRequestDto;
+import com.clone.ohouse.store.domain.product.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
@@ -85,4 +82,16 @@ public class ProductApiController {
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+    @PostMapping("/products")
+    public HttpEntity registerStorePost(
+            @RequestBody ProductStorePostIdUpdateRequestDto requestDto) {
+        try {
+            productService.updateWithStorePostId(requestDto);
+        } catch (Exception e){
+            //TODO: Logger 필요
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
 }
