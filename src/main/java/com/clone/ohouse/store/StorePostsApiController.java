@@ -71,10 +71,15 @@ public class StorePostsApiController {
         return boardService.delete(id);
     }
 
+    @ApiOperation(
+            value = "게시글 조회 (with products)",
+            notes = "게시글을 조회합니다. 연관된 product를 모두 가져옵니다",
+            code = 200
+    )
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/productswith/{id}")
     public StorePostWithProductsDto findByIdWIthProduct(
-            @PathVariable Long id) throws Exception{
+           @ApiParam(name = "storepost id") @PathVariable Long id) throws Exception{
         return boardService.findByIdWithProduct(id);
     }
 
