@@ -40,7 +40,7 @@ public class CommentService {
             comment.get().setCommentAuthor(newComment.getCommentAuthor());
             comment.get().setCommentTitle(newComment.getCommentTitle());
             comment.get().setCommentContent(newComment.getCommentContent());
-            comment.get().setCommentId(newComment.getCommentId());
+            comment.get().setId(newComment.getId());
         });
     }
 }

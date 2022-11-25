@@ -24,13 +24,13 @@ public class CommentTest {
         //저장
         Comment newComment = commentRepository.save(comment);
         //조회
-        Comment result = commentRepository.findById(comment.getCommentId()).get();
+        Comment result = commentRepository.findById(comment.getId()).get();
         Optional<Comment> findByAuthor = commentRepository.findByCommentAuthor(comment.getCommentAuthor());
         Optional<Comment> findByTitle = commentRepository.findByCommentTitle(comment.getCommentTitle());
 
-        assertThat(findByAuthor.get().getCommentId()).isEqualTo(comment.getCommentId());
+        assertThat(findByAuthor.get().getId()).isEqualTo(comment.getId());
         assertThat(findByAuthor.get()).isEqualTo(comment);
-        assertThat(findByTitle.get().getCommentId()).isEqualTo(comment.getCommentId());
+        assertThat(findByTitle.get().getId()).isEqualTo(comment.getId());
         assertThat(findByTitle.get()).isEqualTo(comment);
 
     }
@@ -52,8 +52,8 @@ public class CommentTest {
 
         commentRepository.save(comment1);
         commentRepository.save(comment2);
-        Comment findComment1 = commentRepository.findById(comment1.getCommentId()).get();
-        Comment findComment2 = commentRepository.findById(comment2.getCommentId()).get();
+        Comment findComment1 = commentRepository.findById(comment1.getId()).get();
+        Comment findComment2 = commentRepository.findById(comment2.getId()).get();
         assertThat(findComment1).isEqualTo(comment1);
         assertThat(findComment2).isEqualTo(comment2);
 

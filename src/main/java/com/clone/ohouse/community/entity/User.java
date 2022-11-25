@@ -16,8 +16,8 @@ import java.util.List;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="user_id")
-    private Long id;
+    @Column(name = "user_id")
+    Long id;
     @Column(nullable = false, length = 100, unique = true)
     private String email;
     @Column(nullable = false, length = 100, unique = true)
@@ -28,12 +28,13 @@ public class User {
     private String phone;
     @Column(nullable = false, length = 30)
     private String birthday;
-
+    @Column
+    private Integer point;
     @Column(length = 1000)
     private String refreshToken;
 
     @Builder
-    public User(Long id, String email, String password, String nickname, String phone, String birthday,String refreshToken) {
+    public User(Long id, String email, String password, String nickname, String phone, String birthday,String refreshToken,Integer point) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -41,6 +42,7 @@ public class User {
         this.phone = phone;
         this.birthday = birthday;
         this.refreshToken = refreshToken;
+        this.point = point;
     }
 
     public User(String email, String password){
@@ -56,8 +58,8 @@ public class User {
         this.email = email;
         this.password = password;
     }
-    @OneToMany(mappedBy = "user",fetch =FetchType.EAGER,cascade =CascadeType.REMOVE)
-    @OrderBy("id asc")
+    @OneToMany(mappedBy = "user",fetch = FetchType.EAGER)
+//    @OrderBy("id asc")
     private List<Post> posts = new ArrayList<>();
     //    public void encodePassword(PasswordEncoder passwordEncoder){
 //        this.password = passwordEncoder.encode(password);

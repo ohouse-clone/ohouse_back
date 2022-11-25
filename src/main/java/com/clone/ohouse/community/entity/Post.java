@@ -10,8 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
-@AllArgsConstructor
-
+@Data
 @Getter
 @Setter
 @Entity
@@ -42,8 +41,9 @@ public class Post {
     private LocalDateTime modifiedDate;
 
     @Builder
-    public Post(String title, String content, String author, String modifiedUser,Integer hit,Boolean isActive, Boolean isDelete
+    public Post(Long id,String title, String content, String author, String modifiedUser,Integer hit,Boolean isActive, Boolean isDelete
     ,LocalDateTime createDate, LocalDateTime modifiedDate){
+        this.id = id;
         this.title = title;
         this.content = content;
         this.author = author;
@@ -57,13 +57,13 @@ public class Post {
 
 //    @Builder
 //    public Post(String title, String content, String author)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "point")
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
-
-    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
-    @OrderBy("id asc")
-    private List<Comment> comments = new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+//    @OrderBy("id asc")
+//    private List<Comment> comments = new ArrayList<>();
 
     public void update(String title, String content) {
         this.title = title;
