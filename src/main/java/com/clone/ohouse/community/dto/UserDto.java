@@ -4,6 +4,8 @@ import com.clone.ohouse.community.entity.User;
 
 import lombok.*;
 
+import javax.persistence.criteria.CriteriaBuilder;
+
 @NoArgsConstructor
 @Data
 @Getter
@@ -17,6 +19,7 @@ public class UserDto {
     private String nickname;
     private String phone;
     private String birthday;
+    private Integer point;
 
     public User toEntity(){
         User user = User.builder()
@@ -26,12 +29,13 @@ public class UserDto {
                 .nickname(nickname)
                 .phone(phone)
                 .birthday(birthday)
+                .point(point)
                 .build();
         return user;
     }
 
     @Builder
-    public UserDto(Long id,String email, String password, String nickname, String phone, String birthday) {
+    public UserDto(Long id, String email, String password, String nickname, String phone, String birthday, Integer point) {
 
         this.id = id;
         this.email = email;
@@ -39,6 +43,6 @@ public class UserDto {
         this.nickname = nickname;
         this.phone = phone;
         this.birthday = birthday;
-
+        this.point = point;
     }
 }

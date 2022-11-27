@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @ToString
 
 public class PostDto {
+    private Long id;
     private String title;
     private String content;
     private Boolean isActive;
@@ -25,6 +26,7 @@ public class PostDto {
 
     public Post toEntity(){
         Post post = Post.builder()
+                .id(id)
                 .title(title)
                 .content(content)
                 .author(author)
@@ -38,7 +40,8 @@ public class PostDto {
     }
 
     @Builder
-    public PostDto(String title, String content, String author, LocalDateTime createDate, Integer hit){
+    public PostDto(Long id,String title, String content, String author, LocalDateTime createDate, Integer hit){
+        this.id = id;
         this.title = title;
         this.content = content;
         this.author = author;

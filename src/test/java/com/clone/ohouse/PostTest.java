@@ -2,6 +2,7 @@ package com.clone.ohouse;
 
 import com.clone.ohouse.community.entity.Post;
 import com.clone.ohouse.community.repository.PostRepository;
+import com.clone.ohouse.community.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,6 +18,8 @@ import static org.assertj.core.api.Assertions.*;
 public class PostTest {
     @Autowired
     PostRepository postRepository;
+    @Autowired
+    UserRepository userRepository;
 
     @Test
     public void createPost() throws Exception{
@@ -25,6 +28,13 @@ public class PostTest {
                 .title("newpost")
                 .content("thisisnew")
                 .build();
+        Post post2 = Post.builder()
+                .author("uwer2")
+                .title("post2")
+                .content("newone")
+                .build();
+
+        Post new2 = postRepository.save(post2);
         //저장
         Post newPost = postRepository.save(post);
         //조회

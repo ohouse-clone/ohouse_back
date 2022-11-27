@@ -23,13 +23,13 @@ public class CommentController {
 
     @PostMapping("/delete_comment")
     public void deleteComment(@RequestBody Comment requestbody){
-        Long commentId = requestbody.getCommentId();
+        Long commentId = requestbody.getId();
         commentService.deleteById(commentId);
     }
 
     @PostMapping("/update_comment")
     public void updateComment(@RequestBody Comment requestbody){
-        Long newId = requestbody.getCommentId();
+        Long newId = requestbody.getId();
         commentService.updateComment(newId);
     }
 
