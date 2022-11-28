@@ -2,7 +2,8 @@ package com.clone.ohouse.store.domain;
 
 
 import com.clone.ohouse.store.domain.product.dto.ProductDetailDto;
-import com.clone.ohouse.store.domain.product.dto.ProductResponseDto;
+import com.clone.ohouse.store.domain.storeposts.StorePostPictures;
+import com.clone.ohouse.store.domain.storeposts.StorePostPicturesRepository;
 import com.clone.ohouse.store.domain.storeposts.StorePostsRepository;
 import com.clone.ohouse.store.domain.storeposts.dto.StorePostWithProductsDto;
 import com.clone.ohouse.store.domain.storeposts.dto.StorePostsResponseDto;
@@ -13,7 +14,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
@@ -21,9 +24,17 @@ import java.util.stream.Collectors;
 @Service
 public class StorePostsService {
     private final StorePostsRepository storePostsRepository;
-
+    private final StorePostPicturesRepository storePostPicturesRepository;
     @Transactional
     public Long save(StorePostsSaveRequestDto saveRequestDto){
+        StorePosts storePost = new StorePosts(saveRequestDto.getTitle(), null, saveRequestDto.getAuthor(), null, null);
+
+        List<StorePostPictures> pictures = storePostPicturesRepository.findAllById(new ArrayList<>(List.of(saveRequestDto.getPreviewImageId(), saveRequestDto.getContentImageId())));
+        for (StorePostPictures picture : pictures) {
+
+
+            picture.registerStorePost(storePost);
+        }
         return storePostsRepository.save(saveRequestDto.toEntity()).getId();
     }
 

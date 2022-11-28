@@ -126,7 +126,7 @@ public class StorePostsRepositoryImpl implements StorePostsRepositoryCustom {
             posts.add(post);
             popularity.put(post.getId(), popularSum);
         }
-        //Combination 2
+        //Combination 2 (Query product)
         Map<Long, Product> productMap = queryFactory
                 .select(storePosts.id, product)
                 .from(product)
@@ -134,6 +134,7 @@ public class StorePostsRepositoryImpl implements StorePostsRepositoryCustom {
                 .where(storePosts.id.in(postIds))
                 .orderBy(product.id.asc())
                 .transform(GroupBy.groupBy(storePosts.id).as(product));
+
         List<StorePostsViewDto> views = new ArrayList<>();
         for (StorePosts post : posts) {
             Product product = productMap.get(post.getId());

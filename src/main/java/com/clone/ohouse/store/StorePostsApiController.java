@@ -1,23 +1,38 @@
 package com.clone.ohouse.store;
 
 import com.clone.ohouse.store.domain.StorePostsService;
+import com.clone.ohouse.store.domain.storeposts.StorePostPictures;
+import com.clone.ohouse.store.domain.storeposts.StorePostPicturesRepository;
 import com.clone.ohouse.store.domain.storeposts.dto.StorePostWithProductsDto;
 import com.clone.ohouse.store.domain.storeposts.dto.StorePostsResponseDto;
 import com.clone.ohouse.store.domain.storeposts.dto.StorePostsSaveRequestDto;
 import com.clone.ohouse.store.domain.storeposts.dto.StorePostsUpdateRequestDto;
+import com.clone.ohouse.utility.s3.LocalFileService;
+import com.clone.ohouse.utility.s3.S3Service;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 
 @Api(
         value = "제품게시글 API"
 )
+@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/store/api/v1/post")
 @RestController
 public class StorePostsApiController {
     private final StorePostsService boardService;
+    private final S3Service s3Service;
+    private final LocalFileService localFileService;
+    private final StorePostPicturesRepository storePostPicturesRepository;
 
     @ApiOperation(
             value = "제품 게시글 등록",
@@ -27,9 +42,35 @@ public class StorePostsApiController {
             @ApiResponse(code = 500, message = "server error")
     })
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/")
+    @PostMapping
     public void save(@RequestBody StorePostsSaveRequestDto saveRequestDto) {
         boardService.save(saveRequestDto);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping("/images")
+    public Long[] saveImage(MultipartFile[] multipartFiles) throws IOException {
+        ArrayList<File> files = new ArrayList<>();
+        ArrayList<Long> fileIds = new ArrayList<>();
+        try{
+            for (MultipartFile multipartFile : multipartFiles) {
+                File image = localFileService.createFileBeforeUploadS3(multipartFile, "storepost");
+                StorePostPictures picture = storePostPicturesRepository.save(new StorePostPictures(null, null, image.getAbsolutePath() + "/" + image.getName()));
+                log.debug("save file with name : " + image.getAbsolutePath() + "/" + image.getName());
+
+                files.add(image);
+                fileIds.add(picture.getId());
+            }
+        }
+        catch (Exception e){
+            log.debug("Fail to save StorePost images");
+            for (File file : files) {
+                localFileService.deleteFile(file);
+            }
+            return null;
+        }
+
+        return (Long[])fileIds.toArray();
     }
 
     @ApiOperation(

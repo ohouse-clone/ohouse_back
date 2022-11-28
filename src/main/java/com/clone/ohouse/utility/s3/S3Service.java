@@ -25,12 +25,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class S3Service {
 
-    @Value("${spring.custom.environment.ec2}")
-    private String environmentEc2;
-    @Value("${spring.file-dir}")
-    private String rootDir;
-    private String fileDir;
-
     private AmazonS3 s3Client;
     @Value("${cloud.aws.credentials.access-key}")
     private String accessKey;
@@ -41,25 +35,34 @@ public class S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public String upload(MultipartFile file, String dirName) throws IOException {
-        File uploadFile = convert(file, dirName).orElseThrow(() -> new IllegalArgumentException("Fail to convert MultipartFile"));
+    private final LocalFileService localFileService;
 
-        return upload(uploadFile, dirName);
+    public boolean isRunning(){
+        return s3Client != null;
+    }
+
+    public S3File upload(File uploadFile, String dirName) throws IOException{
+        String fileNameWithPath = dirName + "/" + uploadFile.getName(); //fireNameWithPath is the key
+        log.debug("uploadFile Name = " + uploadFile.getName());
+        log.debug("fileNameWithPath = " + fileNameWithPath);
+        if (s3Client == null) {
+            log.debug("Not Set for aws");
+            return new S3File(null, fileNameWithPath);
+        }
+
+        String uploadImageUrl = putS3(uploadFile, fileNameWithPath);
+        localFileService.deleteFile(uploadFile);
+        return new S3File(fileNameWithPath, uploadImageUrl);
+    }
+    public void delete(String key){
+        if(s3Client == null) throw new RuntimeException("running state is the local");
+
+        s3Client.deleteObject(bucket, key);
     }
 
 
     @PostConstruct
     private void initConfig() {
-
-        if (environmentEc2.equals("false")) {
-            this.fileDir = System.getProperty("user.dir") + this.rootDir;
-            log.info("running environment is local");
-        } else if (environmentEc2.equals("true")) {
-            this.fileDir = this.rootDir;
-
-            log.info("running environment is ec2");
-        }
-
         if(StringUtils.hasText(secretKey) && StringUtils.hasText(accessKey)) s3Client = setAmazonS3Client();
         else log.info("running without aws key");
     }
@@ -72,59 +75,22 @@ public class S3Service {
                 .build();
     }
 
-    private String upload(File uploadFile, String dirName) {
-        String fileNameWithPath = dirName + "/" + UUID.randomUUID() + "_" + uploadFile.getName();
-        log.debug("uploadFile Name = " + uploadFile.getName());
-        log.debug("fileNameWithPath = " + fileNameWithPath);
-        if (s3Client == null) {
-            log.debug("Not Set for aws");
-            return fileNameWithPath;
-        }
 
-        String uploadImageUrl = putS3(uploadFile, fileNameWithPath);
-        removeNewFile(uploadFile);
-        return uploadImageUrl;
-    }
 
     private String putS3(File uploadFile, String fileNameWithPath) {
-
+        //fileNameWithPath is the key
         s3Client.putObject(new PutObjectRequest(bucket, fileNameWithPath, uploadFile)
                 .withCannedAcl(CannedAccessControlList.PublicRead));
+
         return s3Client.getUrl(bucket, fileNameWithPath).toString();
     }
 
-    private Optional<File> convert(MultipartFile multipartFile, String dirName) throws IOException {
-        if (multipartFile.isEmpty()) return Optional.empty();
 
-        String originalFileName = multipartFile.getOriginalFilename();
-        String storeFileName = createStoreFileName(originalFileName);
-        String nameWithPath = fileDir + "/" + dirName + "/" + storeFileName;
 
-        log.debug("file : " + nameWithPath);
 
-        File file = new File(nameWithPath);
-        multipartFile.transferTo(file);
 
-        return Optional.of(file);
-    }
 
-    private String createStoreFileName(String originalFileName) {
-        String ext = extractExt(originalFileName);
-        String uuid = UUID.randomUUID().toString();
-        return uuid + "." + ext;
-    }
 
-    private String extractExt(String originalFileName) {
-        int pos = originalFileName.lastIndexOf(".");
-        return originalFileName.substring(pos + 1);
-    }
 
-    private void removeNewFile(File file) {
-        if (file.delete()) {
-            log.info("Success to delete file");
-            return;
-        }
-        log.info("Fail to delete file");
-    }
 
 }

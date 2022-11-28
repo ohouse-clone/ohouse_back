@@ -37,6 +37,10 @@ public class StorePosts extends BaseTimeEntity {
     private boolean isDeleted = false;
     private Integer hit = 0;
 
+    @Column(name = "store_post_pictures")
+    @OneToMany(mappedBy = "storePosts", fetch = FetchType.LAZY)
+    private List<StorePostPictures> storePostPictures = new ArrayList<>();
+
     @Column(name = "product_list")
     @OneToMany(mappedBy = "storePosts", fetch = FetchType.LAZY)
     private List<Product> productList = new ArrayList<>();
