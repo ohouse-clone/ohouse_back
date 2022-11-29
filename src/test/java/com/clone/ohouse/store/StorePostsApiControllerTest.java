@@ -104,11 +104,10 @@ class StorePostsApiControllerTest {
         Long savedId = boardService.save(saveRequestDto);
 
         String title2 = "제목없음";
-        String contentUrl2 = "url";
         String modifiedUser2 = "WWA";
         StorePostsUpdateRequestDto updateRequestDto = StorePostsUpdateRequestDto.builder()
                 .title(title2)
-                .contentUrl(contentUrl2)
+                .contentImageId(null)
                 .modifiedUser(modifiedUser2)
                 .build();
 
@@ -122,7 +121,6 @@ class StorePostsApiControllerTest {
         //then
         List<StorePosts> all = storePostsRepository.findAll();
         Assertions.assertThat(all.get(0).getTitle()).isEqualTo(title2);
-        Assertions.assertThat(all.get(0).getContentUrl()).isEqualTo(contentUrl2);
         Assertions.assertThat(all.get(0).getAuthor()).isEqualTo(author);
         Assertions.assertThat(all.get(0).getModifiedUser()).isEqualTo(modifiedUser2);
     }

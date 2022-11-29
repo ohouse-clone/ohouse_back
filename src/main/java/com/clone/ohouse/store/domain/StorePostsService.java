@@ -10,32 +10,56 @@ import com.clone.ohouse.store.domain.storeposts.dto.StorePostsResponseDto;
 import com.clone.ohouse.store.domain.storeposts.dto.StorePostsSaveRequestDto;
 import com.clone.ohouse.store.domain.storeposts.dto.StorePostsUpdateRequestDto;
 import com.clone.ohouse.store.domain.storeposts.StorePosts;
+import com.clone.ohouse.utility.s3.S3File;
+import com.clone.ohouse.utility.s3.S3Service;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class StorePostsService {
     private final StorePostsRepository storePostsRepository;
     private final StorePostPicturesRepository storePostPicturesRepository;
+    private final S3Service s3Service;
     @Transactional
-    public Long save(StorePostsSaveRequestDto saveRequestDto){
+    public Long save(StorePostsSaveRequestDto saveRequestDto) throws IOException {
         StorePosts storePost = new StorePosts(saveRequestDto.getTitle(), null, saveRequestDto.getAuthor(), null, null);
 
+        List<S3File> s3files = new ArrayList<>();
         List<StorePostPictures> pictures = storePostPicturesRepository.findAllById(new ArrayList<>(List.of(saveRequestDto.getPreviewImageId(), saveRequestDto.getContentImageId())));
         for (StorePostPictures picture : pictures) {
-
+            S3File keyValue = null;
+            File image = new File(picture.getLocalPath());
+            log.debug("storepost save with image : " + picture.getLocalPath());
 
             picture.registerStorePost(storePost);
+
+            if(s3Service.isRunning()) keyValue = s3Service.upload(image, "storepost");
+            if(keyValue == null) log.debug("No setup to s3 connect");
+
+            picture.registerKey(keyValue);
+            s3files.add(keyValue);
         }
-        return storePostsRepository.save(saveRequestDto.toEntity()).getId();
+
+        storePost.update(
+                true,
+                null,
+                s3files.get(0).getUrl(),
+                null,
+                false,
+                s3files.get(1).getUrl());
+        return storePostsRepository.save(storePost).getId();
     }
 
     @Transactional

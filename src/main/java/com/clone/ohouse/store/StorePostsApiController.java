@@ -13,7 +13,9 @@ import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -43,13 +45,15 @@ public class StorePostsApiController {
     })
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public void save(@RequestBody StorePostsSaveRequestDto saveRequestDto) {
+    public void save(@RequestBody StorePostsSaveRequestDto saveRequestDto) throws IOException{
         boardService.save(saveRequestDto);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/images")
-    public Long[] saveImage(MultipartFile[] multipartFiles) throws IOException {
+    public HttpEntity<Long[]> saveImage(MultipartFile[] multipartFiles) throws IOException {
+        if(multipartFiles.length != 2) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
         ArrayList<File> files = new ArrayList<>();
         ArrayList<Long> fileIds = new ArrayList<>();
         try{
@@ -67,10 +71,10 @@ public class StorePostsApiController {
             for (File file : files) {
                 localFileService.deleteFile(file);
             }
-            return null;
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return (Long[])fileIds.toArray();
+        return new ResponseEntity<>((Long[])fileIds.toArray(), HttpStatus.OK);
     }
 
     @ApiOperation(

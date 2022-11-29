@@ -1,5 +1,6 @@
 package com.clone.ohouse.store.domain.storeposts;
 
+import com.clone.ohouse.utility.s3.S3File;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,5 +36,10 @@ public class StorePostPictures {
     public void registerStorePost(StorePosts storePost){
         this.storePosts = storePost;
         storePost.getStorePostPictures().add(this);
+    }
+
+    public void registerKey(S3File file){
+        this.key = file.getKey();
+        this.s3Url = file.getUrl();
     }
 }

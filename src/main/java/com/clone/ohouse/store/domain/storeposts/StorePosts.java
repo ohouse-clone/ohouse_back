@@ -54,13 +54,14 @@ public class StorePosts extends BaseTimeEntity {
         this.previewImageUrl = previewImageUrl;
     }
 
-    public void update(boolean isActive, String title, String previewImage, String content, String modifiedUser, boolean isDeleted) {
+
+    public void update(boolean isActive, String title, String contentUrl, String modifiedUser, boolean isDeleted, String previewImageUrl) {
         this.isActive = isActive;
         this.isDeleted = isDeleted;
         if (title != null) this.title = title;
         if (modifiedUser != null) this.modifiedUser = modifiedUser;
-        if (content != null) this.contentUrl = content;
-        if (previewImage != null) this.previewImageUrl = previewImage;
+        if (contentUrl != null) this.contentUrl = contentUrl;
+        if (previewImageUrl != null) this.previewImageUrl = previewImageUrl;
     }
 
 }
