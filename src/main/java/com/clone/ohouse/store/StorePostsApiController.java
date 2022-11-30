@@ -51,7 +51,7 @@ public class StorePostsApiController {
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/images")
-    public HttpEntity<Long[]> saveImage(MultipartFile[] multipartFiles) throws IOException {
+    public HttpEntity<Long[]> saveImage(@RequestParam("data") MultipartFile[] multipartFiles) throws IOException {
         if(multipartFiles.length != 2) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         ArrayList<File> files = new ArrayList<>();
@@ -88,7 +88,7 @@ public class StorePostsApiController {
     })
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}")
-    public void update(@PathVariable Long id, @RequestBody StorePostsUpdateRequestDto updateRequestDto) {
+    public void update(@PathVariable Long id, @RequestBody StorePostsUpdateRequestDto updateRequestDto) throws IOException{
         boardService.update(id, updateRequestDto);
     }
 

@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -70,9 +69,34 @@ public class StorePostsService {
     }
 
     @Transactional
-    public Long update(Long id, StorePostsUpdateRequestDto dto){
+    public Long update(Long id, StorePostsUpdateRequestDto dto) throws IOException{
         StorePosts entity = storePostsRepository.findById(id).orElseThrow(() -> new NoSuchElementException("찾으려는 게시글이 없음"));
-        entity.update(dto.isActive(), dto.getTitle(), dto.getPreviewImageUrl(), dto.getContentUrl(), dto.getModifiedUser(), dto.isDeleted());
+        storePostPicturesRepository.deleteAllById(List.of(dto.getContentImageId(), dto.getPreviewImageId()));
+
+        List<S3File> s3files = new ArrayList<>();
+        List<StorePostPictures> pictures = storePostPicturesRepository.findAllById(new ArrayList<>(List.of(dto.getPreviewImageId(), dto.getContentImageId())));
+        for (StorePostPictures picture : pictures) {
+            S3File keyValue = null;
+            File image = new File(picture.getLocalPath());
+            log.debug("storepost save with image : " + picture.getLocalPath());
+
+            picture.registerStorePost(entity);
+
+            if(s3Service.isRunning()) keyValue = s3Service.upload(image, "storepost");
+            if(keyValue == null) log.debug("No setup to s3 connect");
+
+            picture.registerKey(keyValue);
+            s3files.add(keyValue);
+        }
+
+        entity.update(
+                true,
+                null,
+                s3files.get(0).getUrl(),
+                null,
+                false,
+                s3files.get(1).getUrl());
+
 
         return storePostsRepository.save(entity).getId();
     }
@@ -85,7 +109,7 @@ public class StorePostsService {
 
     // TODO: controller 필요
     @Transactional
-    public StorePostWithProductsDto findByIdWithProduct(Long id) throws Exception{
+    public StorePostWithProductsDto findByIdWithProduct(Long id){
         StorePosts post = storePostsRepository.findByIdWithFetchJoinProduct(id);
         if(post == null) throw new NoSuchElementException("잘못된 Storepost id : " + id);
 

@@ -38,6 +38,8 @@ public class LocalFileService {
 
             log.info("running environment is ec2");
         }
+        log.info("root dir : {}", this.rootDir);
+        log.info("file dir : {}", this.fileDir);
     }
 
     private Optional<File> convert(MultipartFile multipartFile, String dirName) throws IOException {
@@ -50,7 +52,9 @@ public class LocalFileService {
         log.debug("file : " + nameWithPath);
 
         File file = new File(nameWithPath);
+        log.debug("file end");
         multipartFile.transferTo(file);
+        log.debug("file end2");
 
         return Optional.of(file);
     }
