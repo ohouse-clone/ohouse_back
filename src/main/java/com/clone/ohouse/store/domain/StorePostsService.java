@@ -10,6 +10,7 @@ import com.clone.ohouse.store.domain.storeposts.dto.StorePostsResponseDto;
 import com.clone.ohouse.store.domain.storeposts.dto.StorePostsSaveRequestDto;
 import com.clone.ohouse.store.domain.storeposts.dto.StorePostsUpdateRequestDto;
 import com.clone.ohouse.store.domain.storeposts.StorePosts;
+import com.clone.ohouse.utility.s3.LocalFileService;
 import com.clone.ohouse.utility.s3.S3File;
 import com.clone.ohouse.utility.s3.S3Service;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class StorePostsService {
     private final StorePostsRepository storePostsRepository;
     private final StorePostPicturesRepository storePostPicturesRepository;
     private final S3Service s3Service;
+    private final LocalFileService localFileService;
     @Transactional
     public Long save(StorePostsSaveRequestDto saveRequestDto) throws IOException {
         StorePosts storePost = new StorePosts(saveRequestDto.getTitle(), null, saveRequestDto.getAuthor(), null, null);
@@ -38,17 +40,23 @@ public class StorePostsService {
         List<S3File> s3files = new ArrayList<>();
         List<StorePostPictures> pictures = storePostPicturesRepository.findAllById(new ArrayList<>(List.of(saveRequestDto.getPreviewImageId(), saveRequestDto.getContentImageId())));
         for (StorePostPictures picture : pictures) {
-            S3File keyValue = null;
-            File image = new File(picture.getLocalPath());
-            log.debug("storepost save with image : " + picture.getLocalPath());
+            File image = new File(picture.getLocalFilePath());
+            log.debug("storepost save with image : " + picture.getLocalFilePath());
 
             picture.registerStorePost(storePost);
 
-            if(s3Service.isRunning()) keyValue = s3Service.upload(image, "storepost");
-            if(keyValue == null) log.debug("No setup to s3 connect");
+            if(s3Service.isRunning()){
+                S3File keyValue = s3Service.upload(image, "storepost");
 
-            picture.registerKey(keyValue);
-            s3files.add(keyValue);
+                if(keyValue == null) {
+                    log.debug("No setup to s3 connect");
+                    throw new RuntimeException("No setting in aws");
+                }
+
+                picture.registerKey(keyValue);
+                s3files.add(keyValue);
+            }
+            localFileService.deleteFile(image);
         }
 
         storePost.update(
@@ -63,7 +71,11 @@ public class StorePostsService {
 
     @Transactional
     public Long delete(Long id){
-        storePostsRepository.deleteById(id);
+        StorePosts post = storePostsRepository.findById(id).orElseThrow(() -> new NoSuchElementException("찾으려는 게시글이 없음"));
+        deleteExistingStorePostPictures(post);
+        //TODO: 연관된 PRODUCT 해제할 것
+
+        storePostsRepository.delete(post);
 
         return id;
     }
@@ -71,34 +83,51 @@ public class StorePostsService {
     @Transactional
     public Long update(Long id, StorePostsUpdateRequestDto dto) throws IOException{
         StorePosts entity = storePostsRepository.findById(id).orElseThrow(() -> new NoSuchElementException("찾으려는 게시글이 없음"));
-        storePostPicturesRepository.deleteAllById(List.of(dto.getContentImageId(), dto.getPreviewImageId()));
+        deleteExistingStorePostPictures(entity);
 
         List<S3File> s3files = new ArrayList<>();
         List<StorePostPictures> pictures = storePostPicturesRepository.findAllById(new ArrayList<>(List.of(dto.getPreviewImageId(), dto.getContentImageId())));
         for (StorePostPictures picture : pictures) {
-            S3File keyValue = null;
-            File image = new File(picture.getLocalPath());
-            log.debug("storepost save with image : " + picture.getLocalPath());
+            File image = new File(picture.getLocalFilePath());
+            log.debug("storepost save with image : " + picture.getLocalFilePath());
 
             picture.registerStorePost(entity);
 
-            if(s3Service.isRunning()) keyValue = s3Service.upload(image, "storepost");
-            if(keyValue == null) log.debug("No setup to s3 connect");
+            if(s3Service.isRunning()){
+                S3File keyValue = s3Service.upload(image, "storepost");
 
-            picture.registerKey(keyValue);
-            s3files.add(keyValue);
+                if(keyValue == null) {
+                    log.debug("No setup to s3 connect");
+                    throw new RuntimeException("No setting in aws");
+                }
+
+                picture.registerKey(keyValue);
+                s3files.add(keyValue);
+            }
+            localFileService.deleteFile(image);
         }
 
         entity.update(
                 true,
-                null,
+                dto.getTitle(),
                 s3files.get(0).getUrl(),
-                null,
+                dto.getModifiedUser(),
                 false,
                 s3files.get(1).getUrl());
 
 
         return storePostsRepository.save(entity).getId();
+    }
+
+    private void deleteExistingStorePostPictures(StorePosts entity) {
+        List<StorePostPictures> previousPictures = storePostPicturesRepository.findByStorePostsId(entity.getId());
+        if(previousPictures.size() != 0){
+            for (StorePostPictures previousPicture : previousPictures) {
+                if(s3Service.isRunning())
+                    s3Service.delete(previousPicture.getKeyName());
+                storePostPicturesRepository.delete(previousPicture);
+            }
+        }
     }
 
     @Transactional

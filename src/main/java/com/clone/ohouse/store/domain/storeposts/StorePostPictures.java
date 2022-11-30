@@ -12,25 +12,24 @@ import javax.persistence.*;
 @Entity
 public class StorePostPictures {
     @Id
-    @Column(name = "store_post_picture_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column
+    @Column(length = 512)
     private String s3Url;
+    @Column(length = 128)
+    private String keyName;
     @Column
-    private String key;
-    @Column
-    private String localPath;
+    private String localFilePath;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "store_post_id")
+    @JoinColumn(name = "store_posts_id")
     private StorePosts storePosts;
 
     @Builder
-    public StorePostPictures(String s3Url, String key, String localPath) {
+    public StorePostPictures(String s3Url, String keyName, String localFilePath) {
         this.s3Url = s3Url;
-        this.key = key;
-        this.localPath = localPath;
+        this.keyName = keyName;
+        this.localFilePath = localFilePath;
     }
 
     public void registerStorePost(StorePosts storePost){
@@ -39,7 +38,7 @@ public class StorePostPictures {
     }
 
     public void registerKey(S3File file){
-        this.key = file.getKey();
+        this.keyName = file.getKey();
         this.s3Url = file.getUrl();
     }
 }

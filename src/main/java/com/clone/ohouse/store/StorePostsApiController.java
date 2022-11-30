@@ -45,8 +45,8 @@ public class StorePostsApiController {
     })
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public void save(@RequestBody StorePostsSaveRequestDto saveRequestDto) throws IOException{
-        boardService.save(saveRequestDto);
+    public Long save(@RequestBody StorePostsSaveRequestDto saveRequestDto) throws IOException{
+        return boardService.save(saveRequestDto);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -59,7 +59,7 @@ public class StorePostsApiController {
         try{
             for (MultipartFile multipartFile : multipartFiles) {
                 File image = localFileService.createFileBeforeUploadS3(multipartFile, "storepost");
-                StorePostPictures picture = storePostPicturesRepository.save(new StorePostPictures(null, null, image.getAbsolutePath() + "/" + image.getName()));
+                StorePostPictures picture = storePostPicturesRepository.save(new StorePostPictures(null, null, image.getAbsolutePath()));
                 log.debug("save file with name : " + image.getAbsolutePath() + "/" + image.getName());
 
                 files.add(image);
@@ -73,8 +73,7 @@ public class StorePostsApiController {
             }
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        return new ResponseEntity<>((Long[])fileIds.toArray(), HttpStatus.OK);
+        return new ResponseEntity<>(fileIds.toArray(new Long[fileIds.size()]), HttpStatus.OK);
     }
 
     @ApiOperation(

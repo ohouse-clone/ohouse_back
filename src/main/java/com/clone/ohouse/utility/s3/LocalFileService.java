@@ -52,9 +52,7 @@ public class LocalFileService {
         log.debug("file : " + nameWithPath);
 
         File file = new File(nameWithPath);
-        log.debug("file end");
         multipartFile.transferTo(file);
-        log.debug("file end2");
 
         return Optional.of(file);
     }

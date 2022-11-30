@@ -23,9 +23,9 @@ public class StorePosts extends BaseTimeEntity {
     @Column(length = 200)
     private String title = "제목 없음";
 
-    @Column(length = 100)
+    @Column(length = 512)
     private String previewImageUrl;
-    @Column(length = 100)
+    @Column(length = 512)
     private String contentUrl;
 
     @Column(length = 45, nullable = false)
@@ -37,7 +37,6 @@ public class StorePosts extends BaseTimeEntity {
     private boolean isDeleted = false;
     private Integer hit = 0;
 
-    @Column(name = "store_post_pictures")
     @OneToMany(mappedBy = "storePosts", fetch = FetchType.LAZY)
     private List<StorePostPictures> storePostPictures = new ArrayList<>();
 
