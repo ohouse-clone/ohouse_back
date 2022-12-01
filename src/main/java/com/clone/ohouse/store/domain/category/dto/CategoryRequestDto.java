@@ -42,7 +42,7 @@ public class CategoryRequestDto {
     @ApiModelProperty(
             value = "카테고리의 자식 카테고리들입니다. 하지만 자식들의 카테고리의 자식까지 모두 가져오지않습니다."
     )
-    private List<Category> child = new ArrayList<>();
+    private List<CategoryRequestDto> child = new ArrayList<>();
 
     public CategoryRequestDto(String name, Long code) {
         this.name = name;
@@ -59,8 +59,10 @@ public class CategoryRequestDto {
         this.id = entity.getId();
         this.name = entity.getName();
         this.code = entity.getCode();
-        this.parentId = entity.getParent().getId();
-        this.child = entity.getChild();
+    }
+
+    public void setChild(List<CategoryRequestDto> child) {
+        this.child = child;
     }
 
     public Category toEntity(){

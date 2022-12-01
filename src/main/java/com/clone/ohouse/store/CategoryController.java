@@ -30,7 +30,7 @@ public class CategoryController {
             notes = "카테고리를 등록합니다."
     )
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/")
+    @PostMapping
     public Long save(@RequestBody CategoryRequestDto saveRequestDto) {
         Category category = new Category(saveRequestDto.getName(), saveRequestDto.getCode());
         if (saveRequestDto.getParentId() != null)
@@ -68,7 +68,12 @@ public class CategoryController {
         Category category = categoryRepository.findById(id).orElse(null);
         if (category == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-        return new ResponseEntity<>(new CategoryRequestDto(category), HttpStatus.OK);
+        CategoryRequestDto result = new CategoryRequestDto(category);
+        ArrayList<CategoryRequestDto> child = category.getChild().stream().map((o) -> new CategoryRequestDto(o)).collect(Collectors.toCollection(ArrayList<CategoryRequestDto>::new));
+        result.setChild(child);
+
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @ApiOperation(
