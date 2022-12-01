@@ -69,10 +69,15 @@ public class CategoryController {
         if (category == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         CategoryRequestDto result = new CategoryRequestDto(category);
-        ArrayList<CategoryRequestDto> child = category.getChild().stream().map((o) -> new CategoryRequestDto(o)).collect(Collectors.toCollection(ArrayList<CategoryRequestDto>::new));
+        ArrayList<CategoryRequestDto> child = category.getChild().stream().map((o) -> {
+            CategoryRequestDto dto = new CategoryRequestDto(o);
+            dto.setParentId(category.getId());
+            return dto;
+        }).collect(Collectors.toCollection(ArrayList<CategoryRequestDto>::new));
+
+
+        if(category.getParent() != null) result.setParentId(category.getParent().getId());
         result.setChild(child);
-
-
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

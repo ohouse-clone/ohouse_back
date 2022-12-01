@@ -53,7 +53,7 @@ class CategoryControllerTest {
     @Test
     void save() throws Exception{
         //given
-        String url = "http://localhost:"+port+mappingUrl + "/";
+        String url = "http://localhost:"+port+mappingUrl;
         String name = "가구";
         Long code = 20L;
         CategoryRequestDto requestDto1 = new CategoryRequestDto(name, code);
