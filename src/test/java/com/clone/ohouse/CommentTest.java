@@ -2,16 +2,30 @@ package com.clone.ohouse;
 
 import com.clone.ohouse.community.entity.Comment;
 import com.clone.ohouse.community.repository.CommentRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
+
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 import java.util.Optional;
 
+
+@ExtendWith(SpringExtension.class)
+@SpringBootTest
 public class CommentTest {
     @Autowired
     CommentRepository commentRepository;
+
+    @AfterEach
+    void clean(){
+        commentRepository.deleteAll();
+    }
 
     @Test
     public void createComment() throws Exception{
@@ -24,14 +38,14 @@ public class CommentTest {
         //저장
         Comment newComment = commentRepository.save(comment);
         //조회
-        Comment result = commentRepository.findById(comment.getId()).get();
+        Comment result = commentRepository.findById(newComment.getId()).get();
         Optional<Comment> findByAuthor = commentRepository.findByCommentAuthor(comment.getCommentAuthor());
         Optional<Comment> findByTitle = commentRepository.findByCommentTitle(comment.getCommentTitle());
 
         assertThat(findByAuthor.get().getId()).isEqualTo(comment.getId());
-        assertThat(findByAuthor.get()).isEqualTo(comment);
+        assertThat(findByAuthor.get().getCommentTitle()).isEqualTo(comment.getCommentTitle());
         assertThat(findByTitle.get().getId()).isEqualTo(comment.getId());
-        assertThat(findByTitle.get()).isEqualTo(comment);
+        assertThat(findByTitle.get().getCommentTitle()).isEqualTo(comment.getCommentTitle());
 
     }
 
@@ -54,8 +68,8 @@ public class CommentTest {
         commentRepository.save(comment2);
         Comment findComment1 = commentRepository.findById(comment1.getId()).get();
         Comment findComment2 = commentRepository.findById(comment2.getId()).get();
-        assertThat(findComment1).isEqualTo(comment1);
-        assertThat(findComment2).isEqualTo(comment2);
+        assertThat(findComment1.getCommentTitle()).isEqualTo(comment1.getCommentTitle());
+        assertThat(findComment2.getCommentContent()).isEqualTo(comment2.getCommentContent());
 
 
         List<Comment> comments = commentRepository.findAll();
