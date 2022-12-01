@@ -71,10 +71,9 @@ class StorePostsApiControllerTest {
         //given
         String url = "http://localhost:" + port + mappingUrl + "/";
         String title = "상품제목";
-        String content = "klasdfjlkj34t42363gjerwovm";
         String author = "JJH";
         String modifiedUser = null;
-        StorePostsSaveRequestDto saveRequestDto = new StorePostsSaveRequestDto(title, content, null, author);
+        StorePostsSaveRequestDto saveRequestDto = new StorePostsSaveRequestDto(title, null, null, author);
 
         //when
         mvc.perform(MockMvcRequestBuilders.post(url)
@@ -85,7 +84,6 @@ class StorePostsApiControllerTest {
         //then
         List<StorePosts> all = storePostsRepository.findAll();
         Assertions.assertThat(all.get(0).getTitle()).isEqualTo(title);
-        Assertions.assertThat(all.get(0).getContentUrl()).isEqualTo(content);
         Assertions.assertThat(all.get(0).getAuthor()).isEqualTo(author);
         System.out.println("saved Time : " + all.get(0).getCreatedDate());
 
@@ -96,19 +94,17 @@ class StorePostsApiControllerTest {
         //given
         String url = "http://localhost:" + port + mappingUrl + "/";
         String title = "상품제목";
-        String contentUrl = "klasdfjlkj34t42363gjerwovm";
         String author = "JJH";
         String modifiedUser = null;
 
-        StorePostsSaveRequestDto saveRequestDto = new StorePostsSaveRequestDto(title, contentUrl, null, author);
+        StorePostsSaveRequestDto saveRequestDto = new StorePostsSaveRequestDto(title, null, null, author);
         Long savedId = boardService.save(saveRequestDto);
 
         String title2 = "제목없음";
-        String contentUrl2 = "url";
         String modifiedUser2 = "WWA";
         StorePostsUpdateRequestDto updateRequestDto = StorePostsUpdateRequestDto.builder()
                 .title(title2)
-                .contentUrl(contentUrl2)
+                .contentImageId(null)
                 .modifiedUser(modifiedUser2)
                 .build();
 
@@ -122,7 +118,6 @@ class StorePostsApiControllerTest {
         //then
         List<StorePosts> all = storePostsRepository.findAll();
         Assertions.assertThat(all.get(0).getTitle()).isEqualTo(title2);
-        Assertions.assertThat(all.get(0).getContentUrl()).isEqualTo(contentUrl2);
         Assertions.assertThat(all.get(0).getAuthor()).isEqualTo(author);
         Assertions.assertThat(all.get(0).getModifiedUser()).isEqualTo(modifiedUser2);
     }
@@ -132,11 +127,10 @@ class StorePostsApiControllerTest {
         //given
         String url = "http://localhost:" + port + mappingUrl + "/";
         String title = "상품제목";
-        String content = "klasdfjlkj34t42363gjerwovm";
         String author = "JJH";
         String modifiedUser = null;
 
-        StorePostsSaveRequestDto saveRequestDto = new StorePostsSaveRequestDto(title, content, null, author);
+        StorePostsSaveRequestDto saveRequestDto = new StorePostsSaveRequestDto(title, null, null, author);
         Long savedId = boardService.save(saveRequestDto);
 
         //when && then
@@ -153,11 +147,10 @@ class StorePostsApiControllerTest {
         //given
         String url = "http://localhost:" + port + mappingUrl + "/";
         String title = "상품제목";
-        String contentUrl = "klasdfjlkj34t42363gjerwovm";
         String author = "JJH";
         String modifiedUser = null;
 
-        StorePostsSaveRequestDto saveRequestDto = new StorePostsSaveRequestDto(title, contentUrl, null, author);
+        StorePostsSaveRequestDto saveRequestDto = new StorePostsSaveRequestDto(title, null, null, author);
         Long savedId = boardService.save(saveRequestDto);
 
         //when
