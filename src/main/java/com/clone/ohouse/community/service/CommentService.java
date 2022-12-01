@@ -34,13 +34,13 @@ public class CommentService {
         commentRepository.deleteById(id);
     }
 
-    public void updateComment(Long id) {
-        Optional<Comment> comment = commentRepository.findById(id);
-        comment.ifPresent(newComment -> {
-            comment.get().setCommentAuthor(newComment.getCommentAuthor());
-            comment.get().setCommentTitle(newComment.getCommentTitle());
-            comment.get().setCommentContent(newComment.getCommentContent());
-            comment.get().setId(newComment.getId());
-        });
-    }
+//    public void updateComment(Long id) {
+//        Optional<Comment> comment = commentRepository.findById(id);
+//        comment.ifPresent(newComment -> {
+//            comment.get().setCommentAuthor(newComment.getCommentAuthor());
+//            comment.get().setCommentTitle(newComment.getCommentTitle());
+//            comment.get().setCommentContent(newComment.getCommentContent());
+//            comment.get().setId(newComment.getId());
+//        });
+//    }
 }

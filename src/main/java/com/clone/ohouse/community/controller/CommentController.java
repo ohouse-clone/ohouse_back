@@ -30,7 +30,7 @@ public class CommentController {
     @PostMapping("/update_comment")
     public void updateComment(@RequestBody Comment requestbody){
         Long newId = requestbody.getId();
-        commentService.updateComment(newId);
+        //commentService.updateComment(newId);
     }
 
     @PostMapping("/read_comment")
