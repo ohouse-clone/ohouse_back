@@ -64,6 +64,9 @@ public class CategoryRequestDto {
     public void setChild(List<CategoryRequestDto> child) {
         this.child = child;
     }
+    public void setParentId(Long id){
+        this.parentId = id;
+    }
 
     public Category toEntity(){
         return new Category(name, code);
