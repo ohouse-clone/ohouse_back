@@ -36,9 +36,29 @@ public class StorePostsService {
     @Transactional
     public Long save(StorePostsSaveRequestDto saveRequestDto) throws IOException {
         StorePosts storePost = new StorePosts(saveRequestDto.getTitle(), null, saveRequestDto.getAuthor(), null, null);
+        String contentUrl = null;
+        String previewUrl = null;
 
+        if(saveRequestDto.getContentImageId() != null && saveRequestDto.getPreviewImageId() != null) {
+            List<S3File> s3files = saveInS3(saveRequestDto.getContentImageId(), saveRequestDto.getPreviewImageId(), storePost);
+            contentUrl = s3files.get(0).getUrl();
+            previewUrl = s3files.get(1).getUrl();
+        }
+
+
+        storePost.update(
+                true,
+                null,
+                contentUrl,
+                null,
+                false,
+                previewUrl);
+        return storePostsRepository.save(storePost).getId();
+    }
+
+    private List<S3File> saveInS3(Long previewImageId, Long contentImageId, StorePosts storePost) throws IOException {
         List<S3File> s3files = new ArrayList<>();
-        List<StorePostPictures> pictures = storePostPicturesRepository.findAllById(new ArrayList<>(List.of(saveRequestDto.getPreviewImageId(), saveRequestDto.getContentImageId())));
+        List<StorePostPictures> pictures = storePostPicturesRepository.findAllById(new ArrayList<>(List.of(previewImageId, contentImageId)));
         for (StorePostPictures picture : pictures) {
             File image = new File(picture.getLocalFilePath());
             log.debug("storepost save with image : " + picture.getLocalFilePath());
@@ -58,15 +78,7 @@ public class StorePostsService {
             }
             localFileService.deleteFile(image);
         }
-
-        storePost.update(
-                true,
-                null,
-                s3files.get(0).getUrl(),
-                null,
-                false,
-                s3files.get(1).getUrl());
-        return storePostsRepository.save(storePost).getId();
+        return s3files;
     }
 
     @Transactional
@@ -82,39 +94,26 @@ public class StorePostsService {
 
     @Transactional
     public Long update(Long id, StorePostsUpdateRequestDto dto) throws IOException{
+        String contentUrl = null;
+        String previewUrl = null;
         StorePosts entity = storePostsRepository.findById(id).orElseThrow(() -> new NoSuchElementException("찾으려는 게시글이 없음"));
         deleteExistingStorePostPictures(entity);
 
-        List<S3File> s3files = new ArrayList<>();
-        List<StorePostPictures> pictures = storePostPicturesRepository.findAllById(new ArrayList<>(List.of(dto.getPreviewImageId(), dto.getContentImageId())));
-        for (StorePostPictures picture : pictures) {
-            File image = new File(picture.getLocalFilePath());
-            log.debug("storepost save with image : " + picture.getLocalFilePath());
 
-            picture.registerStorePost(entity);
 
-            if(s3Service.isRunning()){
-                S3File keyValue = s3Service.upload(image, "storepost");
-
-                if(keyValue == null) {
-                    log.debug("No setup to s3 connect");
-                    throw new RuntimeException("No setting in aws");
-                }
-
-                picture.registerKey(keyValue);
-                s3files.add(keyValue);
-            }
-            localFileService.deleteFile(image);
+        if(dto.getContentImageId() != null && dto.getPreviewImageId() != null) {
+            List<S3File> s3files = saveInS3(dto.getContentImageId(), dto.getContentImageId(), entity);
+            contentUrl = s3files.get(0).getUrl();
+            previewUrl = s3files.get(1).getUrl();
         }
 
         entity.update(
                 true,
                 dto.getTitle(),
-                s3files.get(0).getUrl(),
+                contentUrl,
                 dto.getModifiedUser(),
                 false,
-                s3files.get(1).getUrl());
-
+                previewUrl);
 
         return storePostsRepository.save(entity).getId();
     }
