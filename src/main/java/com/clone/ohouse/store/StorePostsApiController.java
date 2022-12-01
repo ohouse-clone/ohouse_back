@@ -49,9 +49,19 @@ public class StorePostsApiController {
         return boardService.save(saveRequestDto);
     }
 
+
+    @ApiOperation(
+            value = "졔품 게시글 image 등록",
+            notes = "제품 게시글을 등록하기 전에 image 를 등록합니다.<br>" +
+            "제품 게시글 등록할 때, image id가 필요합니다. image id를 해당 API 를 이용햬서 얻을 수 있습니다. <br>" +
+            "파일의 순서에 유의하세요. 반드시 content image, preview image 순으로 입력되어야 합니다." +
+            "form-data 양식으로 key를 data로 하여 image 파일을 2개 입력하세요<br><br>" +
+            "해당 값으로 얻은 id를 게시글 등록에 사용하지 않으면 서버에 파일이 저장되게 됩니다. 따라서 반드시 게시글 등록에 사용해주세요",
+            code = 200)
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/images")
-    public HttpEntity<Long[]> saveImage(@RequestParam("data") MultipartFile[] multipartFiles) throws IOException {
+    public HttpEntity<Long[]> saveImage(
+            @ApiParam(name = "data", value = "key data로 2개의 image 파일만 업로드해야 합니다.") @RequestParam("data") MultipartFile[] multipartFiles) throws IOException {
         if(multipartFiles.length != 2) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         ArrayList<File> files = new ArrayList<>();
