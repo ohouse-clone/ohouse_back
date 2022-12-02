@@ -1,6 +1,6 @@
-package com.clone.ohouse.community.dto;
+package com.clone.ohouse.community.domain.comment.dto;
 
-import com.clone.ohouse.community.entity.Comment;
+import com.clone.ohouse.community.domain.comment.Comment;
 import lombok.*;
 
 import java.time.LocalDateTime;

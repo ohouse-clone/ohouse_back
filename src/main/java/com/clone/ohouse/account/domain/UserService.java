@@ -1,7 +1,7 @@
-package com.clone.ohouse.community.service;
+package com.clone.ohouse.account.domain;
 
-import com.clone.ohouse.community.entity.User;
-import com.clone.ohouse.community.repository.UserRepository;
+import com.clone.ohouse.account.domain.user.User;
+import com.clone.ohouse.account.domain.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

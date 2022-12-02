@@ -1,7 +1,7 @@
-package com.clone.ohouse.community.controller;
+package com.clone.ohouse.community;
 
-import com.clone.ohouse.community.entity.Comment;
-import com.clone.ohouse.community.service.CommentService;
+import com.clone.ohouse.community.domain.comment.Comment;
+import com.clone.ohouse.community.domain.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;

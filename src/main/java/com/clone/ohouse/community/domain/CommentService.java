@@ -1,7 +1,7 @@
-package com.clone.ohouse.community.service;
+package com.clone.ohouse.community.domain;
 
-import com.clone.ohouse.community.entity.Comment;
-import com.clone.ohouse.community.repository.CommentRepository;
+import com.clone.ohouse.community.domain.comment.Comment;
+import com.clone.ohouse.community.domain.comment.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

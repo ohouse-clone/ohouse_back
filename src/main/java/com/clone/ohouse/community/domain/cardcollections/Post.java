@@ -1,13 +1,10 @@
-package com.clone.ohouse.community.entity;
+package com.clone.ohouse.community.domain.cardcollections;
 
-import com.clone.ohouse.community.dto.CommentDto;
-import com.clone.ohouse.community.dto.UserDto;
+import com.clone.ohouse.account.domain.user.User;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @NoArgsConstructor
 @Data

@@ -1,10 +1,10 @@
-package com.clone.ohouse.community.controller;
+package com.clone.ohouse.community;
 
-import com.clone.ohouse.community.service.PostService;
+import com.clone.ohouse.community.domain.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
-import com.clone.ohouse.community.entity.Post;
+import com.clone.ohouse.community.domain.cardcollections.Post;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller

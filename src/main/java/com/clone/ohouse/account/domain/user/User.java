@@ -1,5 +1,6 @@
-package com.clone.ohouse.community.entity;
+package com.clone.ohouse.account.domain.user;
 
+import com.clone.ohouse.community.domain.cardcollections.Post;
 import lombok.*;
 //import org.springframework.security.crypto.password.PasswordEncoder;
 

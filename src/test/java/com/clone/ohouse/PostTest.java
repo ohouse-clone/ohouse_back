@@ -1,8 +1,8 @@
 package com.clone.ohouse;
 
-import com.clone.ohouse.community.entity.Post;
-import com.clone.ohouse.community.repository.PostRepository;
-import com.clone.ohouse.community.repository.UserRepository;
+import com.clone.ohouse.community.domain.cardcollections.Post;
+import com.clone.ohouse.community.domain.cardcollections.PostRepository;
+import com.clone.ohouse.account.domain.user.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

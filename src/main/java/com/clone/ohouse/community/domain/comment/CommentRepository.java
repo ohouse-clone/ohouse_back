@@ -1,6 +1,5 @@
-package com.clone.ohouse.community.repository;
+package com.clone.ohouse.community.domain.comment;
 
-import com.clone.ohouse.community.entity.Comment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

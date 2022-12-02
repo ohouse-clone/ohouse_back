@@ -1,9 +1,8 @@
-package com.clone.ohouse.community.dto;
+package com.clone.ohouse.community.domain.cardcollections.dto;
 
-import com.clone.ohouse.community.entity.Post;
+import com.clone.ohouse.community.domain.cardcollections.Post;
 import lombok.*;
 
-import javax.persistence.Entity;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor

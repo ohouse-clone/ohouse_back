@@ -1,5 +1,7 @@
-package com.clone.ohouse.community.entity;
+package com.clone.ohouse.community.domain.comment;
 
+import com.clone.ohouse.account.domain.user.User;
+import com.clone.ohouse.community.domain.cardcollections.Post;
 import lombok.*;
 
 
