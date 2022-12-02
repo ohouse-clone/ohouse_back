@@ -1,4 +1,4 @@
-package com.clone.ohouse.store.utility;
+package com.clone.ohouse.utility.auditingtime;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;

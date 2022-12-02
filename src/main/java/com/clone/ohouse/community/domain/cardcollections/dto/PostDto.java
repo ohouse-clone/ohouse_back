@@ -1,6 +1,6 @@
 package com.clone.ohouse.community.domain.cardcollections.dto;
 
-import com.clone.ohouse.community.domain.cardcollections.Post;
+import com.clone.ohouse.community.domain.cardcollections.Card;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -23,8 +23,8 @@ public class PostDto {
     private String modifiedUser;
     private LocalDateTime modifiedDate;
 
-    public Post toEntity(){
-        Post post = Post.builder()
+    public Card toEntity(){
+        Card card = Card.builder()
                 .id(id)
                 .title(title)
                 .content(content)
@@ -35,7 +35,7 @@ public class PostDto {
                 .modifiedDate(modifiedDate)
                 .modifiedUser(modifiedUser)
                 .build();
-        return post;
+        return card;
     }
 
     @Builder

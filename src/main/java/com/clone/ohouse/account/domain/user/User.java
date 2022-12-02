@@ -1,6 +1,6 @@
 package com.clone.ohouse.account.domain.user;
 
-import com.clone.ohouse.community.domain.cardcollections.Post;
+import com.clone.ohouse.community.domain.cardcollections.Card;
 import lombok.*;
 //import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -61,7 +61,7 @@ public class User {
     }
     @OneToMany(mappedBy = "user",fetch = FetchType.EAGER)
 //    @OrderBy("id asc")
-    private List<Post> posts = new ArrayList<>();
+    private List<Card> cards = new ArrayList<>();
     //    public void encodePassword(PasswordEncoder passwordEncoder){
 //        this.password = passwordEncoder.encode(password);
 //    }

@@ -1,12 +1,13 @@
 package com.clone.ohouse.community.domain.comment;
 
 import com.clone.ohouse.account.domain.user.User;
-import com.clone.ohouse.community.domain.cardcollections.Post;
+import com.clone.ohouse.community.domain.Post;
+import com.clone.ohouse.community.domain.PostType;
+import com.clone.ohouse.community.domain.cardcollections.Card;
 import lombok.*;
 
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @Getter
@@ -17,29 +18,26 @@ public class Comment {
     @Column(name = "comment_id")
     Long id;
 
-    @Column(nullable = false, length = 40)
-    private String commentTitle;
-    @Column(nullable = false)
-    private String commentContent;
-    @Column(nullable = false, length = 30)
-    private String commentAuthor;
+    @Column(nullable = false, length = 180)
+    private String content;
+    @Column
+    private boolean isDeleted = false;
 
-    private LocalDateTime createdDate;
+    @Column
+    private Long likeNumber = 0L;
 
-    @ManyToOne
-    @JoinColumn(name = "point")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "title")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id")
     private Post post;
 
-    @Builder
-    public Comment(String commentTitle, String commentContent, String commentAuthor, LocalDateTime createdDate) {
-        this.commentTitle = commentTitle;
-        this.commentAuthor = commentAuthor;
-        this.commentContent = commentContent;
-        this.createdDate = createdDate;
+    public Comment(String content, Long likeNumber, User user, Post post) {
+        this.content = content;
+        this.likeNumber = likeNumber;
+        this.user = user;
+        this.post = post;
     }
-
 }
