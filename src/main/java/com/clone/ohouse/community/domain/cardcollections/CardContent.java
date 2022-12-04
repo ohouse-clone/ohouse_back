@@ -11,7 +11,7 @@ import javax.persistence.*;
 public class CardContent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "card_content_id")
+    @Column
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -25,12 +25,17 @@ public class CardContent {
     @Column(length = 256)
     private String content;
     @Column
-    private Integer index = 0;
+    private Integer sequence = 0;
 
-    public CardContent(Card card, CardMediaFile cardMediaFile, String content, Integer index) {
+    public CardContent(Card card, CardMediaFile cardMediaFile, String content, Integer sequence) {
         this.card = card;
         this.cardMediaFile = cardMediaFile;
         this.content = content;
-        this.index = index;
+        this.sequence = sequence;
+    }
+    public void update(CardMediaFile cardMediaFile, String content, Integer index){
+        if(cardMediaFile != null) this.cardMediaFile = cardMediaFile;
+        if(content != null) this.content = content;
+        if(sequence != null) this.sequence = sequence;
     }
 }

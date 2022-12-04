@@ -1,10 +1,12 @@
 package com.clone.ohouse.community.domain;
 
 import com.clone.ohouse.utility.auditingtime.BaseTimeEntity;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+@Getter
 @NoArgsConstructor
 @Inheritance(strategy = InheritanceType.JOINED)
 @Entity

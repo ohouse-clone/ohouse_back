@@ -8,6 +8,8 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 @Getter
@@ -32,11 +34,24 @@ public class Card extends Post {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @OneToMany(mappedBy = "card")
+    private List<CardContent> cardContents = new ArrayList<>();
+
     public Card(PostType postType, HousingType housingType, HouseStyle houseStyle, Color color, User user) {
         super(postType);
         this.housingType = housingType;
         this.houseStyle = houseStyle;
         this.color = color;
         this.user = user;
+    }
+
+    public void update(HousingType housingType, HouseStyle houseStyle, Color color){
+        if(housingType != null) this.housingType = housingType;
+        if(houseStyle != null) this.houseStyle = houseStyle;
+        if(color != null) this.color =  color;
+    }
+
+    public void addHit(){
+        hit++;
     }
 }
