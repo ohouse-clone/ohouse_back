@@ -3,13 +3,16 @@ package com.clone.ohouse.community.domain.cardcollections.dto;
 import com.clone.ohouse.community.domain.cardcollections.Color;
 import com.clone.ohouse.community.domain.cardcollections.HouseStyle;
 import com.clone.ohouse.community.domain.cardcollections.HousingType;
+import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
+@ApiModel(
+        description = "Card를 상세 조회한 결과입니다."
+)
 @NoArgsConstructor
 @Getter
 public class CardResponseDto {

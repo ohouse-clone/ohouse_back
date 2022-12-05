@@ -1,7 +1,13 @@
 package com.clone.ohouse.community.domain.cardcollections.dto;
 
+import io.swagger.annotations.ApiModel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@ApiModel(
+        description = "판매자가 게시글을 생성하기 위한 것입니다"
+)
+@NoArgsConstructor
 @Getter
 public class CardPreviewResponseDto {
     private String previewImageUrl;
