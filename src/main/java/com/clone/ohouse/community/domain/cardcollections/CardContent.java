@@ -15,11 +15,11 @@ public class CardContent {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "card_id")
+    @JoinColumn(name = "card_fk_id")
     private Card card;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "card_media_file_id")
+    @JoinColumn(name = "card_media_file_fk_id")
     private CardMediaFile cardMediaFile;
 
     @Column(length = 256)
@@ -37,5 +37,10 @@ public class CardContent {
         if(cardMediaFile != null) this.cardMediaFile = cardMediaFile;
         if(content != null) this.content = content;
         if(sequence != null) this.sequence = sequence;
+    }
+
+    public void registerCard(Card card){
+        this.card = card;
+        card.getCardContents().add(this);
     }
 }

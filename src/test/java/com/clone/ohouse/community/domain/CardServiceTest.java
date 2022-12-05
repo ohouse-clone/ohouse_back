@@ -19,6 +19,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
@@ -27,6 +29,8 @@ import java.util.NoSuchElementException;
 @SpringBootTest
 public class CardServiceTest {
 
+    @PersistenceContext
+    private EntityManager em;
     @Autowired
     private CardRepository cardRepository;
     @Autowired
@@ -58,13 +62,13 @@ public class CardServiceTest {
 
     @AfterEach
     void clean() {
-//        cardContentRepository.deleteAll();
-//        cardMediaFileRepository.deleteAll();
-//        cardRepository.deleteAll();
-//        userRepository.deleteAll();
+        cardContentRepository.deleteAll();
+        cardMediaFileRepository.deleteAll();
+        cardRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
-    @Commit
+
     @Test
     void save() throws Exception {
         //given
@@ -87,15 +91,10 @@ public class CardServiceTest {
                 .phone("010-0000-0000")
                 .build()));
 
-
         //then
         System.out.println("==================================================================");
         Card findCard = cardRepository.findByIdWithContent(saveId).orElseThrow(() -> new NoSuchElementException("Fail to find card that id is " + saveId));
         System.out.println("==================================================================");
-        System.out.println("whatthefuck : " + findCard.getCardContents().size());
-        System.out.println("whatthefuck : " + findCard.getId() + " , " + saveId);
-        System.out.println("whatthefuck : " + findCard.getColor().name());
-        System.out.println("whatthefuck : " + findCard.getCardContents().get(0).getSequence());
 
 
         Assertions.assertThat(findCard.getHouseStyle()).isEqualTo(HouseStyle.KOREAN_ASIA);
@@ -108,6 +107,38 @@ public class CardServiceTest {
 
         Assertions.assertThat(content1.getContent()).isEqualTo(findCard.getCardContents().get(0).getContent());
         Assertions.assertThat(content2.getContent()).isEqualTo(findCard.getCardContents().get(1).getContent());
+    }
+
+    @Test
+    void delete() throws Exception{
+        //given
+        CardSaveRequestHeaderDto headerDto = new CardSaveRequestHeaderDto(HousingType.APARTMENT, HouseStyle.KOREAN_ASIA, Color.WHITE);
+        CardSaveRequestContentDto[] contentDtos = {
+                new CardSaveRequestContentDto(1, "content1"),
+                new CardSaveRequestContentDto(2, "content2"),
+                new CardSaveRequestContentDto(3, "content3")};
+        MultipartFile[] multipartFiles = {
+                null, null, null
+        };
+        Long saveId = cardService.save(headerDto, multipartFiles, contentDtos, new SessionUser(User.builder()
+                .email("aa@bb")
+                .password("1234")
+                .birthday("00")
+                .nickname("jjh")
+                .name("jjh name")
+                .phone("010-0000-0000")
+                .build()));
+
+        //when
+        cardService.delete(saveId);
+
+
+        //then
+        org.junit.jupiter.api.Assertions.assertThrows(NoSuchElementException.class,
+                () -> cardRepository.findById(saveId).orElseThrow(()->new NoSuchElementException()));
+        Assertions.assertThat(cardRepository.count()).isEqualTo(0);
+
+
     }
 
 

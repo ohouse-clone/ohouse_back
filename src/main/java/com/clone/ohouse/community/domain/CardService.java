@@ -130,7 +130,7 @@ public class CardService {
         Card card = cardRepository.findByIdWithContent(id).orElseThrow(() -> new NoSuchElementException("Fail to delete, Nothing with id = " + id));
 
         for (CardContent content : card.getCardContents()) {
-            s3Service.delete(content.getCardMediaFile().getKeyName());
+            if(s3Service.isRunning()) s3Service.delete(content.getCardMediaFile().getKeyName());
             cardMediaFileRepository.delete(content.getCardMediaFile());
             cardContentRepository.delete(content);
         }
@@ -194,7 +194,10 @@ public class CardService {
                 saveCardMediaFile = cardMediaFileRepository.save(new CardMediaFile(null, null));
             }
 
-            cardContentRepository.save(new CardContent(card, saveCardMediaFile, contentDto.getContent(), contentDto.getSequence()));
+            CardContent content = new CardContent(card, saveCardMediaFile, contentDto.getContent(), contentDto.getSequence());
+            content.registerCard(card);
+            cardContentRepository.save(content);
+
         }
     }
 

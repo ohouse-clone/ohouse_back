@@ -23,6 +23,7 @@ public class CardRepositoryImpl implements CardRepositoryCustom{
                 .select(card)
                 .from(card)
                 .leftJoin(card.cardContents, cardContent).fetchJoin()
+                .leftJoin(cardContent.cardMediaFile, cardMediaFile).fetchJoin()
                 .where(card.id.eq(id))
                 .fetchOne();
 

@@ -54,4 +54,6 @@ public class Card extends Post {
     public void addHit(){
         hit++;
     }
+
+
 }
