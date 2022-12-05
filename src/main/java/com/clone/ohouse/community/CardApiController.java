@@ -21,7 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/card_collections")
+@RequestMapping("/community/api/v1/card_collections")
 @RestController
 public class CardApiController {
     private final CardService cardService;
