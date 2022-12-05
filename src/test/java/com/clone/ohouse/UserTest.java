@@ -1,19 +1,15 @@
 package com.clone.ohouse;
 
 
-import com.clone.ohouse.community.entity.User;
-import com.clone.ohouse.community.repository.UserRepository;
-import org.junit.jupiter.api.Assertions;
+import com.clone.ohouse.account.domain.user.User;
+import com.clone.ohouse.account.domain.user.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.embedded.undertow.UndertowWebServer;
 
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
-
-import org.junit.jupiter.api.Assertions.*;
 
 import static org.assertj.core.api.Assertions.*;
 

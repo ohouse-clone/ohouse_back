@@ -1,6 +1,6 @@
 package com.clone.ohouse.store.domain.storeposts;
 
-import com.clone.ohouse.store.utility.BaseTimeEntity;
+import com.clone.ohouse.utility.auditingtime.BaseTimeEntity;
 import com.clone.ohouse.store.domain.product.Product;
 import lombok.Builder;
 import lombok.Getter;

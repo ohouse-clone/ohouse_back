@@ -29,7 +29,7 @@ public class ProductApiController {
             code = 201
     )
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/")
+    @PostMapping
     public Long save(
             @RequestBody ProductSaveRequestDto requestDto) throws Exception{
         return productService.save(requestDto);
