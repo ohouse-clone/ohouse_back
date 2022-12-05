@@ -35,7 +35,7 @@ public class CardSearchCondition {
     }
 
     public OrderSpecifier<Long> orderByHit(){
-        if(sortOrder == null) return null;
+        if(sortOrder == null) return QCard.card.hit.desc();
 
         switch (sortOrder){
             case HIT_ASCEND:

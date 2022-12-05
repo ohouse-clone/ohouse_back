@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -37,10 +38,11 @@ public class CardService {
             MultipartFile[] multipartFiles,
             CardSaveRequestContentDto[] contentDtos,
             SessionUser sessionUser) throws Exception {
+        if(multipartFiles.length != contentDtos.length) throw new IllegalArgumentException("file과 dto의 길이가 맞지 않음");
 
         User user = userRepository.findByEmail(sessionUser.getEmail());
         Card saveCard = cardRepository.save(new Card(PostType.CARD, headerDto.getHousingType(), headerDto.getHouseStyle(), headerDto.getColor(), user));
-        Arrays.sort(contentDtos, (a,b)-> Integer.compare(a.getSequence(),b.getSequence()));
+        Arrays.sort(contentDtos, (a, b) -> Integer.compare(a.getSequence(), b.getSequence()));
 
         mergeMediaFileAndContent(saveCard, multipartFiles, contentDtos);
 
@@ -53,84 +55,94 @@ public class CardService {
                        MultipartFile[] multipartFiles,
                        CardSaveRequestContentDto[] contentDtos,
                        SessionUser sessionUser) throws Exception {
+        if(multipartFiles.length != contentDtos.length) throw new IllegalArgumentException("file과 dto의 길이가 맞지 않음");
 
         User user = userRepository.findByEmail(sessionUser.getEmail());
         Card card = cardRepository.findByIdWithContent(id).orElseThrow(() -> new NoSuchElementException("Fail to find, Nothing with id = " + id));
 
-        if(card.getUser().getId() != user.getId()) throw new IllegalAccessException("Access Illegal for auth");
+        if (card.getUser().getId() != user.getId()) throw new IllegalAccessException("Access Illegal for auth");
 
         Arrays.sort(contentDtos, (a, b) -> Integer.compare(a.getSequence(), b.getSequence()));
 
         card.update(headerDto.getHousingType(), headerDto.getHouseStyle(), headerDto.getColor());
-        int size = multipartFiles.length;
+        int newNum = multipartFiles.length;
         int previousContentNum = card.getCardContents().size();
 
-        //case 1 : previousContentNum <= size
-        int i = 0;
-        for (i = 0; i < size; ++i) {
-            MultipartFile multipartFile = multipartFiles[i];
-            CardSaveRequestContentDto contentDto = contentDtos[i];
-            CardContent content = card.getCardContents().get(i);
-            CardMediaFile file = content.getCardMediaFile();
+        //case 1
+        if (newNum < previousContentNum) {
+            int i = 0;
+            for (; i < newNum; ++i) {
+                MultipartFile multipartFile = multipartFiles[i];
+                CardSaveRequestContentDto contentDto = contentDtos[i];
+                CardContent content = card.getCardContents().get(i);
+                CardMediaFile file = content.getCardMediaFile();
 
-            //case 1-1 : i < previous
-            if (i < previousContentNum) {
-                if (!multipartFile.isEmpty()) {
-                    //delete previous file
-                    //is s3 enable?
-                    if(file != null && s3Service.isRunning()){
-                        s3Service.delete(file.getKeyName());
+                replaceCardContent(content, contentDto);
+                replaceMultiPartFile(file, multipartFile);
+            }
+            for (i = previousContentNum - 1; i >= newNum; --i) {
+                CardContent content = card.getCardContents().get(i);
+                CardMediaFile file = content.getCardMediaFile();
 
-                        //Add new one
-                        File newFile = localFileService.createFileBeforeUploadS3(multipartFile, "card_collection");
-                        S3File s3File = s3Service.upload(newFile, "card_collection");
+                //delete previous
+                deleteMultiPartFile(file);
+                deleteCardContent(content);
+                card.getCardContents().remove(i);
+            }
+        }
+        //case 2
+        else if (newNum == previousContentNum) {
+            int i = 0;
+            for (; i < newNum; ++i) {
+                MultipartFile multipartFile = multipartFiles[i];
+                CardSaveRequestContentDto contentDto = contentDtos[i];
+                CardContent content = card.getCardContents().get(i);
+                CardMediaFile file = content.getCardMediaFile();
 
-                        //update new one
-                        file.update(s3File.getKey(), s3File.getUrl());
-                    }
+                replaceCardContent(content, contentDto);
+                replaceMultiPartFile(file, multipartFile);
+            }
+        }
+        //case 3
+        else if (previousContentNum < newNum) {
+            int i = 0;
+            for (; i < previousContentNum; ++i) {
+                MultipartFile multipartFile = multipartFiles[i];
+                CardSaveRequestContentDto contentDto = contentDtos[i];
+                CardContent content = card.getCardContents().get(i);
+                CardMediaFile file = content.getCardMediaFile();
 
+
+                replaceCardContent(content, contentDto);
+                replaceMultiPartFile(file, multipartFile);
+            }
+
+            for (; i < newNum; ++i) {
+                MultipartFile multipartFile = multipartFiles[i];
+                CardSaveRequestContentDto contentDto = contentDtos[i];
+                CardMediaFile saveCardMediaFile = null;
+
+
+                if (multipartFile != null && s3Service.isRunning()) {
+                    S3File s3File = saveMediaFile(multipartFile);
+                    saveCardMediaFile = cardMediaFileRepository.save(new CardMediaFile(s3File.getKey(), s3File.getUrl()));
                 }
+
                 if (contentDto.getContent() != null) {
-                    content.update(null, contentDto.getContent(), contentDto.getSequence());
-                }
-            }
-            //case 1-2 : previous < i
-            else if (previousContentNum <= i) {
-                //save new one
-                if (!multipartFile.isEmpty() && contentDto.getContent() != null) {
-                    CardMediaFile saveCardMediaFile = null;
-
-                    if(s3Service.isRunning()){
-                        //Add new one
-                        File newFile = localFileService.createFileBeforeUploadS3(multipartFile, "card_collection");
-                        S3File s3File = s3Service.upload(newFile, "card_collection");
-
-                        saveCardMediaFile = cardMediaFileRepository.save(new CardMediaFile(s3File.getKey(), s3File.getUrl()));
-                    }
-
-                    cardContentRepository.save(new CardContent(card, saveCardMediaFile, contentDto.getContent(), contentDto.getSequence()));
+                    CardContent saveContent = new CardContent(card, saveCardMediaFile, contentDto.getContent(), contentDto.getSequence());
+                    cardContentRepository.save(saveContent);
+                    card.getCardContents().add(saveContent);
                 }
             }
         }
-        //case 2 : size < previous
-        for (; i < previousContentNum; ++i) {
-            CardContent content = card.getCardContents().get(i);
-            CardMediaFile file = content.getCardMediaFile();
 
-            //delete previous
-            if(file != null && s3Service.isRunning()){
-                s3Service.delete(file.getKeyName());
-                cardMediaFileRepository.delete(file);
-            }
-            cardContentRepository.delete(content);
-        }
     }
 
     public void delete(Long id) {
         Card card = cardRepository.findByIdWithContent(id).orElseThrow(() -> new NoSuchElementException("Fail to delete, Nothing with id = " + id));
 
         for (CardContent content : card.getCardContents()) {
-            if(s3Service.isRunning()) s3Service.delete(content.getCardMediaFile().getKeyName());
+            if (s3Service.isRunning()) s3Service.delete(content.getCardMediaFile().getKeyName());
             cardMediaFileRepository.delete(content.getCardMediaFile());
             cardContentRepository.delete(content);
         }
@@ -185,11 +197,10 @@ public class CardService {
             CardSaveRequestContentDto contentDto = contentDtos[i];
             CardMediaFile saveCardMediaFile = null;
 
-            if(s3Service.isRunning()){
+            if (s3Service.isRunning()) {
                 S3File s3File = saveMediaFile(multipartFile);
                 saveCardMediaFile = cardMediaFileRepository.save(new CardMediaFile(s3File.getKey(), s3File.getUrl()));
-            }
-            else{
+            } else {
                 log.debug("Disabled AWS Connecting");
                 saveCardMediaFile = cardMediaFileRepository.save(new CardMediaFile(null, null));
             }
@@ -201,10 +212,48 @@ public class CardService {
         }
     }
 
+
     private S3File saveMediaFile(MultipartFile multipartFile) throws Exception {
         File file = localFileService.createFileBeforeUploadS3(multipartFile, "card_collection");
         S3File s3File = s3Service.upload(file, "card_collection");
 
         return s3File;
     }
+
+    private void replaceMultiPartFile(CardMediaFile file, MultipartFile replaceFile) throws IOException {
+        if (replaceFile == null) return;
+
+        if (file != null && s3Service.isRunning()) {
+            log.debug("case1-1 delete previous multiPartFile ");
+            s3Service.delete(file.getKeyName());
+
+            //Add new one
+            log.debug("case1-1 Add new multiPartFile");
+            File newFile = localFileService.createFileBeforeUploadS3(replaceFile, "card_collection");
+            S3File s3File = s3Service.upload(newFile, "card_collection");
+
+            //update new one
+            log.debug("case1-1 update new multiPartFile in s3");
+            file.update(s3File.getKey(), s3File.getUrl());
+        }
+    }
+
+    private void replaceCardContent(CardContent content, CardSaveRequestContentDto replaceDto) {
+        if (replaceDto.getContent() == null) return;
+        content.update(null, replaceDto.getContent(), replaceDto.getSequence());
+
+    }
+
+    private void deleteMultiPartFile(CardMediaFile file) {
+        if (file != null && s3Service.isRunning()) {
+            log.debug("case2 Delete previous multiMediaFile");
+            s3Service.delete(file.getKeyName());
+            cardMediaFileRepository.delete(file);
+        }
+    }
+
+    private void deleteCardContent(CardContent content) {
+        cardContentRepository.delete(content);
+    }
+
 }

@@ -18,6 +18,8 @@ public class CardResponseDto {
     private HousingType housingType;
     private HouseStyle houseStyle;
     private Color color;
+
+    private Integer contentNum = 0;
     private List<CardContentResponseDto> contentList = new ArrayList<>();
     private LocalDateTime createDate;
     private LocalDateTime modifiedDate;
@@ -33,6 +35,7 @@ public class CardResponseDto {
     }
 
     public void setContentList(List<CardContentResponseDto> contentList) {
+        this.contentNum = contentList.size();
         this.contentList = contentList;
     }
 }
