@@ -41,17 +41,19 @@ public class CardApiController {
     )
     @PostMapping
     public HttpEntity<Long> save(
-            @ApiParam(name = "key : header", value = "키가 header인 객체입니다.", required = true) @RequestPart(name = "header") CardSaveRequestHeaderDto headerDto,
-            @ApiParam(name = "key : files", value = "키가 files인 MediaFile(사진, 동영상)입니다.", required = true) @RequestPart(name = "files") MultipartFile[] multipartFiles,
-            @ApiParam(name = "key : contents", value = "키가 contents인 객체입니다.", required = true) @RequestPart(name = "contents") CardSaveRequestContentDto[] contentDtos,
-            @ApiParam(hidden = true, value = "무시하세요") SessionUser sessionUser) throws Exception {
+            @ApiParam(name = "key : header", value = "키가 header인 객체입니다.", required = true) @RequestPart(value = "header") CardSaveRequestHeaderDto headerDto,
+            @ApiParam(name = "key : files", value = "키가 files인 MediaFile(사진, 동영상)입니다.", required = true) @RequestPart(value = "files") MultipartFile[] multipartFiles,
+            @ApiParam(name = "key : contents", value = "키가 contents인 객체입니다.", required = true) @RequestPart(value = "contents") CardSaveRequestContentDto[] contentDtos
+            //@ApiParam(hidden = true, value = "무시하세요") SessionUser sessionUser) throws Exception {
+            ) throws Exception {
 
         if (multipartFiles.length != contentDtos.length) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-        Long saveId = cardService.save(headerDto, multipartFiles, contentDtos, sessionUser);
+        Long saveId = cardService.save(headerDto, multipartFiles, contentDtos, null);
 
         return new ResponseEntity<>(saveId, HttpStatus.CREATED);
     }
+
 
     @ApiOperation(
             value = "사진 게시글 수정",

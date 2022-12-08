@@ -32,6 +32,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileInputStream;
+import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -56,6 +57,7 @@ class CardApiControllerTest {
     private User saveUser = null;
     private Long saveCardId1 = null;
 
+    @Autowired private ObjectMapper objectMapper;
     @BeforeEach
     void setup() throws Exception {
 //        mvc = MockMvcBuilders.webAppContextSetup(context).build();
@@ -108,20 +110,29 @@ class CardApiControllerTest {
                 new CardSaveRequestContentDto(2, "con2"),
                 new CardSaveRequestContentDto(3, "con3")};
         MockMultipartFile[] multipartFiles = {
-                new MockMultipartFile("dog", "dog.jpeg", "image/jpeg", new FileInputStream(imageFilePath +"/images/dog.jpeg")),
-                new MockMultipartFile("dog2", "dog2.jpeg", "image/jpeg", new FileInputStream(imageFilePath +"/images/dog2.jpeg")),
-                new MockMultipartFile("iphone", "iphone.jpg", "image/jpg", new FileInputStream(imageFilePath +"/images/iphone.jpg"))};
+                new MockMultipartFile("files", "dog.jpeg", "image/jpeg", new FileInputStream(imageFilePath +"/images/dog.jpeg")),
+                new MockMultipartFile("files", "dog2.jpeg", "image/jpeg", new FileInputStream(imageFilePath +"/images/dog2.jpeg")),
+                new MockMultipartFile("files", "iphone.jpg", "image/jpg", new FileInputStream(imageFilePath +"/images/iphone.jpg"))};
+        MockMultipartFile sample = new MockMultipartFile("files", "file.png", "image/png", "file".getBytes(StandardCharsets.UTF_8));
+
+//        String content = objectMapper.writeValueAsString(new MetaData("name", "stringSomething", 100));
+//        MockMultipartFile json = new MockMultipartFile("meta-data", "jsondata", "application/json", content.getBytes(StandardCharsets.UTF_8));
 
         //when
         ResultActions perform = mvc.perform(MockMvcRequestBuilders.multipart(url)
-                        .part(new MockPart("header", new ObjectMapper().writeValueAsBytes(headerDto)))
+//                        .part(new MockPart("header", new ObjectMapper().writeValueAsString(headerDto).getBytes(StandardCharsets.UTF_8)))
+                        .file(new MockMultipartFile("header", "json", "application/json", objectMapper.writeValueAsString(headerDto).getBytes(StandardCharsets.UTF_8)))
                         .file(multipartFiles[0])
+//                                .file(sample)
                         .file(multipartFiles[1])
                         .file(multipartFiles[2])
-                        .part(new MockPart("contents", new ObjectMapper().writeValueAsBytes(contentDtos[0])))
-                        .part(new MockPart("contents", new ObjectMapper().writeValueAsBytes(contentDtos[1])))
-                        .part(new MockPart("contents", new ObjectMapper().writeValueAsBytes(contentDtos[2]))))
-                .andDo(print());
+                        //.part(new MockPart("contents", new ObjectMapper().writeValueAsString(contentDtos[0]).getBytes(StandardCharsets.UTF_8)))
+                        //.part(new MockPart("contents", new ObjectMapper().writeValueAsString(contentDtos[1]).getBytes(StandardCharsets.UTF_8)))
+                        //.part(new MockPart("contents", new ObjectMapper().writeValueAsString(contentDtos[2]).getBytes(StandardCharsets.UTF_8))))
+                        .file(new MockMultipartFile("contents", "json", "application/json", objectMapper.writeValueAsString(contentDtos[0]).getBytes(StandardCharsets.UTF_8)))
+                        .file(new MockMultipartFile("contents", "json", "application/json", objectMapper.writeValueAsString(contentDtos[1]).getBytes(StandardCharsets.UTF_8)))
+                        .file(new MockMultipartFile("contents", "json", "application/json", objectMapper.writeValueAsString(contentDtos[2]).getBytes(StandardCharsets.UTF_8)))
+        ).andDo(print());
 
         //then
         perform.andExpect(MockMvcResultMatchers.status().isCreated());
