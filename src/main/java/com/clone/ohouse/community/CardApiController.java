@@ -1,13 +1,14 @@
 package com.clone.ohouse.community;
 
-import com.clone.ohouse.account.SessionUser;
+import com.clone.ohouse.account.auth.SessionUser;
+import com.clone.ohouse.account.domain.user.User;
+import com.clone.ohouse.account.domain.user.UserRepository;
 import com.clone.ohouse.community.domain.CardService;
 import com.clone.ohouse.community.domain.cardcollections.*;
 import com.clone.ohouse.community.domain.cardcollections.dto.CardBundleViewResponseDto;
 import com.clone.ohouse.community.domain.cardcollections.dto.CardResponseDto;
 import com.clone.ohouse.community.domain.cardcollections.dto.CardSaveRequestContentDto;
 import com.clone.ohouse.community.domain.cardcollections.dto.CardSaveRequestHeaderDto;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,7 +28,6 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 public class CardApiController {
     private final CardService cardService;
-
 
     @ApiOperation(
             value = "사진 게시글 등록",
@@ -39,19 +41,32 @@ public class CardApiController {
                     "<br><br>" +
                     "parameter에 email, name, picture는 무시하세요. 넣어서는 안되는 값입니다."
     )
-    @PostMapping
+    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public HttpEntity<Long> save(
             @ApiParam(name = "key : header", value = "키가 header인 객체입니다.", required = true) @RequestPart(value = "header") CardSaveRequestHeaderDto headerDto,
             @ApiParam(name = "key : files", value = "키가 files인 MediaFile(사진, 동영상)입니다.", required = true) @RequestPart(value = "files") MultipartFile[] multipartFiles,
             @ApiParam(name = "key : contents", value = "키가 contents인 객체입니다.", required = true) @RequestPart(value = "contents") CardSaveRequestContentDto[] contentDtos
-            //@ApiParam(hidden = true, value = "무시하세요") SessionUser sessionUser) throws Exception {
+//            , @ApiParam(hidden = true, value = "무시하세요")  SessionUser sessionUser) throws Exception { //TODO: Temperary users, 추후 추가 예정
             ) throws Exception {
 
         if (multipartFiles.length != contentDtos.length) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-        Long saveId = cardService.save(headerDto, multipartFiles, contentDtos, null);
+        //TODO: Temperary users, 추후 삭제 예정
+        SessionUser sessionUser = null;
+        if(sessionUser == null){
+            sessionUser = new SessionUser(User.builder()
+                    .email("jjh@bb.com")
+                    .name("jjh")
+                    .phone("010-0000-0000")
+                    .nickname("j3")
+                    .birthday("birth")
+                    .password("0x00")
+                    .build());
+        }
+        Long saveId = cardService.save(headerDto, multipartFiles, contentDtos, sessionUser);
 
         return new ResponseEntity<>(saveId, HttpStatus.CREATED);
+//        return new ResponseEntity<>(0L, HttpStatus.CREATED);
     }
 
 
@@ -71,14 +86,28 @@ public class CardApiController {
                     "<br><br>" +
                     "parameter에 email, name, picture는 무시하세요. 넣어서는 안되는 값입니다."
     )
-    @PutMapping("/{id}")
+    @PostMapping("/{id}")
     public HttpEntity<Long> update(
             @ApiParam(name = "사진 게시글 id", required = true) @PathVariable Long id,
             @ApiParam(name = "key : header", value = "키가 header인 객체입니다.", required = true) @RequestPart(name = "header") CardSaveRequestHeaderDto headerDto,
             @ApiParam(name = "key : files", value = "키가 files인 MediaFile(사진, 동영상)입니다.", required = true) @RequestPart(name = "files") MultipartFile[] multipartFiles,
-            @ApiParam(name = "key : contents", value = "키가 contents인 객체입니다.", required = true) @RequestPart(name = "contents") CardSaveRequestContentDto[] contentDtos,
-            @ApiParam(hidden = true) SessionUser sessionUser) throws Exception {
+            @ApiParam(name = "key : contents", value = "키가 contents인 객체입니다.", required = true) @RequestPart(name = "contents") CardSaveRequestContentDto[] contentDtos
+//            , @ApiParam(hidden = true, value = "무시하세요")  SessionUser sessionUser) throws Exception { //TODO: Temperary users, 추후 추가 예정
+    ) throws Exception {
         if (multipartFiles.length != contentDtos.length) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        //TODO: Temperary users, 추후 삭제 예정
+        SessionUser sessionUser = null;
+        if(sessionUser == null){
+            sessionUser = new SessionUser(User.builder()
+                    .email("jjh@bb.com")
+                    .name("jjh")
+                    .phone("010-0000-0000")
+                    .nickname("j3")
+                    .birthday("birth")
+                    .password("0x00")
+                    .build());
+        }
 
         cardService.update(id, headerDto, multipartFiles, contentDtos, sessionUser);
 
@@ -138,10 +167,6 @@ public class CardApiController {
                                                     @ApiParam(value = "key : order") @RequestParam(required = false) SortOrder order) {
         CardSearchCondition condition = new CardSearchCondition(
                 housingtype, housestyle, color, order);
-//                HousingType.valueOf(housingtype),
-//                HouseStyle.valueOf(housestyle),
-//                Color.valueOf(color),
-//                SortOrder.valueOf(order));
 
         return cardService.findBundleViewWithContent(pageable, condition);
     }
