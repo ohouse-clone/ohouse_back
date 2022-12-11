@@ -4,10 +4,15 @@ import com.clone.ohouse.community.entity.Comment;
 import com.clone.ohouse.community.repository.CommentRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import static org.assertj.core.api.Assertions.*;
+import org.springframework.boot.test.context.SpringBootTest;
 
+import static org.assertj.core.api.Assertions.*;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+
+@SpringBootTest
+@Transactional
 
 public class CommentTest {
     @Autowired
