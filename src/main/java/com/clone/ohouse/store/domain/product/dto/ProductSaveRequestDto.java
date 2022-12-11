@@ -9,7 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @ApiModel(
-        value = "제품 등록에 대한 request"
+        description = "Product API(POST /store/api/v1/product)의 요청 <br>"
+        + "제품 등록에 대한 request"
 )
 @NoArgsConstructor
 @Getter

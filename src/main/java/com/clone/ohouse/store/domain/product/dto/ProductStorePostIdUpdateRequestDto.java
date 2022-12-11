@@ -8,8 +8,9 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @ApiModel(
-        value = "제품 여러개를 특정 store post에 등록",
-        description = "store post id와 product 의 각 id만으로 제품을 post에 등록합니다"
+        description = "Product API(POST /store/api/v1/product/products)의 요청<br>" +
+                "제품 여러개를 특정 store post에 등록 <br>" +
+                "store post id와 product 의 각 id만으로 제품을 post에 등록합니다"
 )
 @NoArgsConstructor
 @Getter
