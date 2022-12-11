@@ -1,9 +1,11 @@
 package com.clone.ohouse.community.service;
 
+import com.clone.ohouse.community.dto.UserDto;
 import com.clone.ohouse.community.entity.User;
 import com.clone.ohouse.community.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -18,6 +20,7 @@ import java.util.Optional;
 public class UserService {
     @Autowired
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public List<User> findAll(){
         List<User> users = new ArrayList<>();
@@ -33,6 +36,13 @@ public class UserService {
     public void deleteById(Long id){
         userRepository.deleteById(id);
 
+    }
+
+    public Long userJoin(UserDto dto){
+        dto.encryptPassword(passwordEncoder.encode(dto.getPassword()));
+        User user = dto.toEntity();
+
+        return user.getId();
     }
 
     public User save(User user){

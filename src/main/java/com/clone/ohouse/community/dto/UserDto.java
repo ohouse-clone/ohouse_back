@@ -33,6 +33,10 @@ public class UserDto {
                 .build();
         return user;
     }
+//암호화
+    public void encryptPassword(String BCryptpassword){
+        this.password = BCryptpassword;
+    }
 
     @Builder
     public UserDto(Long id, String email, String password, String nickname, String phone, String birthday, Integer point) {
