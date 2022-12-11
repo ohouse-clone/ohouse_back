@@ -1,6 +1,6 @@
 package com.clone.ohouse.community.domain;
 
-import com.clone.ohouse.account.SessionUser;
+import com.clone.ohouse.account.auth.SessionUser;
 import com.clone.ohouse.account.domain.user.User;
 import com.clone.ohouse.account.domain.user.UserRepository;
 import com.clone.ohouse.community.domain.cardcollections.*;
