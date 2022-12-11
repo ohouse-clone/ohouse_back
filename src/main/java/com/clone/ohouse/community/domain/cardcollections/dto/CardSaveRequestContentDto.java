@@ -25,6 +25,7 @@ public class CardSaveRequestContentDto {
     )
     private String content;
 
+
     public CardSaveRequestContentDto(Integer sequence, String content) {
         this.sequence = sequence;
         this.content = content;

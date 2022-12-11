@@ -1,4 +1,4 @@
-package com.clone.ohouse.account;
+package com.clone.ohouse.account.auth;
 
 import com.clone.ohouse.account.domain.user.User;
 import lombok.Getter;

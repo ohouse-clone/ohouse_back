@@ -1,7 +1,7 @@
 package com.clone.ohouse.community.domain;
 
 
-import com.clone.ohouse.account.SessionUser;
+import com.clone.ohouse.account.auth.SessionUser;
 import com.clone.ohouse.account.domain.user.User;
 import com.clone.ohouse.account.domain.user.UserRepository;
 import com.clone.ohouse.community.domain.cardcollections.*;
@@ -18,14 +18,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.Arrays;
 import java.util.NoSuchElementException;
 
 @Transactional
