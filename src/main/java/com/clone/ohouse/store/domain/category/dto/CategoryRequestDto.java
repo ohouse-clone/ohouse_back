@@ -11,8 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @ApiModel(
-        value = "Category API Request",
-        description = "카테고리를 등록, 수정, 삭제, 찾을때 DTO 로 사용됩니다. <br>" +
+        description = "Category API(/store/api/v1/category?) 공통 Request/Response <br>" +
+                "카테고리를 등록, 수정, 삭제, 찾을때 DTO 로 사용됩니다. <br>" +
+                "찾을 때(Get)을 제외하고 id field를 사용하지 않습니다 <br>" +
                 "수정의 경우에는 수정할 부분만 사용하세요, 전체 프로퍼티를 결정할 필요는 없습니다."
 )
 @NoArgsConstructor

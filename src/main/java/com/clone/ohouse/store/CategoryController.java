@@ -27,7 +27,8 @@ public class CategoryController {
 
     @ApiOperation(
             value = "카테고리 등록",
-            notes = "카테고리를 등록합니다."
+            notes = "카테고리를 등록합니다.<br>"+
+                    "Response : 저장된 category의 id"
     )
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
@@ -40,7 +41,8 @@ public class CategoryController {
 
     @ApiOperation(
             value = "등록된 카테고리 수정",
-            notes = "등록된 카테고리를 수정합니다."
+            notes = "등록된 카테고리를 수정합니다.<br>" +
+                    "Response : Nothing"
     )
     @ApiImplicitParam(name = "id", value = "수정할 카테고리의 id")
     @PutMapping("/{id}")
@@ -59,7 +61,8 @@ public class CategoryController {
 
     @ApiOperation(
             value = "카테고리 찾기",
-            notes = "ID를 아는 카테고리를 찾고 그 자식 카테고리들을 찾습니다"
+            notes = "ID를 아는 카테고리를 찾고 그 자식 카테고리들을 찾습니다 <br>" +
+                    "Response : CategoryRequestDto"
     )
     @ApiImplicitParam(name = "id", value = "찾을 카테고리의 id")
     @GetMapping("/{id}")
@@ -83,7 +86,8 @@ public class CategoryController {
 
     @ApiOperation(
             value = "카테고리 삭제",
-            notes = "카테고리를 삭제합니다"
+            notes = "카테고리를 삭제합니다 <br>" +
+                    "Response : Nothing"
     )
     @ApiImplicitParam(name = "id", value = "삭제할 카테고리 id")
     @DeleteMapping("/{id}")

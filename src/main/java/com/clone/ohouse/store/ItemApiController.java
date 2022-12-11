@@ -27,12 +27,12 @@ import org.springframework.web.bind.annotation.*;
 
 @Api(
         value = "Item 등록, 제거, 찾기에 대한 API<br><br>" +
-        "<h1> save interface </h1>" +
-        "save api는 카테고리의 의존적이라는 중요한 특징을 가집니다.<br>" +
-        "카테고리는 iteml의 세부항목을 결정짓는 중요한 parameter이며<br>" +
-        "저장하려는 DTO와 category code는 사전에 static하게 연관되어 있습니다.<br>" +
-        "따라서 정확하게 category와 dto를 사용해야 합니다.<br>" +
-        "예를 들어서 category 20_22_20_20은 bed를 의미하므로 BedRequestDto를 사용하며, post /store/item/bed 로 하여야 합니다."
+                "<h1> save interface </h1>" +
+                "save api는 카테고리의 의존적이라는 중요한 특징을 가집니다.<br>" +
+                "카테고리는 iteml의 세부항목을 결정짓는 중요한 parameter이며<br>" +
+                "저장하려는 DTO와 category code는 사전에 static하게 연관되어 있습니다.<br>" +
+                "따라서 정확하게 category와 dto를 사용해야 합니다.<br>" +
+                "예를 들어서 category 20_22_20_20은 bed를 의미하므로 BedRequestDto를 사용하며, post /store/item/bed 로 하여야 합니다."
 )
 @RequiredArgsConstructor
 @RequestMapping("/store/api/v1/item")
@@ -44,7 +44,8 @@ public class ItemApiController {
 
     @ApiOperation(
             value = "item(bed) 저장",
-            notes = "카테고리와 함께 사용됩니다.",
+            notes = "카테고리와 함께 사용됩니다. <br>" +
+                    "Response : 저장된 item의 id",
             code = 201
     )
     @ResponseStatus(HttpStatus.CREATED)
@@ -57,7 +58,8 @@ public class ItemApiController {
 
     @ApiOperation(
             value = "item(storagebed) 저장",
-            notes = "카테고리와 함께 사용됩니다.",
+            notes = "카테고리와 함께 사용됩니다. <br>" +
+                    "Response : 저장된 item의 id",
             code = 201
     )
     @ResponseStatus(HttpStatus.CREATED)
@@ -69,7 +71,8 @@ public class ItemApiController {
     }
 
     @ApiOperation(
-            value = "등록된 item 제거",
+            value = "등록된 item 제거 ",
+            notes = "Response : Nothing",
             code = 200
     )
     @ResponseStatus(HttpStatus.OK)
@@ -81,7 +84,8 @@ public class ItemApiController {
 
     @ApiOperation(
             value = "저장된 items 보기",
-            code  = 200
+            notes = "Response : ItemBundleViewDto",
+            code = 200
     )
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/items")
@@ -97,19 +101,21 @@ public class ItemApiController {
         itemSearchCondition.modelName = itemModelName;
         itemSearchCondition.brandName = itemBrandName;
 
-        if (categorySearch.getCode1() == null || categorySearch.getCode2() == null || categorySearch.getCode3() == null || categorySearch.getCode4() == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if (categorySearch.getCode1() == null || categorySearch.getCode2() == null || categorySearch.getCode3() == null || categorySearch.getCode4() == null)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         // itemSearchCondition 중 1가지만 null이 아니거나, 모두 null이어야 함
         if (!validateConditionIsOnlyOne(itemSearchCondition)) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         return new ResponseEntity<>(itemService.findByCategory(categorySearch, pageable, itemSearchCondition), HttpStatus.OK);
     }
-    private boolean validateConditionIsOnlyOne(ItemSearchCondition itemSearchCondition){
-        int count = 0;
-        if(StringUtils.hasText(itemSearchCondition.itemName)) count++;
-        if(StringUtils.hasText(itemSearchCondition.brandName)) count++;
-        if(StringUtils.hasText(itemSearchCondition.modelName)) count++;
 
-        if(count > 1) return false;
+    private boolean validateConditionIsOnlyOne(ItemSearchCondition itemSearchCondition) {
+        int count = 0;
+        if (StringUtils.hasText(itemSearchCondition.itemName)) count++;
+        if (StringUtils.hasText(itemSearchCondition.brandName)) count++;
+        if (StringUtils.hasText(itemSearchCondition.modelName)) count++;
+
+        if (count > 1) return false;
 
         return true;
     }

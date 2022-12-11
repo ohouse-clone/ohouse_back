@@ -166,40 +166,5 @@ class CategoryControllerTest {
         org.junit.jupiter.api.Assertions.assertThrows(NoSuchElementException.class, () -> categoryRepository.findById(save.getId()).orElseThrow(()->new NoSuchElementException("찾으려는 id가 잘못된 id입니다.")));
     }
 
-//    @Transactional
-//    @Test
-//    void findCategories() throws Exception{
-//        //given
-//        String url = "http://localhost:"+port+ "/store/api/v1/category/ids";
-//        String findCategory = "20_22_20";
-//        Category savedCategory1 = categoryRepository.save(new Category("가구", 20L));
-//        Category savedCategory1_1 = new Category("침대", 22L);
-//        Category savedCategory1_1_1 = new Category("침대프레임", 20L);
-//        Category savedCategory1_1_2 = new Category("침대+매트릭스", 21L);
-//        Category savedCategory1_1_3 = new Category("침대부속가구", 22L);
-//        savedCategory1_1.addParent(savedCategory1);
-//        savedCategory1_1_1.addParent(savedCategory1_1);
-//        savedCategory1_1_2.addParent(savedCategory1_1);
-//        savedCategory1_1_3.addParent(savedCategory1_1);
-//        categoryRepository.save(savedCategory1_1);
-//        categoryRepository.save(savedCategory1_1_1);
-//        categoryRepository.save(savedCategory1_1_2);
-//        categoryRepository.save(savedCategory1_1_3);
-//
-//        //when
-//        ResultActions perform = mvc.perform(MockMvcRequestBuilders.get(url)
-//                .queryParam("categories", findCategory));
-//
-//        //then
-//        perform.andExpect(MockMvcResultMatchers.status().isOk())
-//                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_VALUE))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.CategoriesResponseDto[0].name").value("침대프레임"))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.CategoriesResponseDto[0].code").value(20L)).andExpect(MockMvcResultMatchers.jsonPath("$.CategoriesResponseDto[0].name").value("침대프레임"))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.CategoriesResponseDto[1].name").value("침대+매트릭스")).andExpect(MockMvcResultMatchers.jsonPath("$.CategoriesResponseDto[0].name").value("침대프레임"))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.CategoriesResponseDto[1].code").value(21L)).andExpect(MockMvcResultMatchers.jsonPath("$.CategoriesResponseDto[0].name").value("침대프레임"))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.CategoriesResponseDto[2].name").value("침대부속가구"))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.CategoriesResponseDto[2].code").value(22L));
-//
-//    }
 }
 

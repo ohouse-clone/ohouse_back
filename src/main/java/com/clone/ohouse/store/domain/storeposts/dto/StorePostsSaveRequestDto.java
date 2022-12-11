@@ -5,10 +5,9 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 @ApiModel(
-        value = "store post save request",
-        description = "판매자가 게시글을 생성하기 위한 것입니다"
+        description = "Store API (POST /store/api/v1/post/{id}) 요청<br>" +
+                "판매자가 게시글을 생성하기 위한 것입니다"
 )
 @NoArgsConstructor
 @Getter

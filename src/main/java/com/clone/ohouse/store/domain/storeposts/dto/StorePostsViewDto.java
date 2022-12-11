@@ -2,8 +2,16 @@ package com.clone.ohouse.store.domain.storeposts.dto;
 
 
 import com.clone.ohouse.store.domain.storeposts.StorePosts;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 
+@ApiModel(
+        description =
+                "Store API (GET /store/category) 요청의 세부 Field <br>" +
+                        "BundleViewDto의 Field입니다. <br>" +
+                        "StorePost의 Preview입니다."
+)
 @Getter
 public class StorePostsViewDto {
     private Long id;
