@@ -21,12 +21,15 @@ public class StorePostsViewDto {
     private Integer price;
     private Integer discountRate;
 
-    public StorePostsViewDto(StorePosts postEntity, Integer price, Integer discountRate, Long popular) {
+    private String brandName;
+
+    public StorePostsViewDto(StorePosts postEntity, Integer price, Integer discountRate, Long popular, String brandName) {
         this.id = postEntity.getId();
         this.title = postEntity.getTitle();
         this.previewImageUrl = postEntity.getPreviewImageUrl();
         this.popular = popular;
         this.price = price;
         this.discountRate = discountRate;
+        this.brandName = brandName;
     }
 }

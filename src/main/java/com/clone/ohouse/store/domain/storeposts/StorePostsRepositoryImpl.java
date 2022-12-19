@@ -131,6 +131,7 @@ public class StorePostsRepositoryImpl implements StorePostsRepositoryCustom {
                 .select(storePosts.id, product)
                 .from(product)
                 .join(product.storePosts, storePosts)
+                .leftJoin(product.item, item).fetchJoin()
                 .where(storePosts.id.in(postIds))
                 .orderBy(product.id.asc())
                 .transform(GroupBy.groupBy(storePosts.id).as(product));
@@ -139,7 +140,7 @@ public class StorePostsRepositoryImpl implements StorePostsRepositoryCustom {
         for (StorePosts post : posts) {
             Product product = productMap.get(post.getId());
             Long popularSum = popularity.get(post.getId());
-            views.add(new StorePostsViewDto(post, product.getPrice(), product.getRateDiscount(), popularSum));
+            views.add(new StorePostsViewDto(post, product.getPrice(), product.getRateDiscount(), popularSum, product.getItem().getBrandName()));
         }
 
         BundleVIewDto result = new BundleVIewDto(count, views.size(), views);
