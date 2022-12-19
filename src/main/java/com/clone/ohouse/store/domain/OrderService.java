@@ -31,7 +31,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
-    private final PaymentRepository paymentRepository;
+    private final PaymentService paymentService;
     private final DeliveryRepository deliveryRepository;
 
     @Transactional
@@ -41,7 +41,7 @@ public class OrderService {
 
         //payment create & save
         Payment payment = Payment.createPayment(sessionUser.getName());
-        paymentRepository.save(payment);
+        paymentService.save(payment);
 
         //Delivery create & save
         Delivery delivery = deliveryDto.toEntity();
@@ -70,8 +70,8 @@ public class OrderService {
                 order.getName(),
                 payment.getOrderApprovalCode(),
                 order.getCreateTime(),
-                Payment.SUCCESS_URL,
-                Payment.FAIL_URL
+                paymentService.getTossSuccessCallBackUrlForCard(),
+                paymentService.getTossFailCallBackUrlForCard()
         );
     }
 
@@ -79,20 +79,10 @@ public class OrderService {
     public void verifyOrderComplete(String paymentKey, String orderApprovalCode, Long amount){
         //if(!StringUtils.hasText(orderApprovalCode)) throw new RuntimeException("Wrong orderApprovalCode : " + orderApprovalCode);
 
-        Payment payment = paymentRepository.findByOrderApprovalCode(orderApprovalCode).orElseThrow(() -> new RuntimeException("Can't find payment from orderApprovalCode : " + orderApprovalCode));
-        Order order = orderRepository.findByPayment(payment).orElseThrow(() -> new RuntimeException("Can't find order from payment id : " + payment.getId()));
 
-        if(payment.getPaymentKey() != paymentKey) throw new RuntimeException("Wrong paymentKey : " + paymentKey);
-        if(order.getTotalPrice() != amount.intValue()) throw new RuntimeException("Wrong amount : " + amount);
     }
 
-    @Transactional
-    public void requestOrderComplete(String paymentKey, String orderApprovalCode, Long amount){
-        RestTemplate template = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
 
-        String encodedAuth = new String(Base64.getEncoder().encode())
-    }
 
     @Transactional
     public void cancel(Long orderSeq) throws Exception {

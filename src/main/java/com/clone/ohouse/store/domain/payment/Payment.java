@@ -10,6 +10,7 @@ import java.util.UUID;
 
 
 @Getter
+
 @Entity
 public class Payment {
 

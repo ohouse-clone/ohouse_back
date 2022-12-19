@@ -4,17 +4,20 @@ import com.clone.ohouse.account.auth.LoginUser;
 import com.clone.ohouse.account.auth.SessionUser;
 import com.clone.ohouse.account.domain.user.User;
 import com.clone.ohouse.store.domain.OrderService;
+import com.clone.ohouse.store.domain.PaymentService;
 import com.clone.ohouse.store.domain.order.dto.DeliveryDto;
 import com.clone.ohouse.store.domain.order.dto.OrderRequestDto;
 import com.clone.ohouse.store.domain.order.dto.OrderResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
-@RequestMapping("/order/api/v1/order")
+@RequestMapping("/order/api/v1/payment")
 @RestController
 public class OrderApiController {
     private final OrderService orderService;
+    private final PaymentService paymentService;
 
     @PostMapping
     public OrderResponse order(
@@ -35,11 +38,11 @@ public class OrderApiController {
                     .build());
         }
 
-        return orderService.order(sessionUser, requestDto, deliveryDto);
+        return orderService.orderStart(sessionUser, requestDto, deliveryDto);
     }
 
-    @GetMapping("/payment/success")
-    public void requestOrderComplete(
+    @GetMapping("/card/success")
+    public HttpEntity requestOrderComplete(
             @RequestParam("paymentKey") String paymentKey,
             @RequestParam("orderId") String orderApprovalCode,
             @RequestParam("amount") Long amount
