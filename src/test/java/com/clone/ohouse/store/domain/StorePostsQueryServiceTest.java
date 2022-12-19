@@ -69,16 +69,16 @@ class StorePostsQueryServiceTest {
         categoryRepository.save(c6);
 
         CategorySearch condition1 = new CategorySearch(20L, 22L, 20L, 20L);
-        Item item1 = new Bed("나무침대1", "MJH", "JHH", BedSize.K, BedColor.WHITE);
-        Item item2 = new Bed("나무침대2", "MJH", "JHH", BedSize.K, BedColor.RED);
-        Item item3 = new Bed("나무침대3", "MJH", "JHH", BedSize.K, BedColor.BLUE);
-        Item item4 = new Bed("나무침대4", "MJH", "JHH", BedSize.K, BedColor.WHITE);
+        Item item1 = new Bed("나무침대1", "MJH", "JHH11", BedSize.K, BedColor.WHITE);
+        Item item2 = new Bed("나무침대2", "MJH", "JHH12", BedSize.K, BedColor.RED);
+        Item item3 = new Bed("나무침대3", "MJH", "JHH13", BedSize.K, BedColor.BLUE);
+        Item item4 = new Bed("나무침대4", "MJH", "JHH14", BedSize.K, BedColor.WHITE);
 
         CategorySearch condition2 = new CategorySearch(20L, 22L, 20L, 21L);
-        Item item5 = new StorageBed("불편한침대5", "MJH", "JHH", Material.FAKE_LEATHER);
-        Item item6 = new StorageBed("불편한침대6", "MJH", "JHH", Material.FAKE_LEATHER);
-        Item item7 = new StorageBed("불편한침대7", "MJH", "JHH", Material.FAKE_LEATHER);
-        Item item8 = new StorageBed("불편한침대8", "MJH", "JHH", Material.STEEL);
+        Item item5 = new StorageBed("불편한침대5", "MJH", "JHH25", Material.FAKE_LEATHER);
+        Item item6 = new StorageBed("불편한침대6", "MJH", "JHH26", Material.FAKE_LEATHER);
+        Item item7 = new StorageBed("불편한침대7", "MJH", "JHH27", Material.FAKE_LEATHER);
+        Item item8 = new StorageBed("불편한침대8", "MJH", "JHH28", Material.STEEL);
 
         itemService.save(item1, condition1);
         itemService.save(item2, condition1);
@@ -186,8 +186,9 @@ class StorePostsQueryServiceTest {
 
 
         //when
+        System.out.println("@Start=================================================================================");
         BundleVIewDto bundle = storePostsQueryService.getBundleViewV3(categoryCondition, pageable, itemCondition);
-
+        System.out.println("@End=================================================================================");
 ////         -- View --
 //        System.out.println("-- result --");
 //        System.out.println("postNum : " + bundle.getPostsNum());
@@ -200,6 +201,7 @@ class StorePostsQueryServiceTest {
         //itemCondition is not matched with categoryCondition. so result must get all with categoryId
         Assertions.assertThat(bundle.getPostsNum()).isEqualTo(size);
         Assertions.assertThat(bundle.getPreviewPosts()).extracting(StorePostsViewDto::getTitle).containsExactly("제목8", "제목6");
+        Assertions.assertThat(bundle.getPreviewPosts()).extracting(StorePostsViewDto::getBrandName).containsExactly("JHH28", "JHH26");
         Assertions.assertThat(bundle.getTotalNum()).isEqualTo(8);
     }
     @Test
@@ -224,6 +226,7 @@ class StorePostsQueryServiceTest {
         //then
         Assertions.assertThat(bundle.getPostsNum()).isEqualTo(size);
         Assertions.assertThat(bundle.getPreviewPosts()).extracting(StorePostsViewDto::getTitle).containsExactly("제목8", "제목6", "제목3", "제목4");
+        Assertions.assertThat(bundle.getPreviewPosts()).extracting(StorePostsViewDto::getBrandName).containsExactly("JHH28", "JHH26", "JHH13", "JHH14");
     }
 
     @Test
@@ -249,6 +252,7 @@ class StorePostsQueryServiceTest {
         //then
         Assertions.assertThat(bundle.getPostsNum()).isEqualTo(2);
         Assertions.assertThat(bundle.getPreviewPosts()).extracting(StorePostsViewDto::getTitle).containsExactly("제목3", "제목2");
+        Assertions.assertThat(bundle.getPreviewPosts()).extracting(StorePostsViewDto::getBrandName).containsExactly("JHH13", "JHH12");
         Assertions.assertThat(bundle.getTotalNum()).isEqualTo(2);
     }
     @Test
@@ -274,6 +278,7 @@ class StorePostsQueryServiceTest {
         //then
         Assertions.assertThat(bundle.getPostsNum()).isEqualTo(1);
         Assertions.assertThat(bundle.getPreviewPosts()).extracting(StorePostsViewDto::getTitle).containsExactly("제목8");
+        Assertions.assertThat(bundle.getPreviewPosts()).extracting(StorePostsViewDto::getBrandName).containsExactly("JHH28");
         Assertions.assertThat(bundle.getTotalNum()).isEqualTo(1);
     }
 }
