@@ -35,7 +35,7 @@ public class OrderService {
     private final DeliveryRepository deliveryRepository;
 
     @Transactional
-    public OrderResponse order(SessionUser sessionUser, OrderRequestDto orderRequestDto, DeliveryDto deliveryDto) throws Exception{
+    public OrderResponse orderStart(SessionUser sessionUser, OrderRequestDto orderRequestDto, DeliveryDto deliveryDto) throws Exception{
         //find user
         User user = userRepository.findByEmail(sessionUser.getEmail()).orElseThrow(()->new NoSuchElementException("email을 가진 user가 없음 : " + sessionUser.getEmail()));
 

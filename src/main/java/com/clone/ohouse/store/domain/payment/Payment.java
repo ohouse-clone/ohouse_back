@@ -12,10 +12,7 @@ import java.util.UUID;
 @Getter
 @Entity
 public class Payment {
-    @Transient
-    public static final String SUCCESS_URL = "/payment/success";
-    @Transient
-    public static final String FAIL_URL = "/payment/fail";
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
