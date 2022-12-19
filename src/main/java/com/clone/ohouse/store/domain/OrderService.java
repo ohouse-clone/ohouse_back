@@ -1,14 +1,16 @@
 package com.clone.ohouse.store.domain;
 
 
-import com.clone.ohouse.store.domain.order.OrderRepository;
-import com.clone.ohouse.store.domain.order.OrderedProductRepository;
+import com.clone.ohouse.account.auth.SessionUser;
+import com.clone.ohouse.account.domain.user.User;
+import com.clone.ohouse.account.domain.user.UserRepository;
+import com.clone.ohouse.store.domain.order.*;
+import com.clone.ohouse.store.domain.order.dto.DeliveryDto;
 import com.clone.ohouse.store.domain.order.dto.OrderRequestDto;
+import com.clone.ohouse.store.domain.order.dto.OrderResponse;
 import com.clone.ohouse.store.domain.order.dto.OrderedProductDto;
-import com.clone.ohouse.store.domain.order.Delivery;
-import com.clone.ohouse.store.domain.order.Order;
-import com.clone.ohouse.store.domain.order.OrderedProduct;
-import com.clone.ohouse.store.domain.order.User;
+import com.clone.ohouse.store.domain.payment.Payment;
+import com.clone.ohouse.store.domain.payment.PaymentRepository;
 import com.clone.ohouse.store.domain.product.ProductRepository;
 import com.clone.ohouse.store.domain.product.Product;
 import lombok.RequiredArgsConstructor;
@@ -28,15 +30,24 @@ public class OrderService {
     private final OrderedProductRepository orderedProductRepository;
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
+    private final UserRepository userRepository;
+    private final PaymentRepository paymentRepository;
+    private final DeliveryRepository deliveryRepository;
 
     @Transactional
-    public Long order(Long userSeq, OrderRequestDto orderRequestDto, Delivery delivery) throws Exception{
-        //userRepository.find code 삽입 예정
-        User user = new User();//임시 User 객체 (userRepository 에서 find했다고 가정)
-        //DeliveryInformation.find code 삽입 예정
-        Delivery deliveryMock = new Delivery(); //임시 Delivery 객체
+    public OrderResponse order(SessionUser sessionUser, OrderRequestDto orderRequestDto, DeliveryDto deliveryDto) throws Exception{
+        //find user
+        User user = userRepository.findByEmail(sessionUser.getEmail()).orElseThrow(()->new NoSuchElementException("email을 가진 user가 없음 : " + sessionUser.getEmail()));
 
+        //payment create & save
+        Payment payment = Payment.createPayment(sessionUser.getName());
+        paymentRepository.save(payment);
 
+        //Delivery create & save
+        Delivery delivery = deliveryDto.toEntity();
+        deliveryRepository.save(delivery);
+
+        //find Products to save in order
         List<Pair<Product, OrderedProductDto>> list = new ArrayList<>();
         for(var obj : orderRequestDto.getOrderList()){
             Optional<Product> product = productRepository.findById(obj.getProductId());
@@ -45,10 +56,8 @@ public class OrderService {
             list.add(Pair.of(findProduct, obj));
         }
 
-        //Delivery Repo
-
         //create order
-        Order order = Order.makeOrder(user, deliveryMock, list);
+        Order order = Order.makeOrder(user, delivery, payment, orderRequestDto.getOrderName() ,list);
         Long orderSeq = orderRepository.save(order).getId();
 
         //create orderedProduct
@@ -56,25 +65,35 @@ public class OrderService {
             orderedProductRepository.save(obj);
         }
 
-        return orderSeq;
+        return new OrderResponse(
+                order.getTotalPrice(),
+                order.getName(),
+                payment.getOrderApprovalCode(),
+                order.getCreateTime(),
+                Payment.SUCCESS_URL,
+                Payment.FAIL_URL
+        );
     }
+
+    @Transactional
+    public void orderComplete()
 
     @Transactional
     public void cancel(Long orderSeq) throws Exception {
         Order findOrder = orderRepository.findById(orderSeq).orElseThrow(() -> new NoSuchElementException("잘못된 주문 번호입니다."));
 
         findOrder.cancel();
+        findOrder.getPayment().cancel();
 
         List<OrderedProduct> orderedProducts = findOrder.getOrderedProducts();
         for (OrderedProduct orderedProduct : orderedProducts) {
             orderedProductRepository.delete(orderedProduct);
         }
+
+
+        orderRepository.delete(findOrder);
     }
 
-//    @Transactional
-//    public List<Order> findAllOrders(User user){
-//        return orderRepository.findByUser(user);
-//    }
 
     @Transactional
     public List<OrderedProduct> findAllOrderedProduct(User user, Long orderSeq){

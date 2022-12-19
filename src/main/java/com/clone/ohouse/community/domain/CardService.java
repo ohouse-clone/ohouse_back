@@ -40,7 +40,7 @@ public class CardService {
             SessionUser sessionUser) throws Exception {
         if(multipartFiles.length != contentDtos.length) throw new IllegalArgumentException("file과 dto의 길이가 맞지 않음");
 
-        User user = userRepository.findByEmail(sessionUser.getEmail());
+        User user = userRepository.findByEmail(sessionUser.getEmail()).orElseThrow(()->new NoSuchElementException("email을 가진 user가 없음 : " + sessionUser.getEmail()));
         Card saveCard = cardRepository.save(new Card(PostType.CARD, headerDto.getHousingType(), headerDto.getHouseStyle(), headerDto.getColor(), user));
         Arrays.sort(contentDtos, (a, b) -> Integer.compare(a.getSequence(), b.getSequence()));
 
@@ -57,7 +57,7 @@ public class CardService {
                        SessionUser sessionUser) throws Exception {
         if(multipartFiles.length != contentDtos.length) throw new IllegalArgumentException("file과 dto의 길이가 맞지 않음");
 
-        User user = userRepository.findByEmail(sessionUser.getEmail());
+        User user = userRepository.findByEmail(sessionUser.getEmail()).orElseThrow(()->new NoSuchElementException("email을 가진 user가 없음 : " + sessionUser.getEmail()));
         Card card = cardRepository.findByIdWithContent(id).orElseThrow(() -> new NoSuchElementException("Fail to find, Nothing with id = " + id));
 
         if (card.getUser().getId() != user.getId()) throw new IllegalAccessException("Access Illegal for auth");

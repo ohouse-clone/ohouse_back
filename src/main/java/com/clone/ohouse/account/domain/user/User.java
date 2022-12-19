@@ -27,10 +27,7 @@ public class User {
     private String nickname;
     @Column(nullable = false, length = 50)
     private String phone;
-    @Column(nullable = false, length = 30)
-    private String birthday;
-    @Column
-    private Integer point;
+
     @Column(length = 1000)
     private String refreshToken;
 
@@ -41,15 +38,13 @@ public class User {
     private String picture;
 
     @Builder
-    public User(Long id, String email, String password, String nickname, String phone, String birthday,String refreshToken,Integer point, String name, String picture) {
+    public User(Long id, String email, String password, String nickname, String phone,String refreshToken, String name, String picture) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.nickname = nickname;
         this.phone = phone;
-        this.birthday = birthday;
         this.refreshToken = refreshToken;
-        this.point = point;
         this.name = name;
         this.picture = picture;
     }
