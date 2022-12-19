@@ -17,11 +17,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.net.http.HttpHeaders;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Transactional
@@ -76,7 +76,23 @@ public class OrderService {
     }
 
     @Transactional
-    public void orderComplete()
+    public void verifyOrderComplete(String paymentKey, String orderApprovalCode, Long amount){
+        //if(!StringUtils.hasText(orderApprovalCode)) throw new RuntimeException("Wrong orderApprovalCode : " + orderApprovalCode);
+
+        Payment payment = paymentRepository.findByOrderApprovalCode(orderApprovalCode).orElseThrow(() -> new RuntimeException("Can't find payment from orderApprovalCode : " + orderApprovalCode));
+        Order order = orderRepository.findByPayment(payment).orElseThrow(() -> new RuntimeException("Can't find order from payment id : " + payment.getId()));
+
+        if(payment.getPaymentKey() != paymentKey) throw new RuntimeException("Wrong paymentKey : " + paymentKey);
+        if(order.getTotalPrice() != amount.intValue()) throw new RuntimeException("Wrong amount : " + amount);
+    }
+
+    @Transactional
+    public void requestOrderComplete(String paymentKey, String orderApprovalCode, Long amount){
+        RestTemplate template = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+
+        String encodedAuth = new String(Base64.getEncoder().encode())
+    }
 
     @Transactional
     public void cancel(Long orderSeq) throws Exception {

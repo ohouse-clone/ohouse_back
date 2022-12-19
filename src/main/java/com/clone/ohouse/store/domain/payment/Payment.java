@@ -21,7 +21,7 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 1024)
+    @Column(length = 1024, unique = true)
     private String orderApprovalCode;
     @Column(length = 1024)
     private String paymentKey;
