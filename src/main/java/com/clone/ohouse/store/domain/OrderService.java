@@ -17,10 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
-import org.springframework.web.client.RestTemplate;
 
-import java.net.http.HttpHeaders;
 import java.util.*;
 
 @RequiredArgsConstructor
@@ -68,22 +65,14 @@ public class OrderService {
         return new OrderResponse(
                 order.getTotalPrice(),
                 order.getName(),
-                payment.getOrderApprovalCode(),
+                payment.getOrderId(),
                 order.getCreateTime(),
                 paymentService.getTossSuccessCallBackUrlForCard(),
                 paymentService.getTossFailCallBackUrlForCard()
         );
     }
 
-    @Transactional
-    public void verifyOrderComplete(String paymentKey, String orderApprovalCode, Long amount){
-        //if(!StringUtils.hasText(orderApprovalCode)) throw new RuntimeException("Wrong orderApprovalCode : " + orderApprovalCode);
-
-
-    }
-
-
-
+    //TODO: cancel 만들기
     @Transactional
     public void cancel(Long orderSeq) throws Exception {
         Order findOrder = orderRepository.findById(orderSeq).orElseThrow(() -> new NoSuchElementException("잘못된 주문 번호입니다."));

@@ -20,7 +20,7 @@ public class Payment {
     private Long id;
 
     @Column(length = 1024, unique = true)
-    private String orderApprovalCode;
+    private String orderId;
     @Column(length = 1024)
     private String paymentKey;
 
@@ -37,7 +37,7 @@ public class Payment {
 
     public static Payment createPayment(String buyerName){
         Payment payment = new Payment();
-        payment.orderApprovalCode = UUID.randomUUID().toString();
+        payment.orderId = UUID.randomUUID().toString();
         payment.buyerName = buyerName;
         payment.isSuccess = false;
         payment.completeTime = null;
@@ -48,5 +48,9 @@ public class Payment {
 
     public void cancel(){
         isSuccess = false;
+    }
+
+    public void registerPaymentKey(String paymentKey){
+        this.paymentKey = paymentKey;
     }
 }

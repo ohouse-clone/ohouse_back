@@ -28,7 +28,7 @@ public class DeliveryDto {
     public Delivery toEntity(){
         return Delivery.builder()
                 .senderName(senderName)
-                .receipentName(recipientName)
+                .recipientName(recipientName)
                 .addressName(addressName)
                 .zipCode(zipCode)
                 .address1(address1)

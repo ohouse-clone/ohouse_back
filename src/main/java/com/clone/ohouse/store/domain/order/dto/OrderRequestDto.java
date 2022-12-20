@@ -12,4 +12,10 @@ public class OrderRequestDto {
     private PaymentType paymentType;
     private String orderName;
     private List<OrderedProductDto> orderList;
+
+    public OrderRequestDto(PaymentType paymentType, String orderName, List<OrderedProductDto> orderList) {
+        this.paymentType = paymentType;
+        this.orderName = orderName;
+        this.orderList = orderList;
+    }
 }

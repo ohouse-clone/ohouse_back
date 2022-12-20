@@ -4,13 +4,13 @@ import lombok.Getter;
 
 @Getter
 public class PaymentCompleteRequestDto {
-    private String encodedAuth;
-    private String orderApprovalCode;
+    private String paymentKey;
+    private String orderId;
     private Long amount;
 
-    public PaymentCompleteRequestDto(String encodedAuth, String orderApprovalCode, Long amount) {
-        this.encodedAuth = encodedAuth;
-        this.orderApprovalCode = orderApprovalCode;
+    public PaymentCompleteRequestDto(String paymentKey, String orderApprovalCode, Long amount) {
+        this.paymentKey = paymentKey;
+        this.orderId = orderApprovalCode;
         this.amount = amount;
     }
 }

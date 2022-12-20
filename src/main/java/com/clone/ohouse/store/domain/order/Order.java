@@ -58,8 +58,8 @@ public class Order {
         order.name = orderName;
 
         for (var obj : orderedProducts) {
-            int adjustedPrice = obj.getSecond().getAdjustedPrice();
-            int amount = obj.getSecond().getAmount();
+            long adjustedPrice = obj.getSecond().getAdjustedPrice();
+            long amount = obj.getSecond().getAmount();
 
             OrderedProduct orderedProduct = obj.getFirst().makeOrderedProduct(order, adjustedPrice, amount);
             order.orderedProducts.add(orderedProduct);

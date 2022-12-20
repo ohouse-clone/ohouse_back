@@ -22,10 +22,10 @@ public class OrderedProduct {
     @JoinColumn(name = "order_id")
     private Order order;
 
-    private Integer price;
-    private Integer amount;
+    private Long price;
+    private Long amount;
 
-    public OrderedProduct(Product product, Order order, Integer price, Integer amount) {
+    public OrderedProduct(Product product, Order order, Long price, Long amount) {
         this.product = product;
         this.order = order;
         this.price = price;
@@ -34,6 +34,6 @@ public class OrderedProduct {
 
     public void cancelOrdered() throws Exception{
         product.returnAmount(amount);
-        amount = 0;
+        amount = 0L;
     }
 }

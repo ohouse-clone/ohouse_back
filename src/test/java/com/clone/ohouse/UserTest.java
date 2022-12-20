@@ -28,7 +28,6 @@ public class UserTest {
                 .password("12345")
                 .nickname("ceta")
                 .phone("012")
-                .birthday("950721")
                 .build();
         //저장
         User newUser = userRepository.save(user);
@@ -50,14 +49,12 @@ public class UserTest {
                 .password("pass1")
                 .nickname("cetta")
                 .phone("012-3456")
-                .birthday("950722")
                 .build();
         User user2 = User.builder()
                 .email("user2@gmail.com")
                 .password("pass2")
                 .nickname("junu")
                 .phone("123-4567")
-                .birthday("900716")
                 .build();
 
         userRepository.save(user1);

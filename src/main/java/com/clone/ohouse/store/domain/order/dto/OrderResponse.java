@@ -11,15 +11,15 @@ public class OrderResponse {
 
     private Integer totalPrice;
     private String name;
-    private String paymentApprovalCode;
+    private String orderId;
     private LocalDateTime createTime;
     private String successUrl;
     private String failUrl;
 
-    public OrderResponse(Integer totalPrice, String name, String paymentApprovalCode, LocalDateTime createTime, String successUrl, String failUrl) {
+    public OrderResponse(Integer totalPrice, String name, String orderId, LocalDateTime createTime, String successUrl, String failUrl) {
         this.totalPrice = totalPrice;
         this.name = name;
-        this.paymentApprovalCode = paymentApprovalCode;
+        this.orderId = orderId;
         this.createTime = createTime;
         this.successUrl = successUrl;
         this.failUrl = failUrl;

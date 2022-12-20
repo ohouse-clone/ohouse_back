@@ -5,20 +5,15 @@ import com.clone.ohouse.store.domain.order.OrderRepository;
 import com.clone.ohouse.store.domain.payment.Payment;
 import com.clone.ohouse.store.domain.payment.PaymentRepository;
 import com.clone.ohouse.store.domain.payment.dto.PaymentCompleteRequestDto;
-import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.clone.ohouse.store.domain.payment.dto.PaymentCompleteResponseDto;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import javax.persistence.Transient;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
@@ -40,6 +35,9 @@ public class PaymentService {
     @Value("${payments.toss.card.fail_url}")
     private String tossFailCallBackUrlForCard;
 
+    @Value("${payments.toss.card.confirm_url")
+    private String tossRequestPaymentConfirmUrl;
+
     public Long save(Payment payment){
         return paymentRepository.save(payment).getId();
     }
@@ -48,28 +46,35 @@ public class PaymentService {
         paymentRepository.deleteById(paymentId);
     }
 
-    public void verifyPaymentComplete(String paymentKey, String orderApprovalCode, Long amount) throws Exception{
-        Payment payment = paymentRepository.findByOrderApprovalCode(orderApprovalCode).orElseThrow(() -> new RuntimeException("Can't find payment from orderApprovalCode : " + orderApprovalCode));
+    public void verifyPaymentComplete(String paymentKey, String orderId, Long amount) throws Exception{
+        Payment payment = paymentRepository.findByOrderId(orderId).orElseThrow(() -> new RuntimeException("Can't find payment from orderApprovalCode : " + orderId));
         Order order = orderRepository.findByPayment(payment).orElseThrow(() -> new RuntimeException("Can't find order from payment id : " + payment.getId()));
 
         if(!payment.getPaymentKey().equals(paymentKey)) throw new RuntimeException("Wrong paymentKey : " + paymentKey);
         if(!order.getTotalPrice().equals(amount.intValue())) throw new RuntimeException("Wrong amount : " + amount);
     }
 
-    public PaymentCompleteRequestDto requestPaymentComplete(String paymentKey, String orderApprovalCode, Long amount){
+    public PaymentCompleteResponseDto requestPaymentComplete(String paymentKey, String orderId, Long amount){
         RestTemplate template = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         //TODO: 결제요청
-//        String auth = new String(Base64.getEncoder().encode(tossSecretApiKeyForTest.getBytes(StandardCharsets.UTF_8));
-//        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-//
-//        headers.setBasicAuth(auth);
-//        headers.setContentType(MediaType.APPLICATION_JSON);
-//        body.add("orderId", orderApprovalCode);
-//        body.add("amount", amount.toString());
-//
-//        template.postForEntity(
-//                "https://api.tosspayments.com/v1/payments/confirm \"
-//        )
+        String auth = new String(Base64.getEncoder().encode(tossSecretApiKeyForTest.getBytes(StandardCharsets.UTF_8)));
+
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBasicAuth(auth);
+
+        ResponseEntity<PaymentCompleteResponseDto> response = template.postForEntity(
+                tossRequestPaymentConfirmUrl,
+                new HttpEntity<PaymentCompleteRequestDto>(
+                        new PaymentCompleteRequestDto(paymentKey, orderId, amount),
+                        headers)
+                ,
+                PaymentCompleteResponseDto.class
+        );
+
+        //Save payment key
+        paymentRepository.findByOrderId(orderId).get().registerPaymentKey(paymentKey);
+
+        return response.getBody();
     }
 }

@@ -54,7 +54,6 @@ public class CardServiceTest {
         User user = userRepository.save(User.builder()
                 .email("aa@@bb")
                 .password("1234")
-                .birthday("00")
                 .nickname("jjh")
                 .phone("010-0000-0000")
                 .name("jjh name")

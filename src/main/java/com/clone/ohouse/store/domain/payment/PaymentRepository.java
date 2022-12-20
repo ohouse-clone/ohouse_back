@@ -7,5 +7,5 @@ import java.util.Optional;
 
 @Controller
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
-    Optional<Payment> findByOrderApprovalCode(String orderApprovalCode);
+    Optional<Payment> findByOrderId(String orderId);
 }
