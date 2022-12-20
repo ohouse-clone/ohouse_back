@@ -3,73 +3,68 @@ package com.clone.ohouse.community.controller;
 import com.clone.ohouse.community.dto.UserDto;
 import com.clone.ohouse.community.entity.User;
 import com.clone.ohouse.community.entity.UserCreateForm;
+import com.clone.ohouse.community.repository.UserRepository;
 import com.clone.ohouse.community.service.UserService;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 import java.util.logging.Logger.*;
 import javax.validation.Valid;
 import java.awt.*;
 import java.util.Optional;
 @Log
-@Controller
+@RestController
 
 public class UserController {
     @Autowired
     UserService userService;
+    UserRepository userRepository;
 
-    //회원가입
-    @GetMapping("/signup")
-    public String signup(UserCreateForm userCreateForm){
-        return "signup_form";
-    }
 
-    @PostMapping("/signup")
-    public String signup(@Valid UserDto userDto, UserCreateForm userCreateForm, BindingResult bindingResult){
-        if (bindingResult.hasErrors()){
-            return "signup_form";
-        }
-
-        if (!userCreateForm.getPassword1().equals(userCreateForm.getPassword2())){
-            bindingResult.rejectValue("password2","PasswordInCorrect",
-                    "패스워드가 일치하지 않습니다.");
-            return "signup_form";
-        }
-
-        userService.userJoin(userDto);
-        log.info("회원가입 성");
-
-        return "redirect:/login";
-    }
-
-    @GetMapping("/signin")
+    @GetMapping("/login")
     public User signIn(@RequestBody User requestbody) {
-        String email = requestbody.getEmail();
-        String password = requestbody.getPassword();
-        User user = User.builder().build();
+        User user = User.builder()
+                .email(requestbody.getEmail())
+                .password(requestbody.getPassword())
+                .nickname(requestbody.getNickname())
+                .phone(requestbody.getPhone())
+                .birthday(requestbody.getBirthday())
+                .build();
+        userService.save(user);
         return user;
     }
 
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        Optional <User> user = userRepository.findById(id);
 
-    @PostMapping("/delete")
-    public void delete(@RequestBody User requestbody) {
-        Long deleteId = requestbody.getId();
-        userService.deleteById(deleteId);
+        userService.deleteById(id);
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @PostMapping("/update")
     public void update(@RequestBody User requestbody) {
+        //email로 검색 따로 구현
         Long newId = requestbody.getId();
         userService.update(newId);
     }
 
-    @PostMapping("/read")
+    @GetMapping("/users")
     public void getAllUser(@RequestBody User requestbody) {
         userService.findAll();
     }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<String> handleNoSuchElementFoundException(NoSuchElementException exception){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+    }
+
 }

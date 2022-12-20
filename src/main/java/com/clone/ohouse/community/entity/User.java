@@ -26,7 +26,7 @@ public class User {
     private String nickname;
     @Column(nullable = false, length = 50)
     private String phone;
-    @Column(nullable = false, length = 30)
+    @Column(length = 30)
     private String birthday;
     @Column
     private Integer point;

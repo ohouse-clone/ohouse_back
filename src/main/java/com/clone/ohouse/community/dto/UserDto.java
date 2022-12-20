@@ -3,6 +3,7 @@ package com.clone.ohouse.community.dto;
 import com.clone.ohouse.community.entity.User;
 
 import lombok.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.criteria.CriteriaBuilder;
 
@@ -43,7 +44,7 @@ public class UserDto {
 
         this.id = id;
         this.email = email;
-        this.password = password;
+        this.password = (new BCryptPasswordEncoder().encode(password));
         this.nickname = nickname;
         this.phone = phone;
         this.birthday = birthday;

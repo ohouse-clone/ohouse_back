@@ -38,8 +38,8 @@ public class OAuthAttributes {
                 .username((String) response.get("username"))
                 .email((String) response.get("email"))
                 .nickname((String) response.get("nickname"))
-                .attributes(response)
-                .nameAttributeKey(userNameAttributeName)
+//                .attributes(response)
+//                .nameAttributeKey(userNameAttributeName)
                 .build();
     }
 

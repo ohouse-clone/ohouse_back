@@ -28,6 +28,10 @@ public class UserService {
         return users;
     }
 
+    public Optional<User> findByEmail(String email){
+        Optional<User> user =  userRepository.findByEmail(email);
+        return user;
+    }
     public Optional<User> findById(Long id){
         Optional<User> user = userRepository.findById(id);
         return user;
@@ -38,14 +42,8 @@ public class UserService {
 
     }
 
-    public Long userJoin(UserDto dto){
-        dto.encryptPassword(passwordEncoder.encode(dto.getPassword()));
-        User user = dto.toEntity();
-
-        return user.getId();
-    }
-
     public User save(User user){
+
         userRepository.save(user);
         return user;
     }
