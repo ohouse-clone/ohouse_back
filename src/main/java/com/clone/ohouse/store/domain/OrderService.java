@@ -36,31 +36,37 @@ public class OrderService {
         //find user
         User user = userRepository.findByEmail(sessionUser.getEmail()).orElseThrow(()->new NoSuchElementException("email을 가진 user가 없음 : " + sessionUser.getEmail()));
 
+        System.out.println("1-------------------------------------------------------------------");
         //payment create & save
         Payment payment = Payment.createPayment(sessionUser.getName());
         paymentService.save(payment);
 
+        System.out.println("2-------------------------------------------------------------------");
         //Delivery create & save
         Delivery delivery = deliveryDto.toEntity();
         deliveryRepository.save(delivery);
 
+        System.out.println("4-------------------------------------------------------------------");
+        //create order
+        Order order = Order.makeOrder(user, delivery, payment, orderRequestDto.getOrderName());
+        Long orderSeq = orderRepository.save(order).getId();
+        System.out.println("5-------------------------------------------------------------------");
+        //create orderedProduct
+
         //find Products to save in order
-        List<Pair<Product, OrderedProductDto>> list = new ArrayList<>();
+        List<OrderedProduct> orderProducts = new ArrayList<>();
         for(var obj : orderRequestDto.getOrderList()){
+            //TODO: 1개씩 찾고 있는데, in query 등 한방쿼리로 변경필요
             Optional<Product> product = productRepository.findById(obj.getProductId());
 
             Product findProduct = product.orElseThrow(() -> new RuntimeException("존재하지 않는 상품을 주문합니다."));
-            list.add(Pair.of(findProduct, obj));
+            OrderedProduct orderedProduct = findProduct.makeOrderedProduct(order, obj.getAdjustedPrice(), obj.getAmount());
+            orderProducts.add(orderedProduct);
+            orderedProductRepository.save(orderedProduct);
         }
+        order.registerOrderProducts(orderProducts);
 
-        //create order
-        Order order = Order.makeOrder(user, delivery, payment, orderRequestDto.getOrderName() ,list);
-        Long orderSeq = orderRepository.save(order).getId();
-
-        //create orderedProduct
-        for(var obj : order.getOrderedProducts()){
-            orderedProductRepository.save(obj);
-        }
+        System.out.println("6-------------------------------------------------------------------");
 
         return new OrderResponse(
                 order.getTotalPrice(),

@@ -44,10 +44,10 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "order")
     List<OrderedProduct> orderedProducts = new ArrayList<>();
 
-    public static Order makeOrder(User user, Delivery delivery, Payment payment, String orderName, List<Pair<Product, OrderedProductDto>> orderedProducts) throws Exception {
+    public static Order makeOrder(User user, Delivery delivery, Payment payment, String orderName) throws Exception {
         Order order = new Order();
 
         order.createTime = LocalDateTime.now();
@@ -57,15 +57,10 @@ public class Order {
         order.payment = payment;
         order.name = orderName;
 
-        for (var obj : orderedProducts) {
-            long adjustedPrice = obj.getSecond().getAdjustedPrice();
-            long amount = obj.getSecond().getAmount();
-
-            OrderedProduct orderedProduct = obj.getFirst().makeOrderedProduct(order, adjustedPrice, amount);
-            order.orderedProducts.add(orderedProduct);
-        }
-
         return order;
+    }
+    public void registerOrderProducts(List<OrderedProduct> orderedProducts){
+        this.orderedProducts = orderedProducts;
     }
 
     public void cancel() throws Exception {

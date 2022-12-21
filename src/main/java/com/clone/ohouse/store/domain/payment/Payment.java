@@ -19,9 +19,9 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 1024, unique = true)
+    @Column(name = "payment_uuid_for_order",length = 255, unique = true)
     private String orderId;
-    @Column(length = 1024)
+    @Column(length = 255)
     private String paymentKey;
 
     @Column
@@ -33,7 +33,7 @@ public class Payment {
     @Column
     private LocalDateTime completeTime;
 
-    private Payment(){}
+    protected Payment(){}
 
     public static Payment createPayment(String buyerName){
         Payment payment = new Payment();

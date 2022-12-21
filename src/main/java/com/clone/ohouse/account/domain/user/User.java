@@ -62,12 +62,7 @@ public class User {
         this.email = email;
         this.password = password;
     }
-    @OneToMany(mappedBy = "user",fetch = FetchType.EAGER)
-//    @OrderBy("id asc")
-    private List<Card> cards = new ArrayList<>();
-    //    public void encodePassword(PasswordEncoder passwordEncoder){
-//        this.password = passwordEncoder.encode(password);
-//    }
+
     public void destroyToken() {
         this.refreshToken = null;
     }
