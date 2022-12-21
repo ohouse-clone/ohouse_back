@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -94,23 +95,24 @@ public class OrderServiceTest {
 
     @AfterEach
     void clean() {
-        savedUser = null;
-        savedProduct1 = null;
-        savedProduct2 = null;
-        savedProduct3 = null;
-        savedProduct4 = null;
-        savedProduct5 = null;
-        savedProduct6 = null;
-        savedProduct7 = null;
-        savedProduct8 = null;
-        savedProduct9 = null;
-        orderedProductRepository.deleteAll();
-        productRepository.deleteAll();
-        orderRepository.deleteAll();
-        paymentRepository.deleteAll();
-        userRepository.deleteAll();
+//        savedUser = null;
+//        savedProduct1 = null;
+//        savedProduct2 = null;
+//        savedProduct3 = null;
+//        savedProduct4 = null;
+//        savedProduct5 = null;
+//        savedProduct6 = null;
+//        savedProduct7 = null;
+//        savedProduct8 = null;
+//        savedProduct9 = null;
+//        orderedProductRepository.deleteAll();
+//        productRepository.deleteAll();
+//        orderRepository.deleteAll();
+//        paymentRepository.deleteAll();
+//        userRepository.deleteAll();
     }
 
+    @Commit
     @Test
     void OrderStart() throws Exception {
         //given
@@ -130,8 +132,9 @@ public class OrderServiceTest {
         SessionUser sessionUser = new SessionUser(User.builder().email("tester_1@cloneohouse.shop").build());
 
         //when
+        System.out.println("@Start===========================================================ㄴ============================");
         OrderResponse orderResponse = orderService.orderStart(sessionUser, orderRequestDto, deliveryDto);
-
+        System.out.println("@End=========================================================================================");
         //then
         System.out.println("orderId for toss : " + orderResponse.getOrderId());
         Assertions.assertThat(orderResponse.getName()).isEqualTo("티셔츠 외 1건");
@@ -140,15 +143,15 @@ public class OrderServiceTest {
         Assertions.assertThat(orderResponse.getFailUrl()).isEqualTo(paymentService.getTossFailCallBackUrlForCard());
 
         Payment payment = paymentRepository.findByOrderId(orderResponse.getOrderId()).orElseThrow(() -> new NoSuchElementException("해당 orderId를 가진 payment가 없음 : " + orderResponse.getOrderId()));
-        Order order = orderRepository.findByPayment(payment).orElseThrow(() -> new NoSuchElementException("해당 payment와 관게를 맺은 order가 없음 "));
+        Order order = orderRepository.findByOrderIdWithOrderedProduct(payment.getOrderId()).orElseThrow(() -> new NoSuchElementException("해당 payment와 관게를 맺은 order가 없음 "));
         List<OrderedProduct> orderedProducts = order.getOrderedProducts();
 
+        Assertions.assertThat(order.getPayment().getOrderId()).isEqualTo(payment.getOrderId());
         Assertions.assertThat(orderedProducts.size()).isEqualTo(4);
         Assertions.assertThat(orderedProducts.get(0).getAmount()).isEqualTo(10L);
         Assertions.assertThat(orderedProducts.get(1).getAmount()).isEqualTo(20L);
         Assertions.assertThat(orderedProducts.get(2).getAmount()).isEqualTo(30L);
         Assertions.assertThat(orderedProducts.get(3).getAmount()).isEqualTo(40L);
         Assertions.assertThat(order.getDelivery().getMemo()).isEqualTo("빨리와주세요");
-
     }
 }
