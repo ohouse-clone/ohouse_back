@@ -113,7 +113,7 @@ public class OrderServiceTest {
     }
 
     @Test
-    void OrderStart() throws Exception {
+    void startOrder() throws Exception {
         //given
         OrderedProductDto orderedProductDto3 = new OrderedProductDto(savedProduct3.getId(), savedProduct3.getPrice(), 10L);
         OrderedProductDto orderedProductDto4 = new OrderedProductDto(savedProduct4.getId(), savedProduct4.getPrice(), 20L);
@@ -132,7 +132,7 @@ public class OrderServiceTest {
 
         //when
         System.out.println("@Start===========================================================ㄴ============================");
-        OrderResponse orderResponse = orderService.orderStart(sessionUser, orderRequestDto, deliveryDto);
+        OrderResponse orderResponse = orderService.startOrder(sessionUser, orderRequestDto, deliveryDto);
         System.out.println("@End=========================================================================================");
         //then
         System.out.println("orderId for toss : " + orderResponse.getOrderId());

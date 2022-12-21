@@ -2,7 +2,9 @@ package com.clone.ohouse.store.domain.order.dto;
 
 import com.clone.ohouse.store.domain.order.Delivery;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 @Getter
 public class DeliveryDto {
     private String senderName;

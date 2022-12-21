@@ -8,6 +8,7 @@ import com.clone.ohouse.store.domain.PaymentService;
 import com.clone.ohouse.store.domain.order.dto.DeliveryDto;
 import com.clone.ohouse.store.domain.order.dto.OrderRequestDto;
 import com.clone.ohouse.store.domain.order.dto.OrderResponse;
+import com.clone.ohouse.store.domain.order.dto.StartOrderRequestDto;
 import com.clone.ohouse.store.domain.payment.dto.PaymentCompleteResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,9 +26,8 @@ public class OrderApiController {
     private final PaymentService paymentService;
 
     @PostMapping
-    public OrderResponse order(
-            @ModelAttribute OrderRequestDto requestDto,
-            @ModelAttribute DeliveryDto deliveryDto
+    public OrderResponse startOrder(
+            @RequestBody StartOrderRequestDto startOrderRequestDto
 //            @LoginUser SessionUser sessionUser
             ) throws Exception{
 
@@ -42,8 +42,8 @@ public class OrderApiController {
                     .email("tester_1@cloneohouse.shop")
                     .build());
         }
-
-        return orderService.orderStart(sessionUser, requestDto, deliveryDto);
+        //TODO: 주문할 프로덕트 리스트 NULL이면 Fail
+        return orderService.startOrder(sessionUser, startOrderRequestDto.getOrderRequestDto(), startOrderRequestDto.getDeliveryDto());
     }
 
     @GetMapping("/card/success")
