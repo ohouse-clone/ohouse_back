@@ -36,23 +36,19 @@ public class OrderService {
         //find user
         User user = userRepository.findByEmail(sessionUser.getEmail()).orElseThrow(()->new NoSuchElementException("email을 가진 user가 없음 : " + sessionUser.getEmail()));
 
-        System.out.println("1-------------------------------------------------------------------");
         //payment create & save
         Payment payment = Payment.createPayment(sessionUser.getName());
         paymentService.save(payment);
 
-        System.out.println("2-------------------------------------------------------------------");
         //Delivery create & save
         Delivery delivery = deliveryDto.toEntity();
         deliveryRepository.save(delivery);
 
-        System.out.println("4-------------------------------------------------------------------");
         //create order
         Order order = Order.makeOrder(user, delivery, payment, orderRequestDto.getOrderName());
         Long orderSeq = orderRepository.save(order).getId();
-        System.out.println("5-------------------------------------------------------------------");
-        //create orderedProduct
 
+        //create orderedProduct
         //find Products to save in order
         List<OrderedProduct> orderProducts = new ArrayList<>();
         for(var obj : orderRequestDto.getOrderList()){
@@ -66,7 +62,6 @@ public class OrderService {
         }
         order.registerOrderProducts(orderProducts);
 
-        System.out.println("6-------------------------------------------------------------------");
 
         return new OrderResponse(
                 order.getTotalPrice(),
@@ -74,7 +69,8 @@ public class OrderService {
                 payment.getOrderId(),
                 order.getCreateTime(),
                 paymentService.getTossSuccessCallBackUrlForCard(),
-                paymentService.getTossFailCallBackUrlForCard()
+                paymentService.getTossFailCallBackUrlForCard(),
+                paymentService.getTossClientApiKeyForTest()
         );
     }
 

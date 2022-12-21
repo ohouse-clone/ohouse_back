@@ -95,24 +95,23 @@ public class OrderServiceTest {
 
     @AfterEach
     void clean() {
-//        savedUser = null;
-//        savedProduct1 = null;
-//        savedProduct2 = null;
-//        savedProduct3 = null;
-//        savedProduct4 = null;
-//        savedProduct5 = null;
-//        savedProduct6 = null;
-//        savedProduct7 = null;
-//        savedProduct8 = null;
-//        savedProduct9 = null;
-//        orderedProductRepository.deleteAll();
-//        productRepository.deleteAll();
-//        orderRepository.deleteAll();
-//        paymentRepository.deleteAll();
-//        userRepository.deleteAll();
+        savedUser = null;
+        savedProduct1 = null;
+        savedProduct2 = null;
+        savedProduct3 = null;
+        savedProduct4 = null;
+        savedProduct5 = null;
+        savedProduct6 = null;
+        savedProduct7 = null;
+        savedProduct8 = null;
+        savedProduct9 = null;
+        orderedProductRepository.deleteAll();
+        productRepository.deleteAll();
+        orderRepository.deleteAll();
+        paymentRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
-    @Commit
     @Test
     void OrderStart() throws Exception {
         //given
