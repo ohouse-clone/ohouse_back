@@ -5,9 +5,7 @@ import com.clone.ohouse.store.domain.order.OrderRepository;
 import com.clone.ohouse.store.domain.payment.Payment;
 import com.clone.ohouse.store.domain.payment.PaymentRepository;
 import com.clone.ohouse.store.domain.payment.PaymentResultStatus;
-import com.clone.ohouse.store.domain.payment.dto.PaymentCompleteRequestDto;
-import com.clone.ohouse.store.domain.payment.dto.PaymentCompleteResponseDto;
-import com.clone.ohouse.store.domain.payment.dto.PaymentUserSuccessResponseDto;
+import com.clone.ohouse.store.domain.payment.dto.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.NoSuchElementException;
 
 @Getter
 @RequiredArgsConstructor
@@ -39,6 +38,9 @@ public class PaymentService {
 
     @Value("${payments.toss.card.confirm_url}")
     private String tossRequestPaymentConfirmUrl;
+
+    @Value("${payments.toss.api_url}")
+    private String tossApiUrl;
 
     public Long save(Payment payment){
         return paymentRepository.save(payment).getId();
@@ -62,7 +64,7 @@ public class PaymentService {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBasicAuth(auth);
 
-        //Send Request
+        //Send Request to toss
         ResponseEntity<PaymentCompleteResponseDto> response = template.postForEntity(
                 tossRequestPaymentConfirmUrl,
                 new HttpEntity<PaymentCompleteRequestDto>(
@@ -92,5 +94,33 @@ public class PaymentService {
                 PaymentResultStatus.valueOf(paymentResponse.getStatus()),
                 paymentResponse.getTotalAmount(),
                 paymentResponse.getBalanceAmount());
+    }
+
+    public PaymentUserCancelResponse requestCancel(String orderId, String cancelReason) throws Exception{
+        Order order = orderRepository.findByOrderIdWithOrderedProduct(orderId).orElseThrow(() -> new NoSuchElementException("해당 orderId에 일치하는 payment 없음 : " + orderId));
+        String auth = new String(Base64.getEncoder().encode((tossSecretApiKeyForTest+":").getBytes(StandardCharsets.UTF_8)));
+        RestTemplate template = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBasicAuth(auth);
+
+        //Send Request to toss
+        ResponseEntity<PaymentCompleteResponseDto> response = template.postForEntity(
+                tossApiUrl + "/" + order.getPayment().getPaymentKey() + "/cancel",
+                new HttpEntity<PaymentCancelRequestDto>(
+                        new PaymentCancelRequestDto(cancelReason),
+                        headers),
+                PaymentCompleteResponseDto.class
+        );
+
+        PaymentCompleteResponseDto body = response.getBody();
+        if(body.getStatus().equals(PaymentResultStatus.CANCELED.toString())){
+            //Save cancel status
+            order.cancel();
+            order.getPayment().cancel();
+        }
+
+        return new PaymentUserCancelResponse(body.getApprovedAt());
     }
 }

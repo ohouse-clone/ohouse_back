@@ -12,6 +12,7 @@ import com.clone.ohouse.store.domain.payment.dto.PaymentUserSuccessResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -90,7 +91,19 @@ public class OrderApiController {
     public HttpEntity<PaymentUserCancelResponse> cancelPayment(
             @RequestParam("orderId") String orderId,
             @RequestParam("cancelReason") String cancelReason){
-            //TODO: 결제취소 구현
+
+            try {
+                log.info("orderId : " + orderId);
+                log.info("cancelReason : " + cancelReason);
+                log.info("not error with parsing http");
+                PaymentUserCancelResponse paymentUserCancelResponse = paymentService.requestCancel(orderId, cancelReason);
+
+                return new ResponseEntity<>(paymentUserCancelResponse, HttpStatus.OK);
+            }
+            catch(Exception e){
+                log.info(e.getMessage());
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
     }
 
     //TODO: 결제 조회 구현
