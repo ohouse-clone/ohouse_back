@@ -6,6 +6,7 @@ import com.clone.ohouse.store.domain.OrderService;
 import com.clone.ohouse.store.domain.PaymentService;
 import com.clone.ohouse.store.domain.order.dto.OrderResponse;
 import com.clone.ohouse.store.domain.order.dto.StartOrderRequestDto;
+import com.clone.ohouse.store.domain.payment.dto.PaymentUserCancelResponse;
 import com.clone.ohouse.store.domain.payment.dto.PaymentUserFailResponseDto;
 import com.clone.ohouse.store.domain.payment.dto.PaymentUserSuccessResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -84,4 +85,15 @@ public class OrderApiController {
                 orderId
         ), HttpStatus.OK);
     }
+
+    @PostMapping("/card/cancel")
+    public HttpEntity<PaymentUserCancelResponse> cancelPayment(
+            @RequestParam("orderId") String orderId,
+            @RequestParam("cancelReason") String cancelReason){
+            //TODO: 결제취소 구현
+    }
+
+    //TODO: 결제 조회 구현
+    //TODO: 결제한 리스트 구현
+
 }
