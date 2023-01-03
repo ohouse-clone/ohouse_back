@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Setter
 @Getter
@@ -15,8 +16,8 @@ public class PaymentCompleteResponseDto {
     private String lastTransactionKey;
     private String orderId;
     private String orderName;
-    private LocalDateTime requestedAt;
-    private LocalDateTime approvedAt;
+    private String requestedAt;
+    private String approvedAt;
     private boolean useEscrow;
     private boolean cultureExpense;
 
@@ -28,7 +29,7 @@ public class PaymentCompleteResponseDto {
     private String giftCertificate;
     private String cashReceipt;
     private String discount;
-    private String cancels;
+    private List<CancelsDto> cancels;
     private String secret;
     private String type;
     private String easyPay;

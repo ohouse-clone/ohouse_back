@@ -80,7 +80,7 @@ public class OrderService {
         Order findOrder = orderRepository.findById(orderSeq).orElseThrow(() -> new NoSuchElementException("잘못된 주문 번호입니다."));
 
         findOrder.cancel();
-        findOrder.getPayment().cancel();
+        //findOrder.getPayment().cancel();
 
         List<OrderedProduct> orderedProducts = findOrder.getOrderedProducts();
         for (OrderedProduct orderedProduct : orderedProducts) {

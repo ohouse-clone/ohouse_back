@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 public class OrderResponse {
 
-    private Integer totalPrice;
+    private Long totalPrice;
     private String name;
     private String orderId;
     private LocalDateTime createTime;
@@ -18,7 +18,7 @@ public class OrderResponse {
 
     private String nextRequestUrl;
 
-    public OrderResponse(Integer totalPrice, String name, String orderId, LocalDateTime createTime, String successUrl, String failUrl, String nextRequestUrl) {
+    public OrderResponse(Long totalPrice, String name, String orderId, LocalDateTime createTime, String successUrl, String failUrl, String nextRequestUrl) {
         this.totalPrice = totalPrice;
         this.name = name;
         this.orderId = orderId;

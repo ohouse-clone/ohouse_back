@@ -19,7 +19,7 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "payment_uuid_for_order",length = 255, unique = true)
+    @Column(name = "payment_uuid_for_order", length = 255, unique = true)
     private String orderId;
     @Column(length = 255)
     private String paymentKey;
@@ -27,30 +27,45 @@ public class Payment {
     @Column
     private String buyerName;
 
-    @Column
-    private boolean isSuccess;
+    @Enumerated(value = EnumType.STRING)
+    private PaymentResultStatus status;
 
     @Column
-    private LocalDateTime completeTime;
+    private String requestedAt;
+    @Column
+    private String approvedAt;
+    @Column
+    private Long totalAmount = 0L;
+    @Column
+    private Long balanceAmount = 0L;
 
-    protected Payment(){}
 
-    public static Payment createPayment(String buyerName){
+    protected Payment() {
+    }
+
+    public static Payment createPayment(String buyerName) {
         Payment payment = new Payment();
         payment.orderId = UUID.randomUUID().toString();
         payment.buyerName = buyerName;
-        payment.isSuccess = false;
-        payment.completeTime = null;
+        payment.status = PaymentResultStatus.READY;
         payment.paymentKey = null;
+        payment.requestedAt = null;
+        payment.approvedAt = null;
 
         return payment;
     }
 
-    public void cancel(){
-        isSuccess = false;
+
+    public void registerPaymentKey(String paymentKey) {
+        this.paymentKey = paymentKey;
     }
 
-    public void registerPaymentKey(String paymentKey){
+    public void processPayment(String paymentKey, PaymentResultStatus status, String requestedAt, String approvedAt, Long totalAmount, Long balanceAmount) {
         this.paymentKey = paymentKey;
+        this.status = status;
+        this.requestedAt = requestedAt;
+        this.approvedAt = approvedAt;
+        this.balanceAmount = balanceAmount;
+        this.totalAmount = totalAmount;
     }
 }

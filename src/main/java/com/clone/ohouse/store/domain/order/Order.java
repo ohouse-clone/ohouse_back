@@ -72,8 +72,8 @@ public class Order {
 
     }
 
-    public Integer getTotalPrice() {
-        int total = 0;
+    public long getTotalPrice() {
+        long total = 0;
         for (var orderedProduct : orderedProducts) {
             total += orderedProduct.getPrice();
         }

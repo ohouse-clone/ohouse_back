@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Charge</title>
+    <script src="https://js.tosspayments.com/v1/payment"></script>
+</head>
+
+<body>
+    <section>
+        <h1>결제시작 하기</h1>
+        <label for="start-order-button">Send StartOrderRequestDto to startOrder</label>
+        <button id="start-order-button">결제시작</button>
+    </section>
+
+    <section>
+        <h1>카드결제 하기</h1>
+        <div>
+            <button id="pay-button">결제하기</button>
+        </div>
+        <div>
+            <label for="orderId">TossPayment orderId </label>
+            <input id="orderId" type="text">
+        </div>
+        <div>
+            <label for="successUrl">SuccessUrl</label>
+            <input id="successUrl" type="text">
+        </div>
+        <div>
+            <label for="failUrl">failUrl</label>
+            <input id="failUrl" type="text">
+        </div>
+        <div>
+            <label for="amount">amount</label>
+            <input id="amount" type="text">
+        </div>
+        <div>
+            <label for="orderName">orderName</label>
+            <input id="orderName" type="text">
+        </div>
+    </section>
+
+    <!-- startOrder 실행 -->
+    <script>
+        const startOrderApiRequestEndPoint = "http://localhost:8080/order/api/v1/payment";
+        var httpRequest;
+        /* button이 클릭되었을때 이벤트 */
+        document.getElementById("start-order-button").addEventListener('click', () => {
+
+            // 입력된 데이터 Json 형식으로 변경
+            let orderedProductDto1 = {
+                productId: 1,
+                adjustedPrice: 100,
+                amount: 20
+            };
+            let orderedProductDto2 = {
+                productId: 2,
+                adjustedPrice: 110,
+                amount: 20
+            };
+            let orderedProductDto3 = {
+                productId: 3,
+                adjustedPrice: 120,
+                amount: 20
+            };
+            let orderRequestDto = {
+                paymentType: "CARD",
+                orderName: "티셔츠 외 1건",
+                orderList: [orderedProductDto1, orderedProductDto2, orderedProductDto3]
+            };
+            let deliveryDto = {
+                senderName: "JJH",
+                recipientName: "PSY",
+                zipCode: 200,
+                addressName: "JongLo",
+                address1: "station 4",
+                address2: "twosome",
+                phone: "010-0000-0000",
+                memo: "빨리 와주세요"
+            };
+            let startOrderRequestDto = {
+                orderRequestDto: orderRequestDto,
+                deliveryDto: deliveryDto
+            };
+
+
+            // 통신에 사용 될 XMLHttpRequest 객체 정의
+            httpRequest = new XMLHttpRequest();
+            // httpRequest readState가 변화했을때 함수 실행
+            httpRequest.onreadystatechange = () => {
+                // readState가 Done이고 응답 값이 200일 때, 받아온 response를 사용
+                if (httpRequest.readyState === XMLHttpRequest.DONE) {
+                    if (httpRequest.status === 200) {
+                        let result = httpRequest.response;
+                        console.log(result);
+                    }
+                    else {
+                        alert('request에 뭔가 문제가 있음');
+                    }
+                }
+            }
+
+            //Post 방식으로 요청
+            httpRequest.open('POST', startOrderApiRequestEndPoint, true);
+            httpRequest.responseType = "json";
+            httpRequest.setRequestHeader('Content-Type', 'application/json');
+
+            httpRequest.send(JSON.stringify(startOrderRequestDto));
+        })
+
+
+    </script>
+    <script>
+        var clientKey = 'test_ck_D5GePWvyJnrK0W0k6q8gLzN97Eoq';
+
+        //let amount = document.getElementById('amount').value;
+        //let successUrl = document.getElementById('successUrl').value;
+        //let failUrl = document.getElementById('failUrl').value;
+
+        var tossPayments = TossPayments(clientKey);
+        var button = document.getElementById('pay-button');
+
+        var activeTossPayments = () => {
+            let orderId = document.getElementById('orderId').value;
+            let orderName = document.getElementById('orderName').value;
+
+            console.log("what!");
+            console.log(orderId);
+
+            tossPayments.requestPayment('카드', {
+                amount: 330,
+                orderId: String(orderId),
+                orderName: '티셔츠 외 1건',
+                customerName: '전정헌',
+                successUrl: 'http://localhost:8080/order/api/v1/payment/card/success',
+                failUrl: 'http://localhost:8080/order/api/v1/payment/card/fail'
+            })
+                .catch(function (error) {
+                    console.log("Fail!");
+                    console.log(error.code);
+                });
+
+        };
+
+
+
+
+
+        console.log("Run activeToss Payment");
+        button.addEventListener('click', activeTossPayments);
+
+    </script>
+</body>
+
+
+
+</html>

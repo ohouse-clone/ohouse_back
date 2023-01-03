@@ -10,6 +10,7 @@ import com.clone.ohouse.store.domain.order.dto.OrderRequestDto;
 import com.clone.ohouse.store.domain.order.dto.OrderResponse;
 import com.clone.ohouse.store.domain.order.dto.StartOrderRequestDto;
 import com.clone.ohouse.store.domain.payment.dto.PaymentCompleteResponseDto;
+import com.clone.ohouse.store.domain.payment.dto.PaymentUserResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
@@ -47,7 +48,7 @@ public class OrderApiController {
     }
 
     @GetMapping("/card/success")
-    public HttpEntity<PaymentCompleteResponseDto> requestOrderComplete(
+    public HttpEntity<PaymentUserResponseDto> requestOrderComplete(
             @RequestParam("paymentKey") String paymentKey,
             @RequestParam("orderId") String orderApprovalCode,
             @RequestParam("amount") Long amount
@@ -55,7 +56,7 @@ public class OrderApiController {
         try {
             paymentService.verifyPaymentComplete(paymentKey,orderApprovalCode,amount);
 
-            PaymentCompleteResponseDto response = paymentService.requestPaymentComplete(paymentKey, orderApprovalCode, amount);
+            PaymentUserResponseDto response = paymentService.requestPaymentComplete(paymentKey, orderApprovalCode, amount);
 
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
