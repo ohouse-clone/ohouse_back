@@ -1,16 +1,13 @@
 package com.clone.ohouse.store;
 
-import com.clone.ohouse.account.auth.LoginUser;
 import com.clone.ohouse.account.auth.SessionUser;
 import com.clone.ohouse.account.domain.user.User;
 import com.clone.ohouse.store.domain.OrderService;
 import com.clone.ohouse.store.domain.PaymentService;
-import com.clone.ohouse.store.domain.order.dto.DeliveryDto;
-import com.clone.ohouse.store.domain.order.dto.OrderRequestDto;
 import com.clone.ohouse.store.domain.order.dto.OrderResponse;
 import com.clone.ohouse.store.domain.order.dto.StartOrderRequestDto;
-import com.clone.ohouse.store.domain.payment.dto.PaymentCompleteResponseDto;
-import com.clone.ohouse.store.domain.payment.dto.PaymentUserResponseDto;
+import com.clone.ohouse.store.domain.payment.dto.PaymentUserFailResponseDto;
+import com.clone.ohouse.store.domain.payment.dto.PaymentUserSuccessResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
@@ -48,7 +45,7 @@ public class OrderApiController {
     }
 
     @GetMapping("/card/success")
-    public HttpEntity<PaymentUserResponseDto> requestOrderComplete(
+    public HttpEntity<PaymentUserSuccessResponseDto> requestOrderCompleteSuccess(
             @RequestParam("paymentKey") String paymentKey,
             @RequestParam("orderId") String orderApprovalCode,
             @RequestParam("amount") Long amount
@@ -56,7 +53,7 @@ public class OrderApiController {
         try {
             paymentService.verifyPaymentComplete(paymentKey,orderApprovalCode,amount);
 
-            PaymentUserResponseDto response = paymentService.requestPaymentComplete(paymentKey, orderApprovalCode, amount);
+            PaymentUserSuccessResponseDto response = paymentService.requestPaymentComplete(paymentKey, orderApprovalCode, amount);
 
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
@@ -65,5 +62,26 @@ public class OrderApiController {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping("/card/fail")
+    public HttpEntity<PaymentUserFailResponseDto> requestOrderCompleteFail(
+            @RequestParam("code") String code,
+            @RequestParam("message") String message,
+            @RequestParam("orderId") String orderId
+    ){
+        try {
+            orderService.cancel(orderId);
+        }
+        catch (Exception e){
+            log.info(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(new PaymentUserFailResponseDto(
+                code,
+                message,
+                orderId
+        ), HttpStatus.OK);
     }
 }

@@ -53,7 +53,7 @@ public class Order {
         order.createTime = LocalDateTime.now();
         order.user = user;
         order.delivery = delivery;
-        order.status = OrderStatus.CHARGED;
+        order.status = OrderStatus.READY;
         order.payment = payment;
         order.name = orderName;
 
@@ -70,6 +70,12 @@ public class Order {
         this.status = OrderStatus.CANCEL;
         for (OrderedProduct orderedProduct : orderedProducts) orderedProduct.cancelOrdered();
 
+    }
+
+    public void fail() throws Exception {
+        if(this.status != OrderStatus.READY) throw new RuntimeException("주문 상태가 ready가 아님으로 실패할 수 없음");
+
+        this.status = OrderStatus.FAIL;
     }
 
     public long getTotalPrice() {

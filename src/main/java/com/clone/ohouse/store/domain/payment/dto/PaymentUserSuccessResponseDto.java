@@ -6,14 +6,14 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class PaymentUserResponseDto {
+public class PaymentUserSuccessResponseDto {
     private String requestedAt;
     private String approvedAt;
     private PaymentResultStatus status;
     private Long totalAmount;
     private Long balanceAmount;
 
-    public PaymentUserResponseDto(String requestedAt, String approvedAt, PaymentResultStatus status, Long totalAmount, Long balanceAmount) {
+    public PaymentUserSuccessResponseDto(String requestedAt, String approvedAt, PaymentResultStatus status, Long totalAmount, Long balanceAmount) {
         this.requestedAt = requestedAt;
         this.approvedAt = approvedAt;
         this.status = status;

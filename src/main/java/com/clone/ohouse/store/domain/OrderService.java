@@ -76,19 +76,11 @@ public class OrderService {
 
     //TODO: cancel 만들기
     @Transactional
-    public void cancel(Long orderSeq) throws Exception {
-        Order findOrder = orderRepository.findById(orderSeq).orElseThrow(() -> new NoSuchElementException("잘못된 주문 번호입니다."));
+    public void cancel(String orderId) throws Exception {
+        Order findOrder = orderRepository.findByOrderIdWithOrderedProduct(orderId).orElseThrow(() -> new NoSuchElementException("잘못된 주문 번호입니다."));
 
-        findOrder.cancel();
-        //findOrder.getPayment().cancel();
-
-        List<OrderedProduct> orderedProducts = findOrder.getOrderedProducts();
-        for (OrderedProduct orderedProduct : orderedProducts) {
-            orderedProductRepository.delete(orderedProduct);
-        }
-
-
-        orderRepository.delete(findOrder);
+        findOrder.fail();
+        findOrder.getPayment().cancel();
     }
 
 

@@ -7,14 +7,13 @@ import com.clone.ohouse.store.domain.payment.PaymentRepository;
 import com.clone.ohouse.store.domain.payment.PaymentResultStatus;
 import com.clone.ohouse.store.domain.payment.dto.PaymentCompleteRequestDto;
 import com.clone.ohouse.store.domain.payment.dto.PaymentCompleteResponseDto;
-import com.clone.ohouse.store.domain.payment.dto.PaymentUserResponseDto;
+import com.clone.ohouse.store.domain.payment.dto.PaymentUserSuccessResponseDto;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.StandardCharsets;
@@ -56,10 +55,9 @@ public class PaymentService {
         if(order.getTotalPrice() != amount) throw new RuntimeException("Wrong amount : " + amount);
     }
 
-    public PaymentUserResponseDto requestPaymentComplete(String paymentKey, String orderId, Long amount){
+    public PaymentUserSuccessResponseDto requestPaymentComplete(String paymentKey, String orderId, Long amount){
         RestTemplate template = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
-        //TODO: 결제요청
         String auth = new String(Base64.getEncoder().encode((tossSecretApiKeyForTest + ":").getBytes(StandardCharsets.UTF_8)));
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBasicAuth(auth);
@@ -88,7 +86,7 @@ public class PaymentService {
         }
 
 
-        return new PaymentUserResponseDto(
+        return new PaymentUserSuccessResponseDto(
                 paymentResponse.getRequestedAt(),
                 paymentResponse.getApprovedAt(),
                 PaymentResultStatus.valueOf(paymentResponse.getStatus()),

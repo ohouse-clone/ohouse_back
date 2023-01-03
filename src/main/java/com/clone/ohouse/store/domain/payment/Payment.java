@@ -28,7 +28,7 @@ public class Payment {
     private String buyerName;
 
     @Enumerated(value = EnumType.STRING)
-    private PaymentResultStatus status;
+    private PaymentResultStatus status = PaymentResultStatus.READY;
 
     @Column
     private String requestedAt;
@@ -54,7 +54,11 @@ public class Payment {
 
         return payment;
     }
-
+    public void cancel(){
+        if(status != PaymentResultStatus.DONE){
+            status = PaymentResultStatus.CANCELED;
+        }
+    }
 
     public void registerPaymentKey(String paymentKey) {
         this.paymentKey = paymentKey;
