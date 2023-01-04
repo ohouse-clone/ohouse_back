@@ -93,9 +93,9 @@ public class OrderApiController {
             @RequestParam("cancelReason") String cancelReason){
 
             try {
+                log.info("Cancel Payment");
                 log.info("orderId : " + orderId);
                 log.info("cancelReason : " + cancelReason);
-                log.info("not error with parsing http");
                 PaymentUserCancelResponse paymentUserCancelResponse = paymentService.requestCancel(orderId, cancelReason);
 
                 return new ResponseEntity<>(paymentUserCancelResponse, HttpStatus.OK);

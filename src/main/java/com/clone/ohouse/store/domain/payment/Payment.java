@@ -55,7 +55,7 @@ public class Payment {
         return payment;
     }
     public void cancel(){
-        if(status != PaymentResultStatus.DONE){
+        if(status == PaymentResultStatus.DONE){
             status = PaymentResultStatus.CANCELED;
         }
     }
