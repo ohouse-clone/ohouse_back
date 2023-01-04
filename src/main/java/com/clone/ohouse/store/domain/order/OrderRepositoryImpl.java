@@ -28,6 +28,19 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom{
     }
 
     @Override
+    public Optional<Order> findByIdWithStorePostsAndOrderedProduct(Long id) {
+        //TODO: 주문상세조회 쿼리 구현
+//        queryFactory
+//                .select(order)
+//                .from(order)
+//                .leftJoin(order.orderedProducts, orderedProduct).fetchJoin()
+//                .leftJoin(order.payment, payment).fetchJoin()
+//                .leftJoin(order.st)
+
+        return Optional.empty();
+    }
+
+    @Override
     public Optional<Order> findByOrderIdWithOrderedProduct(String orderId) {
         Order findOrder = queryFactory
                 .select(order)
@@ -38,4 +51,8 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom{
                 .fetchOne();
         return Optional.ofNullable(findOrder);
     }
+
+
+
+
 }

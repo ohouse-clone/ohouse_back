@@ -12,11 +12,14 @@ import java.util.List;
 @Setter
 public class OrderRequestDto {
     private PaymentType paymentType;
+    private Long storePostId;
     private String orderName;
     private List<OrderedProductDto> orderList;
 
-    public OrderRequestDto(PaymentType paymentType, String orderName, List<OrderedProductDto> orderList) {
+
+    public OrderRequestDto(PaymentType paymentType, Long storePostId, String orderName, List<OrderedProductDto> orderList) {
         this.paymentType = paymentType;
+        this.storePostId = storePostId;
         this.orderName = orderName;
         this.orderList = orderList;
     }

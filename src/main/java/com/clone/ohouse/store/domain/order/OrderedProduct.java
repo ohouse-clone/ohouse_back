@@ -1,6 +1,7 @@
 package com.clone.ohouse.store.domain.order;
 
 import com.clone.ohouse.store.domain.product.Product;
+import com.clone.ohouse.store.domain.storeposts.StorePosts;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,7 +22,6 @@ public class OrderedProduct {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;
-
     private Long price;
     private Long amount;
 

@@ -140,7 +140,7 @@ public class OrderApiControllerTest {
                 orderedProductDto4,
                 orderedProductDto5,
                 orderedProductDto6));
-        OrderRequestDto orderRequestDto = new OrderRequestDto(PaymentType.CARD, "티셔츠 외 1건", orderedProductList);
+        OrderRequestDto orderRequestDto = new OrderRequestDto(PaymentType.CARD, null,"티셔츠 외 1건", orderedProductList);
         DeliveryDto deliveryDto = new DeliveryDto("sender1", "receiver1", "200", "내집", "경기도", "서울시", "010-0000-0000", "빨리와주세요");
         StartOrderRequestDto startOrderRequestDto = new StartOrderRequestDto(orderRequestDto, deliveryDto);
 

@@ -6,5 +6,8 @@ import java.util.Optional;
 
 public interface OrderRepositoryCustom {
     Optional<Order> findByIdWithOrderedProduct(Long id);
+
+    Optional<Order> findByIdWithStorePostsAndOrderedProduct(Long id);
+
     Optional<Order> findByOrderIdWithOrderedProduct(String orderId);
 }

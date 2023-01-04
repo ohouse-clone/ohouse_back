@@ -4,6 +4,7 @@ import com.clone.ohouse.account.domain.user.User;
 import com.clone.ohouse.store.domain.order.dto.OrderedProductDto;
 import com.clone.ohouse.store.domain.payment.Payment;
 import com.clone.ohouse.store.domain.product.Product;
+import com.clone.ohouse.store.domain.storeposts.StorePosts;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.util.Pair;
@@ -41,13 +42,17 @@ public class Order {
     @JoinColumn(name = "delivery_id")
     private Delivery delivery;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_post_id")
+    private StorePosts storePost;
+
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
     @OneToMany(mappedBy = "order")
     List<OrderedProduct> orderedProducts = new ArrayList<>();
 
-    public static Order makeOrder(User user, Delivery delivery, Payment payment, String orderName) throws Exception {
+    public static Order makeOrder(User user, Delivery delivery, Payment payment, StorePosts post, String orderName) throws Exception {
         Order order = new Order();
 
         order.createTime = LocalDateTime.now();
@@ -56,10 +61,12 @@ public class Order {
         order.status = OrderStatus.READY;
         order.payment = payment;
         order.name = orderName;
+        order.storePost = post;
 
         return order;
     }
-    public void registerOrderProducts(List<OrderedProduct> orderedProducts){
+
+    public void registerOrderProducts(List<OrderedProduct> orderedProducts) {
         this.orderedProducts = orderedProducts;
     }
 
@@ -73,7 +80,7 @@ public class Order {
     }
 
     public void fail() throws Exception {
-        if(this.status != OrderStatus.READY) throw new RuntimeException("주문 상태가 ready가 아님으로 실패할 수 없음");
+        if (this.status != OrderStatus.READY) throw new RuntimeException("주문 상태가 ready가 아님으로 실패할 수 없음");
 
         this.status = OrderStatus.FAIL;
     }

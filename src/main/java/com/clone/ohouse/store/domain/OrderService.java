@@ -13,6 +13,8 @@ import com.clone.ohouse.store.domain.payment.Payment;
 import com.clone.ohouse.store.domain.payment.PaymentRepository;
 import com.clone.ohouse.store.domain.product.ProductRepository;
 import com.clone.ohouse.store.domain.product.Product;
+import com.clone.ohouse.store.domain.storeposts.StorePosts;
+import com.clone.ohouse.store.domain.storeposts.StorePostsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
@@ -30,11 +32,14 @@ public class OrderService {
     private final UserRepository userRepository;
     private final PaymentService paymentService;
     private final DeliveryRepository deliveryRepository;
+    private final StorePostsRepository storePostsRepository;
 
     @Transactional
     public OrderResponse startOrder(SessionUser sessionUser, OrderRequestDto orderRequestDto, DeliveryDto deliveryDto) throws Exception{
         //find user
         User user = userRepository.findByEmail(sessionUser.getEmail()).orElseThrow(()->new NoSuchElementException("email을 가진 user가 없음 : " + sessionUser.getEmail()));
+        //find post
+        StorePosts storePost = storePostsRepository.findById(orderRequestDto.getStorePostId()).orElse(null);
 
         //payment create & save
         Payment payment = Payment.createPayment(sessionUser.getName());
@@ -45,7 +50,7 @@ public class OrderService {
         deliveryRepository.save(delivery);
 
         //create order
-        Order order = Order.makeOrder(user, delivery, payment, orderRequestDto.getOrderName());
+        Order order = Order.makeOrder(user, delivery, payment, storePost, orderRequestDto.getOrderName());
         Long orderSeq = orderRepository.save(order).getId();
 
         //create orderedProduct
