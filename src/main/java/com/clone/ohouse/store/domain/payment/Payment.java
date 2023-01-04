@@ -38,6 +38,8 @@ public class Payment {
     private Long totalAmount = 0L;
     @Column
     private Long balanceAmount = 0L;
+    @Column
+    private String canceledAt;
 
 
     protected Payment() {
@@ -54,9 +56,10 @@ public class Payment {
 
         return payment;
     }
-    public void cancel(){
+    public void cancel(String canceledAt){
         if(status == PaymentResultStatus.DONE){
             status = PaymentResultStatus.CANCELED;
+            this.canceledAt = canceledAt;
         }
     }
 

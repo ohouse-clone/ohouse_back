@@ -118,7 +118,7 @@ public class PaymentService {
         if(body.getStatus().equals(PaymentResultStatus.CANCELED.toString())){
             //Save cancel status
             order.cancel();
-            order.getPayment().cancel();
+            order.getPayment().cancel(body.getApprovedAt());
         }
 
         return new PaymentUserCancelResponse(body.getApprovedAt());
