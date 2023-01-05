@@ -6,17 +6,15 @@ import com.clone.ohouse.account.domain.user.User;
 import com.clone.ohouse.account.domain.user.UserRepository;
 import com.clone.ohouse.store.domain.order.*;
 import com.clone.ohouse.store.domain.order.dto.DeliveryDto;
+import com.clone.ohouse.store.domain.order.dto.OrderBundleViewDto;
 import com.clone.ohouse.store.domain.order.dto.OrderRequestDto;
 import com.clone.ohouse.store.domain.order.dto.OrderResponse;
-import com.clone.ohouse.store.domain.order.dto.OrderedProductDto;
 import com.clone.ohouse.store.domain.payment.Payment;
-import com.clone.ohouse.store.domain.payment.PaymentRepository;
 import com.clone.ohouse.store.domain.product.ProductRepository;
 import com.clone.ohouse.store.domain.product.Product;
 import com.clone.ohouse.store.domain.storeposts.StorePosts;
 import com.clone.ohouse.store.domain.storeposts.StorePostsRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,7 +32,7 @@ public class OrderService {
     private final DeliveryRepository deliveryRepository;
     private final StorePostsRepository storePostsRepository;
 
-    @Transactional
+
     public OrderResponse startOrder(SessionUser sessionUser, OrderRequestDto orderRequestDto, DeliveryDto deliveryDto) throws Exception{
         //find user
         User user = userRepository.findByEmail(sessionUser.getEmail()).orElseThrow(()->new NoSuchElementException("email을 가진 user가 없음 : " + sessionUser.getEmail()));
@@ -79,16 +77,26 @@ public class OrderService {
         );
     }
 
-    //TODO: cancel 만들기
-    @Transactional
-    public void cancel(String orderId) throws Exception {
+
+    public void fail(String orderId) throws Exception {
         Order findOrder = orderRepository.findByOrderIdWithOrderedProduct(orderId).orElseThrow(() -> new NoSuchElementException("잘못된 주문 번호입니다."));
 
         findOrder.fail();
     }
 
+    public void cancel(String orderId) throws Exception {
+        Order findOrder = orderRepository.findByOrderIdWithOrderedProduct(orderId).orElseThrow(() -> new NoSuchElementException("잘못된 주문 번호입니다."));
 
-    @Transactional
+        findOrder.cancel();
+    }
+
+    public OrderBundleViewDto findAllOrders(Long userId) throws Exception {
+        List<Order> allOrders = orderRepository.findAllOrders(userId);
+        //TODO: 주문 리스트 조회
+
+    }
+
+
     public List<OrderedProduct> findAllOrderedProduct(User user, Long orderSeq){
         return orderRepository.findById(orderSeq)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 주문번호 입니다."))

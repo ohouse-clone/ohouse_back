@@ -1,14 +1,19 @@
 package com.clone.ohouse.store.domain.order;
 
+import com.clone.ohouse.account.domain.user.QUser;
 import com.clone.ohouse.store.domain.payment.QPayment;
+import com.clone.ohouse.store.domain.storeposts.QStorePosts;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
 import java.util.Optional;
 
+import static com.clone.ohouse.account.domain.user.QUser.*;
 import static com.clone.ohouse.store.domain.order.QOrder.order;
 import static com.clone.ohouse.store.domain.order.QOrderedProduct.orderedProduct;
 import static com.clone.ohouse.store.domain.payment.QPayment.payment;
+import static com.clone.ohouse.store.domain.storeposts.QStorePosts.*;
 
 @RequiredArgsConstructor
 public class OrderRepositoryImpl implements OrderRepositoryCustom{
@@ -28,16 +33,20 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom{
     }
 
     @Override
-    public Optional<Order> findByIdWithStorePostsAndOrderedProduct(Long id) {
-        //TODO: 주문상세조회 쿼리 구현
-//        queryFactory
-//                .select(order)
-//                .from(order)
-//                .leftJoin(order.orderedProducts, orderedProduct).fetchJoin()
-//                .leftJoin(order.payment, payment).fetchJoin()
-//                .leftJoin(order.st)
+    public List<Order> findAllOrders(Long userId){
+        List<Order> fetch = queryFactory
+                .select(order)
+                .from(order)
+                .leftJoin(order.orderedProducts, orderedProduct).fetchJoin()
+                .leftJoin(order.payment, payment).fetchJoin()
+                .leftJoin(order.storePost, storePosts).fetchJoin()
+                .leftJoin(order.user, user).fetchJoin()
+                .where(user.id.eq(userId))
+                .orderBy(order.createTime.asc())
+                .fetch();
 
-        return Optional.empty();
+
+        return fetch;
     }
 
     @Override

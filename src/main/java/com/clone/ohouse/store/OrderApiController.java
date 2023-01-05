@@ -73,7 +73,7 @@ public class OrderApiController {
             @RequestParam("orderId") String orderId
     ){
         try {
-            orderService.cancel(orderId);
+            orderService.fail(orderId);
         }
         catch (Exception e){
             log.info(e.getMessage());

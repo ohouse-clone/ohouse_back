@@ -30,6 +30,9 @@ public class Order {
     @Column
     private LocalDateTime createTime;
 
+    @Column
+    private LocalDateTime fixedTime;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
