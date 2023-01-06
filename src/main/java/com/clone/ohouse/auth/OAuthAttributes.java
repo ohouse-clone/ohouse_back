@@ -1,4 +1,4 @@
-package com.clone.ohouse.community.dto;
+package com.clone.ohouse.auth;
 
 import com.clone.ohouse.community.entity.User;
 import lombok.AllArgsConstructor;
@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.management.relation.Role;
 import java.util.Map;
 
 @Slf4j

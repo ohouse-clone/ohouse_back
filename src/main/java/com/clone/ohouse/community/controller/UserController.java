@@ -22,7 +22,7 @@ import java.awt.*;
 import java.util.Optional;
 @Log
 @RestController
-
+@RequestMapping("/user/api")
 public class UserController {
     @Autowired
     UserService userService;
