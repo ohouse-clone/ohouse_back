@@ -128,6 +128,7 @@ public class OrderService {
                 order.getPayment().getOrderId(),
                 order.getCreateTime().toString(),
                 order.getTotalPrice(),
+                order.getStatus(),
                 new OrderDetailStorePostDto(
                         order.getStorePost().getPreviewImageUrl(),
                         order.getStorePost().getTitle()),

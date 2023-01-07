@@ -13,6 +13,7 @@ import com.clone.ohouse.store.domain.payment.dto.PaymentUserSuccessResponseDto;
 import com.clone.ohouse.store.error.ErrorResponse;
 import com.clone.ohouse.store.error.order.OrderError;
 import com.clone.ohouse.store.error.order.OrderFailException;
+import com.clone.ohouse.store.error.order.PaymentFailException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
@@ -39,7 +40,7 @@ public class OrderApiController {
 
         //orderList가 NULL일 경우
         List<OrderedProductDto> orderList = startOrderRequestDto.getOrderRequestDto().getOrderList();
-        if(orderList == null || orderList.size() == 0)
+        if (orderList == null || orderList.size() == 0)
             return new ResponseEntity(new ErrorResponse(OrderError.NOTHING_PRODUCT_IDS.name(), OrderError.NOTHING_PRODUCT_IDS.getMessage()), HttpStatus.BAD_REQUEST);
 
         //TODO: Temporary users, 추후 삭제 예정
@@ -57,15 +58,15 @@ public class OrderApiController {
         try {
             OrderResponse orderResponse = orderService.startOrder(sessionUser, startOrderRequestDto.getOrderRequestDto(), startOrderRequestDto.getDeliveryDto());
             return new ResponseEntity(orderResponse, HttpStatus.OK);
-        } catch (OrderFailException e){
+        } catch (OrderFailException e) {
             log.info(e.getMessage());
             return new ResponseEntity(new ErrorResponse(e.getOrderError().name(), e.getOrderError().getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 
-    @GetMapping("/order")
+    @GetMapping("/order/{orderId}")
     public HttpEntity findOrderDetail(
-            @RequestParam String orderId) throws Exception {
+            @PathVariable String orderId) throws Exception {
         //TODO: Temporary users, 추후 삭제 예정
         SessionUser sessionUser = null;
         if (sessionUser == null) {
@@ -81,8 +82,7 @@ public class OrderApiController {
         try {
             OrderDetailResponseDto orderDetail = orderService.findOrderDetail(sessionUser, orderId);
             return new ResponseEntity(orderDetail, HttpStatus.OK);
-        }
-        catch (OrderFailException e){
+        } catch (OrderFailException e) {
             log.info(e.getMessage());
             return new ResponseEntity(new ErrorResponse(e.getOrderError().name(), e.getOrderError().getMessage()), HttpStatus.BAD_REQUEST);
         }
@@ -112,17 +112,16 @@ public class OrderApiController {
         try {
             OrderBundleViewDto orderBundleViewDto = orderService.findAllOrders(sessionUser);
             return new ResponseEntity(orderBundleViewDto, HttpStatus.OK);
-        }
-        catch (OrderFailException e){
+        } catch (OrderFailException e) {
             log.info(e.getMessage());
             return new ResponseEntity(new ErrorResponse(e.getOrderError().name(), e.getOrderError().getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 
-    @PostMapping("/order/status")
+    @PostMapping("/order/{orderId}/{status}")
     public HttpEntity SetOrderStatus(
-            @RequestParam String orderId,
-            @RequestParam OrderStatus status) throws Exception {
+            @PathVariable String orderId,
+            @PathVariable OrderStatus status) throws Exception {
 
         //TODO: Temporary users, 추후 삭제 예정
         SessionUser sessionUser = null;
@@ -139,8 +138,7 @@ public class OrderApiController {
             orderService.changeOrderState(sessionUser, orderId, status);
 
             return new ResponseEntity(HttpStatus.OK);
-        }
-        catch(OrderFailException e){
+        } catch (OrderFailException e) {
             log.info(e.getMessage());
 
             return new ResponseEntity(new ErrorResponse(e.getOrderError().name(), e.getOrderError().getMessage()), HttpStatus.BAD_REQUEST);
@@ -186,21 +184,27 @@ public class OrderApiController {
         ), HttpStatus.OK);
     }
 
-    @PostMapping("/payment/card/cancel")
-    public HttpEntity<PaymentUserCancelResponse> cancelPayment(
-            @RequestParam("orderId") String orderId,
-            @RequestParam("cancelReason") String cancelReason) {
+    @PostMapping("/payment/{orderId}/card/cancel")
+    public HttpEntity cancelPayment(
+            @PathVariable("orderId") String orderId,
+            @RequestParam("cancelReason") String cancelReason) throws Exception {
 
         try {
-            log.info("Cancel Payment");
-            log.info("orderId : " + orderId);
-            log.info("cancelReason : " + cancelReason);
             PaymentUserCancelResponse paymentUserCancelResponse = paymentService.requestCancel(orderId, cancelReason);
 
-            return new ResponseEntity<>(paymentUserCancelResponse, HttpStatus.OK);
-        } catch (Exception e) {
+            return new ResponseEntity(paymentUserCancelResponse, HttpStatus.OK);
+        } catch (OrderFailException e) {
             log.info(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(
+                    new ErrorResponse(e.getOrderError().name(), e.getOrderError().getMessage()),
+                    HttpStatus.BAD_REQUEST);
+        } catch (PaymentFailException e){
+            log.info("toss request fail");
+            log.info(e.getMessage());
+//            log.info(e.getTossFailObject().toString());
+            return new ResponseEntity(
+                    e.getTossFailObject(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
     }
 }

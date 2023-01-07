@@ -34,6 +34,5 @@ public class OrderedProduct {
 
     public void cancelOrdered() throws Exception{
         product.returnAmount(amount);
-        amount = 0L;
     }
 }

@@ -82,10 +82,11 @@ public class Order {
         for (OrderedProduct orderedProduct : orderedProducts) orderedProduct.cancelOrdered();
     }
 
-    public void refund() throws OrderFailException {
+    public void refund() throws Exception {
         if(this.status != OrderStatus.CHARGED) throw new OrderFailException("changeOrderStatus 실패", OrderError.REFUND_HAVE_TO_CHARGE);
 
         this.status = OrderStatus.REFUND;
+        for (OrderedProduct orderedProduct : orderedProducts) orderedProduct.cancelOrdered();
     }
 
     public long getTotalPrice() {
@@ -98,9 +99,11 @@ public class Order {
     }
 
     public void changeOrderStatus(OrderStatus status) throws OrderFailException {
-        if(status == OrderStatus.READY) throw new OrderFailException("changeOrderStatus 실패", OrderError.STATE_READY_NOT_CHANGED);
+        if(this.status == OrderStatus.READY || this.status == OrderStatus.CANCEL || this.status == OrderStatus.REFUND) throw new OrderFailException("changeOrderStatus 실패", OrderError.CURRENT_STATE_CANT_CHANGE);
+        else if(status == OrderStatus.READY) throw new OrderFailException("changeOrderStatus 실패", OrderError.STATE_READY_NOT_CHANGED);
         else if(status == OrderStatus.CANCEL) throw new OrderFailException("changeOrderStatus 실패", OrderError.STATE_CANCEL_NOT_CHANGED);
-        else if(status == OrderStatus.CHARGED) throw new OrderFailException("changeOrderStatus 실패", OrderError.STATE_CHARGE_NOT_CHANGED);
+        else if(status == OrderStatus.CHARGED) throw new OrderFailException("changeOrderStatus 실패", OrderError.STATE_CHARGED_NOT_CHANGED);
+        else if(status == OrderStatus.REFUND) throw new OrderFailException("changeOrderStatus 실패", OrderError.STATE_REFUND_NOT_CHANGED);
 
         this.status = status;
     }

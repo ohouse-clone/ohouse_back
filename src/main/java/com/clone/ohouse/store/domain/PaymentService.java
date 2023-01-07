@@ -6,6 +6,10 @@ import com.clone.ohouse.store.domain.payment.Payment;
 import com.clone.ohouse.store.domain.payment.PaymentRepository;
 import com.clone.ohouse.store.domain.payment.PaymentResultStatus;
 import com.clone.ohouse.store.domain.payment.dto.*;
+import com.clone.ohouse.store.error.order.OrderError;
+import com.clone.ohouse.store.error.order.OrderFailException;
+import com.clone.ohouse.store.error.order.PaymentError;
+import com.clone.ohouse.store.error.order.PaymentFailException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -102,7 +106,7 @@ public class PaymentService {
     }
 
     public PaymentUserCancelResponse requestCancel(String orderId, String cancelReason) throws Exception{
-        Order order = orderRepository.findByOrderIdWithOrderedProduct(orderId).orElseThrow(() -> new NoSuchElementException("해당 orderId에 일치하는 payment 없음 : " + orderId));
+        Order order = orderRepository.findByOrderIdWithOrderedProduct(orderId).orElseThrow(() -> new OrderFailException("찾으려는 order 없음, orderId : " + orderId, OrderError.WRONG_ORDER_ID));
         String auth = new String(Base64.getEncoder().encode((tossSecretApiKeyForTest+":").getBytes(StandardCharsets.UTF_8)));
         RestTemplate template = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
@@ -118,15 +122,18 @@ public class PaymentService {
                         headers),
                 PaymentCompleteResponseDto.class
         );
+        // if request fail
+        if(response.getStatusCode() != HttpStatus.OK) throw new PaymentFailException("cancel Request to toss 실패", PaymentError.FAIL_CANCEL_REQUEST_TO_TOSS, response.getBody());
 
         PaymentCompleteResponseDto body = response.getBody();
-        if(body.getStatus().equals(PaymentResultStatus.CANCELED.toString())){
+        if(body.getStatus().equals(PaymentResultStatus.CANCELED.getStatus())){
 
             //Save cancel status
             order.refund();
             //Cancel payment
             order.getPayment().cancel(body.getApprovedAt());
         }
+        else throw new OrderFailException("취소 요청은 정상이지만 파라미터 때문에 실패", OrderError.FAIL_PAYMENT_CANCEL);
 
         return new PaymentUserCancelResponse(body.getApprovedAt());
     }

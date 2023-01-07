@@ -15,4 +15,8 @@ public enum PaymentResultStatus {
     PaymentResultStatus(String status) {
         this.status = status;
     }
+
+    public String getStatus() {
+        return status;
+    }
 }
