@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Transactional
@@ -52,18 +53,27 @@ public class OrderService {
 
         //create orderedProduct
         //find Products to save in order
-        List<OrderedProduct> orderProducts = new ArrayList<>();
-        for (var obj : orderRequestDto.getOrderList()) {
-            //TODO: 1개씩 찾고 있는데, in query 등 한방쿼리로 변경필요
-            Optional<Product> product = productRepository.findById(obj.getProductId());
+        List<Product> products = productRepository.findByIds(orderRequestDto.getOrderList().stream().map((obj) -> obj.getProductId()).collect(Collectors.toCollection(ArrayList<Long>::new)));
+        if (products.size() != orderRequestDto.getOrderList().size())
+            throw new OrderFailException("orderRequest Product ids 가 DB와 불일치", OrderError.WRONG_PRODUCT_ID);
 
-            Product findProduct = product.orElseThrow(() -> new RuntimeException("존재하지 않는 상품을 주문합니다."));
-            OrderedProduct orderedProduct = findProduct.makeOrderedProduct(order, obj.getAdjustedPrice(), obj.getAmount());
+        List<OrderedProduct> orderProducts = new ArrayList<>();
+
+        orderRequestDto.getOrderList().sort((a, b) -> (int) (a.getProductId() - b.getProductId()));
+        products.sort((a, b) -> (int) (a.getId() - b.getId()));
+
+        for (int i = 0; i < products.size(); ++i) {
+            Product product = products.get(i);
+            OrderedProductDto orderedProductDto = orderRequestDto.getOrderList().get(i);
+
+            OrderedProduct orderedProduct = product.makeOrderedProduct(order, orderedProductDto.getAdjustedPrice(), orderedProductDto.getAmount());
+
             orderProducts.add(orderedProduct);
             orderedProductRepository.save(orderedProduct);
         }
-        order.registerOrderProducts(orderProducts);
 
+
+        order.registerOrderProducts(orderProducts);
 
         return new OrderResponse(
                 order.getTotalPrice(),
@@ -75,8 +85,6 @@ public class OrderService {
                 paymentService.getTossClientApiKeyForTest()
         );
     }
-
-
 
 
     public void cancel(String orderId) throws Exception {
@@ -106,12 +114,13 @@ public class OrderService {
     /**
      * 주문 상세 조회
      * 주문정보, 배송정보, 결제정보가 담깁니다.
+     *
      * @param sessionUser 로그인한 유저의 유저정보입니다.
-     * @param orderId 주문 ID입니다.
+     * @param orderId     주문 ID입니다.
      * @return OrderDetailResponseDto
      * @throws Exception
      */
-    public OrderDetailResponseDto findOrderDetail(SessionUser sessionUser, String orderId) throws Exception{
+    public OrderDetailResponseDto findOrderDetail(SessionUser sessionUser, String orderId) throws Exception {
         User user = userRepository.findByEmail(sessionUser.getEmail()).orElseThrow(() -> new OrderFailException("찾으려는 user 없음, email : " + sessionUser.getEmail(), OrderError.WRONG_USER_ID));
         Order order = orderRepository.findOrderDetail(user.getId(), orderId).orElseThrow(() -> new OrderFailException("찾으려는 order 없음, orderId : " + orderId, OrderError.WRONG_ORDER_ID));
 
@@ -132,7 +141,7 @@ public class OrderService {
                 ));
     }
 
-    public void changeOrderState(SessionUser sessionUser,String orderId, OrderStatus status) throws Exception{
+    public void changeOrderState(SessionUser sessionUser, String orderId, OrderStatus status) throws Exception {
         User user = userRepository.findByEmail(sessionUser.getEmail()).orElseThrow(() -> new OrderFailException("찾으려는 user 없음, email : " + sessionUser.getEmail(), OrderError.WRONG_USER_ID));
         Order order = orderRepository.findOrderDetail(user.getId(), orderId).orElseThrow(() -> new OrderFailException("찾으려는 order 없음, orderId : " + orderId, OrderError.WRONG_ORDER_ID));
 

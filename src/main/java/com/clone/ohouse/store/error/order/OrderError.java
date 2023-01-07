@@ -1,6 +1,12 @@
 package com.clone.ohouse.store.error.order;
 
 public enum OrderError {
+
+    //주문하려는 상품 목록이 없음
+    NOTHING_PRODUCT_IDS("주문하려는 상품 목록이 없습니다."),
+    //주문 하려는 상품(Product) id가 잘못됨
+    WRONG_PRODUCT_ID("주문 하려는 상품 id가 존재하지 않는 id입니다."),
+
     //주문 상태 변환
     STATE_CANCEL_NOT_CHANGED( "주문 상태 CANCEL 는 변경될 수 없습니다."),
     STATE_READY_NOT_CHANGED("주문 상태 READY 는 변경될 수 없습니다."),

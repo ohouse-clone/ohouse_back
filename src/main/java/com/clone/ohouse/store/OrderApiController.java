@@ -6,14 +6,12 @@ import com.clone.ohouse.account.domain.user.User;
 import com.clone.ohouse.store.domain.OrderService;
 import com.clone.ohouse.store.domain.PaymentService;
 import com.clone.ohouse.store.domain.order.OrderStatus;
-import com.clone.ohouse.store.domain.order.dto.OrderBundleViewDto;
-import com.clone.ohouse.store.domain.order.dto.OrderDetailResponseDto;
-import com.clone.ohouse.store.domain.order.dto.OrderResponse;
-import com.clone.ohouse.store.domain.order.dto.StartOrderRequestDto;
+import com.clone.ohouse.store.domain.order.dto.*;
 import com.clone.ohouse.store.domain.payment.dto.PaymentUserCancelResponse;
 import com.clone.ohouse.store.domain.payment.dto.PaymentUserFailResponseDto;
 import com.clone.ohouse.store.domain.payment.dto.PaymentUserSuccessResponseDto;
 import com.clone.ohouse.store.error.ErrorResponse;
+import com.clone.ohouse.store.error.order.OrderError;
 import com.clone.ohouse.store.error.order.OrderFailException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Slf4j
@@ -33,10 +32,15 @@ public class OrderApiController {
     private final PaymentService paymentService;
 
     @PostMapping("/order")
-    public OrderResponse startOrder(
+    public HttpEntity startOrder(
             @RequestBody StartOrderRequestDto startOrderRequestDto
 //            @LoginUser SessionUser sessionUser
     ) throws Exception {
+
+        //orderList가 NULL일 경우
+        List<OrderedProductDto> orderList = startOrderRequestDto.getOrderRequestDto().getOrderList();
+        if(orderList == null || orderList.size() == 0)
+            return new ResponseEntity(new ErrorResponse(OrderError.NOTHING_PRODUCT_IDS.name(), OrderError.NOTHING_PRODUCT_IDS.getMessage()), HttpStatus.BAD_REQUEST);
 
         //TODO: Temporary users, 추후 삭제 예정
         SessionUser sessionUser = null;
@@ -49,12 +53,18 @@ public class OrderApiController {
                     .email("tester_1@cloneohouse.shop")
                     .build());
         }
-        //TODO: 주문할 프로덕트 리스트 NULL이면 Fail
-        return orderService.startOrder(sessionUser, startOrderRequestDto.getOrderRequestDto(), startOrderRequestDto.getDeliveryDto());
+
+        try {
+            OrderResponse orderResponse = orderService.startOrder(sessionUser, startOrderRequestDto.getOrderRequestDto(), startOrderRequestDto.getDeliveryDto());
+            return new ResponseEntity(orderResponse, HttpStatus.OK);
+        } catch (OrderFailException e){
+            log.info(e.getMessage());
+            return new ResponseEntity(new ErrorResponse(e.getOrderError().name(), e.getOrderError().getMessage()), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("/order")
-    public OrderDetailResponseDto findOrderDetail(
+    public HttpEntity findOrderDetail(
             @RequestParam String orderId) throws Exception {
         //TODO: Temporary users, 추후 삭제 예정
         SessionUser sessionUser = null;
@@ -68,10 +78,14 @@ public class OrderApiController {
                     .build());
         }
 
-        OrderDetailResponseDto orderDetail = orderService.findOrderDetail(sessionUser, orderId);
-
-        return orderDetail;
-
+        try {
+            OrderDetailResponseDto orderDetail = orderService.findOrderDetail(sessionUser, orderId);
+            return new ResponseEntity(orderDetail, HttpStatus.OK);
+        }
+        catch (OrderFailException e){
+            log.info(e.getMessage());
+            return new ResponseEntity(new ErrorResponse(e.getOrderError().name(), e.getOrderError().getMessage()), HttpStatus.BAD_REQUEST);
+        }
     }
 
 
@@ -81,7 +95,7 @@ public class OrderApiController {
      * @return OrderBundleView
      */
     @GetMapping("/orders")
-    public OrderBundleViewDto findAllOrders() throws Exception {
+    public HttpEntity findAllOrders() throws Exception {
 
         //TODO: Temporary users, 추후 삭제 예정
         SessionUser sessionUser = null;
@@ -95,9 +109,14 @@ public class OrderApiController {
                     .build());
         }
 
-        OrderBundleViewDto orderBundleViewDto = orderService.findAllOrders(sessionUser);
-
-        return orderBundleViewDto;
+        try {
+            OrderBundleViewDto orderBundleViewDto = orderService.findAllOrders(sessionUser);
+            return new ResponseEntity(orderBundleViewDto, HttpStatus.OK);
+        }
+        catch (OrderFailException e){
+            log.info(e.getMessage());
+            return new ResponseEntity(new ErrorResponse(e.getOrderError().name(), e.getOrderError().getMessage()), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/order/status")
