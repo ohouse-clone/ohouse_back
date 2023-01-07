@@ -9,13 +9,15 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 public class OrderViewDto {
+    private String orderId;
     private LocalDateTime fixedTime;
     private OrderStatus status;
     private String postPreviewImageUrl;
     private String postTitle;
     private Long totalPrice;
 
-    public OrderViewDto(LocalDateTime fixedTime, OrderStatus status, String postPreviewImageUrl, String postTitle, Long totalPrice) {
+    public OrderViewDto(String orderId, LocalDateTime fixedTime, OrderStatus status, String postPreviewImageUrl, String postTitle, Long totalPrice) {
+        this.orderId = orderId;
         this.fixedTime = fixedTime;
         this.status = status;
         this.postPreviewImageUrl = postPreviewImageUrl;

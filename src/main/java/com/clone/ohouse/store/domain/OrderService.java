@@ -5,10 +5,7 @@ import com.clone.ohouse.account.auth.SessionUser;
 import com.clone.ohouse.account.domain.user.User;
 import com.clone.ohouse.account.domain.user.UserRepository;
 import com.clone.ohouse.store.domain.order.*;
-import com.clone.ohouse.store.domain.order.dto.DeliveryDto;
-import com.clone.ohouse.store.domain.order.dto.OrderBundleViewDto;
-import com.clone.ohouse.store.domain.order.dto.OrderRequestDto;
-import com.clone.ohouse.store.domain.order.dto.OrderResponse;
+import com.clone.ohouse.store.domain.order.dto.*;
 import com.clone.ohouse.store.domain.payment.Payment;
 import com.clone.ohouse.store.domain.product.ProductRepository;
 import com.clone.ohouse.store.domain.product.Product;
@@ -33,9 +30,9 @@ public class OrderService {
     private final StorePostsRepository storePostsRepository;
 
 
-    public OrderResponse startOrder(SessionUser sessionUser, OrderRequestDto orderRequestDto, DeliveryDto deliveryDto) throws Exception{
+    public OrderResponse startOrder(SessionUser sessionUser, OrderRequestDto orderRequestDto, DeliveryDto deliveryDto) throws Exception {
         //find user
-        User user = userRepository.findByEmail(sessionUser.getEmail()).orElseThrow(()->new NoSuchElementException("email을 가진 user가 없음 : " + sessionUser.getEmail()));
+        User user = userRepository.findByEmail(sessionUser.getEmail()).orElseThrow(() -> new NoSuchElementException("email을 가진 user가 없음 : " + sessionUser.getEmail()));
         //find post
         StorePosts storePost = storePostsRepository.findById(orderRequestDto.getStorePostId()).orElse(null);
 
@@ -54,7 +51,7 @@ public class OrderService {
         //create orderedProduct
         //find Products to save in order
         List<OrderedProduct> orderProducts = new ArrayList<>();
-        for(var obj : orderRequestDto.getOrderList()){
+        for (var obj : orderRequestDto.getOrderList()) {
             //TODO: 1개씩 찾고 있는데, in query 등 한방쿼리로 변경필요
             Optional<Product> product = productRepository.findById(obj.getProductId());
 
@@ -90,17 +87,28 @@ public class OrderService {
         findOrder.cancel();
     }
 
-    public OrderBundleViewDto findAllOrders(Long userId) throws Exception {
-        List<Order> allOrders = orderRepository.findAllOrders(userId);
-        //TODO: 주문 리스트 조회
+    public OrderBundleViewDto findAllOrders(SessionUser sessionUser) throws Exception {
+        User user = userRepository.findByEmail(sessionUser.getEmail()).orElseThrow(() -> new NoSuchElementException("email을 가진 user가 없음 : " + sessionUser.getEmail()));
+        List<Order> allOrders = orderRepository.findAllOrders(user.getId());
 
+        List<OrderViewDto> orderViewDtos = new ArrayList<>();
+        allOrders.forEach((order) -> {
+            orderViewDtos.add(new OrderViewDto(
+                    order.getPayment().getOrderId(),
+                    order.getFixedTime(),
+                    order.getStatus(),
+                    order.getStorePost().getPreviewImageUrl(),
+                    order.getStorePost().getTitle(),
+                    order.getTotalPrice()));
+        });
+
+        return new OrderBundleViewDto(Long.valueOf(allOrders.size()), orderViewDtos);
     }
 
 
-    public List<OrderedProduct> findAllOrderedProduct(User user, Long orderSeq){
+    public List<OrderedProduct> findAllOrderedProduct(User user, Long orderSeq) {
         return orderRepository.findById(orderSeq)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 주문번호 입니다."))
                 .getOrderedProducts();
     }
-
 }
