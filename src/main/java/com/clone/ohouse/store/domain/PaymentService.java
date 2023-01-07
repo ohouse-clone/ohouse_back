@@ -121,8 +121,10 @@ public class PaymentService {
 
         PaymentCompleteResponseDto body = response.getBody();
         if(body.getStatus().equals(PaymentResultStatus.CANCELED.toString())){
+
             //Save cancel status
-            order.cancel();
+            order.refund();
+            //Cancel payment
             order.getPayment().cancel(body.getApprovedAt());
         }
 

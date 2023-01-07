@@ -1,16 +1,14 @@
 package com.clone.ohouse.store.domain.order;
 
 import com.clone.ohouse.account.domain.user.User;
-import com.clone.ohouse.store.domain.order.dto.OrderedProductDto;
 import com.clone.ohouse.store.domain.payment.Payment;
-import com.clone.ohouse.store.domain.product.Product;
 import com.clone.ohouse.store.domain.storeposts.StorePosts;
+import com.clone.ohouse.store.error.order.OrderError;
+import com.clone.ohouse.store.error.order.OrderFailException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.util.Pair;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,6 +82,12 @@ public class Order {
         for (OrderedProduct orderedProduct : orderedProducts) orderedProduct.cancelOrdered();
     }
 
+    public void refund() throws OrderFailException {
+        if(this.status != OrderStatus.CHARGED) throw new OrderFailException("changeOrderStatus 실패", OrderError.REFUND_HAVE_TO_CHARGE);
+
+        this.status = OrderStatus.REFUND;
+    }
+
     public long getTotalPrice() {
         long total = 0;
         for (var orderedProduct : orderedProducts) {
@@ -91,5 +95,13 @@ public class Order {
         }
 
         return total;
+    }
+
+    public void changeOrderStatus(OrderStatus status) throws OrderFailException {
+        if(status == OrderStatus.READY) throw new OrderFailException("changeOrderStatus 실패", OrderError.STATE_READY_NOT_CHANGED);
+        else if(status == OrderStatus.CANCEL) throw new OrderFailException("changeOrderStatus 실패", OrderError.STATE_CANCEL_NOT_CHANGED);
+        else if(status == OrderStatus.CHARGED) throw new OrderFailException("changeOrderStatus 실패", OrderError.STATE_CHARGE_NOT_CHANGED);
+
+        this.status = status;
     }
 }

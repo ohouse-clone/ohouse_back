@@ -5,6 +5,7 @@ import com.clone.ohouse.account.auth.SessionUser;
 import com.clone.ohouse.account.domain.user.User;
 import com.clone.ohouse.store.domain.OrderService;
 import com.clone.ohouse.store.domain.PaymentService;
+import com.clone.ohouse.store.domain.order.OrderStatus;
 import com.clone.ohouse.store.domain.order.dto.OrderBundleViewDto;
 import com.clone.ohouse.store.domain.order.dto.OrderDetailResponseDto;
 import com.clone.ohouse.store.domain.order.dto.OrderResponse;
@@ -12,10 +13,11 @@ import com.clone.ohouse.store.domain.order.dto.StartOrderRequestDto;
 import com.clone.ohouse.store.domain.payment.dto.PaymentUserCancelResponse;
 import com.clone.ohouse.store.domain.payment.dto.PaymentUserFailResponseDto;
 import com.clone.ohouse.store.domain.payment.dto.PaymentUserSuccessResponseDto;
+import com.clone.ohouse.store.error.ErrorResponse;
+import com.clone.ohouse.store.error.order.OrderFailException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -53,7 +55,7 @@ public class OrderApiController {
 
     @GetMapping("/order")
     public OrderDetailResponseDto findOrderDetail(
-            @RequestParam String orderId) throws Exception{
+            @RequestParam String orderId) throws Exception {
         //TODO: Temporary users, 추후 삭제 예정
         SessionUser sessionUser = null;
         if (sessionUser == null) {
@@ -96,6 +98,34 @@ public class OrderApiController {
         OrderBundleViewDto orderBundleViewDto = orderService.findAllOrders(sessionUser);
 
         return orderBundleViewDto;
+    }
+
+    @PostMapping("/order/status")
+    public HttpEntity SetOrderStatus(
+            @RequestParam String orderId,
+            @RequestParam OrderStatus status) throws Exception {
+
+        //TODO: Temporary users, 추후 삭제 예정
+        SessionUser sessionUser = null;
+        if (sessionUser == null) {
+            sessionUser = new SessionUser(User.builder()
+                    .name("TESTER_1")
+                    .nickname("TSR_1")
+                    .phone("010-0000-0000")
+                    .password("1234")
+                    .email("tester_1@cloneohouse.shop")
+                    .build());
+        }
+        try {
+            orderService.changeOrderState(sessionUser, orderId, status);
+
+            return new ResponseEntity(HttpStatus.OK);
+        }
+        catch(OrderFailException e){
+            log.info(e.getMessage());
+
+            return new ResponseEntity(new ErrorResponse(e.getOrderError().name(), e.getOrderError().getMessage()), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("/payment/card/success")
@@ -154,6 +184,4 @@ public class OrderApiController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
-
-
 }

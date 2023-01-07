@@ -11,6 +11,8 @@ import com.clone.ohouse.store.domain.product.ProductRepository;
 import com.clone.ohouse.store.domain.product.Product;
 import com.clone.ohouse.store.domain.storeposts.StorePosts;
 import com.clone.ohouse.store.domain.storeposts.StorePostsRepository;
+import com.clone.ohouse.store.error.order.OrderError;
+import com.clone.ohouse.store.error.order.OrderFailException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,9 +34,9 @@ public class OrderService {
 
     public OrderResponse startOrder(SessionUser sessionUser, OrderRequestDto orderRequestDto, DeliveryDto deliveryDto) throws Exception {
         //find user
-        User user = userRepository.findByEmail(sessionUser.getEmail()).orElseThrow(() -> new NoSuchElementException("email을 가진 user가 없음 : " + sessionUser.getEmail()));
+        User user = userRepository.findByEmail(sessionUser.getEmail()).orElseThrow(() -> new OrderFailException("찾으려는 user 없음, email : " + sessionUser.getEmail(), OrderError.WRONG_USER_ID));
         //find post
-        StorePosts storePost = storePostsRepository.findById(orderRequestDto.getStorePostId()).orElseThrow(() -> new NoSuchElementException("post id가 잘못됨 ; " + orderRequestDto.getStorePostId()));
+        StorePosts storePost = storePostsRepository.findById(orderRequestDto.getStorePostId()).orElseThrow(() -> new OrderFailException("storePost id가 잘못됨 ; " + orderRequestDto.getStorePostId(), OrderError.WRONG_STORE_POST_ID));
 
         //payment create & save
         Payment payment = Payment.createPayment(sessionUser.getName());
@@ -78,13 +80,13 @@ public class OrderService {
 
 
     public void cancel(String orderId) throws Exception {
-        Order findOrder = orderRepository.findByOrderIdWithOrderedProduct(orderId).orElseThrow(() -> new NoSuchElementException("잘못된 주문 번호입니다."));
+        Order findOrder = orderRepository.findByOrderIdWithOrderedProduct(orderId).orElseThrow(() -> new OrderFailException("찾으려는 order 없음, orderId : " + orderId, OrderError.WRONG_ORDER_ID));
 
         findOrder.cancel();
     }
 
     public OrderBundleViewDto findAllOrders(SessionUser sessionUser) throws Exception {
-        User user = userRepository.findByEmail(sessionUser.getEmail()).orElseThrow(() -> new NoSuchElementException("email을 가진 user가 없음 : " + sessionUser.getEmail()));
+        User user = userRepository.findByEmail(sessionUser.getEmail()).orElseThrow(() -> new OrderFailException("찾으려는 user 없음, email : " + sessionUser.getEmail(), OrderError.WRONG_USER_ID));
         List<Order> allOrders = orderRepository.findAllOrders(user.getId());
 
         List<OrderViewDto> orderViewDtos = new ArrayList<>();
@@ -110,8 +112,8 @@ public class OrderService {
      * @throws Exception
      */
     public OrderDetailResponseDto findOrderDetail(SessionUser sessionUser, String orderId) throws Exception{
-        User user = userRepository.findByEmail(sessionUser.getEmail()).orElseThrow(() -> new NoSuchElementException("email을 가진 user가 없음 : " + sessionUser.getEmail()));
-        Order order = orderRepository.findOrderDetail(user.getId(), orderId).orElseThrow(() -> new NoSuchElementException("orderId에 해당하는 주문이 없음 : " + orderId));
+        User user = userRepository.findByEmail(sessionUser.getEmail()).orElseThrow(() -> new OrderFailException("찾으려는 user 없음, email : " + sessionUser.getEmail(), OrderError.WRONG_USER_ID));
+        Order order = orderRepository.findOrderDetail(user.getId(), orderId).orElseThrow(() -> new OrderFailException("찾으려는 order 없음, orderId : " + orderId, OrderError.WRONG_ORDER_ID));
 
         return new OrderDetailResponseDto(
                 order.getPayment().getOrderId(),
@@ -130,5 +132,11 @@ public class OrderService {
                 ));
     }
 
+    public void changeOrderState(SessionUser sessionUser,String orderId, OrderStatus status) throws Exception{
+        User user = userRepository.findByEmail(sessionUser.getEmail()).orElseThrow(() -> new OrderFailException("찾으려는 user 없음, email : " + sessionUser.getEmail(), OrderError.WRONG_USER_ID));
+        Order order = orderRepository.findOrderDetail(user.getId(), orderId).orElseThrow(() -> new OrderFailException("찾으려는 order 없음, orderId : " + orderId, OrderError.WRONG_ORDER_ID));
+
+        order.changeOrderStatus(status);
+    }
 
 }
