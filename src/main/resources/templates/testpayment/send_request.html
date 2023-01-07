@@ -27,7 +27,7 @@
 
     <!-- startOrder 실행 -->
     <script>
-        const startOrderApiRequestEndPoint = "http://localhost:8080/order/api/v1/payment";
+        const startOrderApiRequestEndPoint = "http://localhost:8080/order/api/v1/order";
         var httpRequest;
         /* button이 클릭되었을때 이벤트 */
         document.getElementById("start-order-button").addEventListener('click', () => {
@@ -50,6 +50,7 @@
             };
             let orderRequestDto = {
                 paymentType: "CARD",
+                storePostId: "1",
                 orderName: "티셔츠 외 1건",
                 orderList: [orderedProductDto1, orderedProductDto2, orderedProductDto3]
             };

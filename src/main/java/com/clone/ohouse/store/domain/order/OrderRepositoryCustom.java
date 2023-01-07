@@ -11,4 +11,6 @@ public interface OrderRepositoryCustom {
     List<Order> findAllOrders(Long userId);
 
     Optional<Order> findByOrderIdWithOrderedProduct(String orderId);
+
+    Optional<Order> findOrderDetail(Long userId, String orderId);
 }

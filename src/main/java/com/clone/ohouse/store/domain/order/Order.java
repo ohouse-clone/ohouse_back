@@ -73,19 +73,15 @@ public class Order {
         this.orderedProducts = orderedProducts;
     }
 
+    public void successPayment(){
+        if(this.status == OrderStatus.READY) this.status = OrderStatus.CHARGED;
+    }
     public void cancel() throws Exception {
         if (this.status.equals(OrderStatus.DELIVERY))
             throw new RuntimeException("Fail to cancel order, It's middle on delivery");
 
         this.status = OrderStatus.CANCEL;
         for (OrderedProduct orderedProduct : orderedProducts) orderedProduct.cancelOrdered();
-
-    }
-
-    public void fail() throws Exception {
-        if (this.status != OrderStatus.READY) throw new RuntimeException("주문 상태가 ready가 아님으로 실패할 수 없음");
-
-        this.status = OrderStatus.FAIL;
     }
 
     public long getTotalPrice() {

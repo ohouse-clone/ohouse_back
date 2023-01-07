@@ -6,6 +6,7 @@ import com.clone.ohouse.account.domain.user.User;
 import com.clone.ohouse.store.domain.OrderService;
 import com.clone.ohouse.store.domain.PaymentService;
 import com.clone.ohouse.store.domain.order.dto.OrderBundleViewDto;
+import com.clone.ohouse.store.domain.order.dto.OrderDetailResponseDto;
 import com.clone.ohouse.store.domain.order.dto.OrderResponse;
 import com.clone.ohouse.store.domain.order.dto.StartOrderRequestDto;
 import com.clone.ohouse.store.domain.payment.dto.PaymentUserCancelResponse;
@@ -23,13 +24,13 @@ import java.util.NoSuchElementException;
 
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/order/api/v1/order")
+@RequestMapping("/order/api/v1")
 @RestController
 public class OrderApiController {
     private final OrderService orderService;
     private final PaymentService paymentService;
 
-    @PostMapping
+    @PostMapping("/order")
     public OrderResponse startOrder(
             @RequestBody StartOrderRequestDto startOrderRequestDto
 //            @LoginUser SessionUser sessionUser
@@ -50,14 +51,35 @@ public class OrderApiController {
         return orderService.startOrder(sessionUser, startOrderRequestDto.getOrderRequestDto(), startOrderRequestDto.getDeliveryDto());
     }
 
-    //TODO: 결제 상세 조회 구현
+    @GetMapping("/order")
+    public OrderDetailResponseDto findOrderDetail(
+            @RequestParam String orderId) throws Exception{
+        //TODO: Temporary users, 추후 삭제 예정
+        SessionUser sessionUser = null;
+        if (sessionUser == null) {
+            sessionUser = new SessionUser(User.builder()
+                    .name("TESTER_1")
+                    .nickname("TSR_1")
+                    .phone("010-0000-0000")
+                    .password("1234")
+                    .email("tester_1@cloneohouse.shop")
+                    .build());
+        }
+
+        OrderDetailResponseDto orderDetail = orderService.findOrderDetail(sessionUser, orderId);
+
+        return orderDetail;
+
+    }
+
 
     /**
-     *  User가 결제한 주문 리스트 반환
+     * User가 결제한 주문 리스트 반환
+     *
      * @return OrderBundleView
      */
     @GetMapping("/orders")
-    public HttpEntity<OrderBundleViewDto> findAllOrders() {
+    public OrderBundleViewDto findAllOrders() throws Exception {
 
         //TODO: Temporary users, 추후 삭제 예정
         SessionUser sessionUser = null;
@@ -70,17 +92,10 @@ public class OrderApiController {
                     .email("tester_1@cloneohouse.shop")
                     .build());
         }
-        try {
-            OrderBundleViewDto orderBundleViewDto = orderService.findAllOrders(sessionUser);
 
-            return new ResponseEntity<>(orderBundleViewDto, HttpStatus.OK);
-        } catch (NoSuchElementException e) {
-            log.info(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
-            log.info(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        OrderBundleViewDto orderBundleViewDto = orderService.findAllOrders(sessionUser);
+
+        return orderBundleViewDto;
     }
 
     @GetMapping("/payment/card/success")
@@ -109,7 +124,7 @@ public class OrderApiController {
             @RequestParam("orderId") String orderId
     ) {
         try {
-            orderService.fail(orderId);
+            orderService.cancel(orderId);
         } catch (Exception e) {
             log.info(e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

@@ -34,7 +34,7 @@ public class OrderService {
         //find user
         User user = userRepository.findByEmail(sessionUser.getEmail()).orElseThrow(() -> new NoSuchElementException("email을 가진 user가 없음 : " + sessionUser.getEmail()));
         //find post
-        StorePosts storePost = storePostsRepository.findById(orderRequestDto.getStorePostId()).orElse(null);
+        StorePosts storePost = storePostsRepository.findById(orderRequestDto.getStorePostId()).orElseThrow(() -> new NoSuchElementException("post id가 잘못됨 ; " + orderRequestDto.getStorePostId()));
 
         //payment create & save
         Payment payment = Payment.createPayment(sessionUser.getName());
@@ -75,11 +75,7 @@ public class OrderService {
     }
 
 
-    public void fail(String orderId) throws Exception {
-        Order findOrder = orderRepository.findByOrderIdWithOrderedProduct(orderId).orElseThrow(() -> new NoSuchElementException("잘못된 주문 번호입니다."));
 
-        findOrder.fail();
-    }
 
     public void cancel(String orderId) throws Exception {
         Order findOrder = orderRepository.findByOrderIdWithOrderedProduct(orderId).orElseThrow(() -> new NoSuchElementException("잘못된 주문 번호입니다."));
@@ -105,10 +101,34 @@ public class OrderService {
         return new OrderBundleViewDto(Long.valueOf(allOrders.size()), orderViewDtos);
     }
 
+    /**
+     * 주문 상세 조회
+     * 주문정보, 배송정보, 결제정보가 담깁니다.
+     * @param sessionUser 로그인한 유저의 유저정보입니다.
+     * @param orderId 주문 ID입니다.
+     * @return OrderDetailResponseDto
+     * @throws Exception
+     */
+    public OrderDetailResponseDto findOrderDetail(SessionUser sessionUser, String orderId) throws Exception{
+        User user = userRepository.findByEmail(sessionUser.getEmail()).orElseThrow(() -> new NoSuchElementException("email을 가진 user가 없음 : " + sessionUser.getEmail()));
+        Order order = orderRepository.findOrderDetail(user.getId(), orderId).orElseThrow(() -> new NoSuchElementException("orderId에 해당하는 주문이 없음 : " + orderId));
 
-    public List<OrderedProduct> findAllOrderedProduct(User user, Long orderSeq) {
-        return orderRepository.findById(orderSeq)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 주문번호 입니다."))
-                .getOrderedProducts();
+        return new OrderDetailResponseDto(
+                order.getPayment().getOrderId(),
+                order.getCreateTime().toString(),
+                order.getTotalPrice(),
+                new OrderDetailStorePostDto(
+                        order.getStorePost().getPreviewImageUrl(),
+                        order.getStorePost().getTitle()),
+                new OrderDetailDeliveryDto(
+                        order.getDelivery().getRecipientName(),
+                        order.getDelivery().getPhone(),
+                        order.getDelivery().getZipCode(),
+                        order.getDelivery().getAddress1(),
+                        order.getDelivery().getAddress2(),
+                        order.getDelivery().getMemo()
+                ));
     }
+
+
 }

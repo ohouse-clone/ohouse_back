@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.clone.ohouse.account.domain.user.QUser.*;
+import static com.clone.ohouse.store.domain.order.QDelivery.*;
 import static com.clone.ohouse.store.domain.order.QOrder.order;
 import static com.clone.ohouse.store.domain.order.QOrderedProduct.orderedProduct;
 import static com.clone.ohouse.store.domain.payment.QPayment.payment;
@@ -35,7 +36,7 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom{
     @Override
     public List<Order> findAllOrders(Long userId){
         List<Order> fetch = queryFactory
-                .select(order)
+                .select(order).distinct()
                 .from(order)
                 .leftJoin(order.orderedProducts, orderedProduct).fetchJoin()
                 .leftJoin(order.payment, payment).fetchJoin()
@@ -45,14 +46,29 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom{
                 .orderBy(order.createTime.asc())
                 .fetch();
 
-
         return fetch;
+    }
+
+    @Override
+    public Optional<Order> findOrderDetail(Long userId, String orderId){
+        Order fetch = queryFactory
+                .select(order).distinct()
+                .from(order)
+                .leftJoin(order.orderedProducts, orderedProduct).fetchJoin()
+                .leftJoin(order.payment, payment).fetchJoin()
+                .leftJoin(order.storePost, storePosts).fetchJoin()
+                .leftJoin(order.user, user).fetchJoin()
+                .leftJoin(order.delivery, delivery).fetchJoin()
+                .where(user.id.eq(userId).and(order.payment.orderId.eq(orderId)))
+                .fetchOne();
+
+        return Optional.ofNullable(fetch);
     }
 
     @Override
     public Optional<Order> findByOrderIdWithOrderedProduct(String orderId) {
         Order findOrder = queryFactory
-                .select(order)
+                .select(order).distinct()
                 .from(order)
                 .leftJoin(order.orderedProducts, orderedProduct).fetchJoin()
                 .leftJoin(order.payment, payment).fetchJoin()

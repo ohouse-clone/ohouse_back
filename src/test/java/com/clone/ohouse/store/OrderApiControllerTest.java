@@ -130,7 +130,7 @@ public class OrderApiControllerTest {
     @Test
     void startOrder() throws Exception{
         //given
-        String url = "http://localhost:8080" +"/order/api/v1/payment";
+        String url = "http://localhost:8080" +"/order/api/v1/order";
         OrderedProductDto orderedProductDto3 = new OrderedProductDto(savedProduct3.getId(), savedProduct3.getPrice(), 10L);
         OrderedProductDto orderedProductDto4 = new OrderedProductDto(savedProduct4.getId(), savedProduct4.getPrice(), 20L);
         OrderedProductDto orderedProductDto5 = new OrderedProductDto(savedProduct5.getId(), savedProduct5.getPrice(), 30L);

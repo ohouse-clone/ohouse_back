@@ -61,6 +61,7 @@ public class PaymentService {
         RestTemplate template = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         String auth = new String(Base64.getEncoder().encode((tossSecretApiKeyForTest + ":").getBytes(StandardCharsets.UTF_8)));
+
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBasicAuth(auth);
 
@@ -76,6 +77,10 @@ public class PaymentService {
         PaymentCompleteResponseDto paymentResponse = response.getBody();
 
         if(paymentResponse.getStatus().equals(PaymentResultStatus.DONE.toString())){
+            //update order status
+            Order order = orderRepository.findByOrderIdWithOrderedProduct(orderId).orElseThrow(() -> new NoSuchElementException("잘못된 orderId : " + orderId));
+            order.successPayment();
+
             //Save payment key
             Payment payment = paymentRepository.findByOrderId(orderId).get();
             payment.processPayment(
