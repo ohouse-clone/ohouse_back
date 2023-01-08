@@ -32,6 +32,7 @@ public class OrderApiController {
     private final OrderService orderService;
     private final PaymentService paymentService;
 
+    //TODO: API 문서 내용 추가
     @PostMapping("/order")
     public HttpEntity startOrder(
             @RequestBody StartOrderRequestDto startOrderRequestDto
@@ -118,10 +119,10 @@ public class OrderApiController {
         }
     }
 
-    @PostMapping("/order/{orderId}/{status}")
+    @PostMapping("/order/{orderId}/status")
     public HttpEntity SetOrderStatus(
             @PathVariable String orderId,
-            @PathVariable OrderStatus status) throws Exception {
+            @RequestBody OrderSetStatusRequestDto orderSetStatusRequestDto) throws Exception {
 
         //TODO: Temporary users, 추후 삭제 예정
         SessionUser sessionUser = null;
@@ -135,7 +136,7 @@ public class OrderApiController {
                     .build());
         }
         try {
-            orderService.changeOrderState(sessionUser, orderId, status);
+            orderService.changeOrderState(sessionUser, orderId, orderSetStatusRequestDto.getStatus());
 
             return new ResponseEntity(HttpStatus.OK);
         } catch (OrderFailException e) {
@@ -187,10 +188,10 @@ public class OrderApiController {
     @PostMapping("/payment/{orderId}/card/cancel")
     public HttpEntity cancelPayment(
             @PathVariable("orderId") String orderId,
-            @RequestParam("cancelReason") String cancelReason) throws Exception {
+            @RequestBody OrderCancelPaymentRequestDto orderCancelPaymentRequestDto) throws Exception {
 
         try {
-            PaymentUserCancelResponse paymentUserCancelResponse = paymentService.requestCancel(orderId, cancelReason);
+            PaymentUserCancelResponse paymentUserCancelResponse = paymentService.requestCancel(orderId, orderCancelPaymentRequestDto.getCancelReason());
 
             return new ResponseEntity(paymentUserCancelResponse, HttpStatus.OK);
         } catch (OrderFailException e) {
