@@ -25,15 +25,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-@Api(
-        value = "Item 등록, 제거, 찾기에 대한 API<br><br>" +
-                "<h1> save interface </h1>" +
-                "save api는 카테고리의 의존적이라는 중요한 특징을 가집니다.<br>" +
-                "카테고리는 iteml의 세부항목을 결정짓는 중요한 parameter이며<br>" +
-                "저장하려는 DTO와 category code는 사전에 static하게 연관되어 있습니다.<br>" +
-                "따라서 정확하게 category와 dto를 사용해야 합니다.<br>" +
-                "예를 들어서 category 20_22_20_20은 bed를 의미하므로 BedRequestDto를 사용하며, post /store/item/bed 로 하여야 합니다."
-)
+
 @RequiredArgsConstructor
 @RequestMapping("/store/api/v1/item")
 @RestController

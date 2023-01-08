@@ -1,5 +1,7 @@
 package com.clone.ohouse.store.error.order;
 
+
+
 public enum OrderError {
     /** 현재 주문 상태에서 거부 **/
     CURRENT_STATE_CANT_CHANGE("READY, CANCEL, REFUND 상태는 변경할 수 없습니다."),
@@ -39,5 +41,6 @@ public enum OrderError {
     public String getMessage() {
         return message;
     }
+
 }
 

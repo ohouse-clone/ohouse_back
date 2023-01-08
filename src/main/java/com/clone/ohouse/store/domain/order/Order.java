@@ -71,9 +71,10 @@ public class Order {
         this.orderedProducts = orderedProducts;
     }
 
-    public void successPayment(){
-        if(this.status == OrderStatus.READY) this.status = OrderStatus.CHARGED;
+    public void successPayment() {
+        if (this.status == OrderStatus.READY) this.status = OrderStatus.CHARGED;
     }
+
     public void cancel() throws Exception {
         if (this.status.equals(OrderStatus.DELIVERY))
             throw new RuntimeException("Fail to cancel order, It's middle on delivery");
@@ -83,7 +84,8 @@ public class Order {
     }
 
     public void refund() throws Exception {
-        if(this.status != OrderStatus.CHARGED) throw new OrderFailException("changeOrderStatus 실패", OrderError.REFUND_HAVE_TO_CHARGE);
+        if (this.status != OrderStatus.CHARGED)
+            throw new OrderFailException("changeOrderStatus 실패", OrderError.REFUND_HAVE_TO_CHARGE);
 
         this.status = OrderStatus.REFUND;
         for (OrderedProduct orderedProduct : orderedProducts) orderedProduct.cancelOrdered();
@@ -99,11 +101,22 @@ public class Order {
     }
 
     public void changeOrderStatus(OrderStatus status) throws OrderFailException {
-        if(this.status == OrderStatus.READY || this.status == OrderStatus.CANCEL || this.status == OrderStatus.REFUND) throw new OrderFailException("changeOrderStatus 실패", OrderError.CURRENT_STATE_CANT_CHANGE);
-        else if(status == OrderStatus.READY) throw new OrderFailException("changeOrderStatus 실패", OrderError.STATE_READY_NOT_CHANGED);
-        else if(status == OrderStatus.CANCEL) throw new OrderFailException("changeOrderStatus 실패", OrderError.STATE_CANCEL_NOT_CHANGED);
-        else if(status == OrderStatus.CHARGED) throw new OrderFailException("changeOrderStatus 실패", OrderError.STATE_CHARGED_NOT_CHANGED);
-        else if(status == OrderStatus.REFUND) throw new OrderFailException("changeOrderStatus 실패", OrderError.STATE_REFUND_NOT_CHANGED);
+        if (this.status == OrderStatus.READY || this.status == OrderStatus.CANCEL || this.status == OrderStatus.REFUND)
+            throw new OrderFailException("changeOrderStatus 실패", OrderError.CURRENT_STATE_CANT_CHANGE);
+        else if (status == OrderStatus.READY)
+            throw new OrderFailException("changeOrderStatus 실패", OrderError.STATE_READY_NOT_CHANGED);
+        else if (status == OrderStatus.CANCEL)
+            throw new OrderFailException("changeOrderStatus 실패", OrderError.STATE_CANCEL_NOT_CHANGED);
+        else if (status == OrderStatus.CHARGED)
+            throw new OrderFailException("changeOrderStatus 실패", OrderError.STATE_CHARGED_NOT_CHANGED);
+        else if (status == OrderStatus.REFUND)
+            throw new OrderFailException("changeOrderStatus 실패", OrderError.STATE_REFUND_NOT_CHANGED);
+
+        if (status == OrderStatus.FINISH)
+            this.fixedTime = LocalDateTime.now();
+        else
+            this.fixedTime = null;
+
 
         this.status = status;
     }
