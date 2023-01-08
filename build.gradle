@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.clone'
-version = '0.0.1-SNAPSHOT'
+version = '0.2.1-SNAPSHOT'
 sourceCompatibility = '11'
 
 ext["hibernate.version"] = "5.6.5.Final"
