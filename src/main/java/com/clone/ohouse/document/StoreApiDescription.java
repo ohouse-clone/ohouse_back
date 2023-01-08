@@ -3,7 +3,7 @@ package com.clone.ohouse.document;
 public class StoreApiDescription {
     public static final String description =
             "<h3>OrderError Code</h3>" +
-                    "Request Fail 시 발생할 수 있는 Code 입니다." + "<br>" +
+                    "Order API 에서 Request Fail 시 발생할 수 있는 Code 입니다." + "<br>" +
                     "<dl>" +
                     "<dt>CURRENT_STATE_CANT_CHANGE</dt>" +
                     "<dd> - READY, CANCEL, REFUND 상태는 변경할 수 없습니다. </dd>" +
@@ -47,6 +47,7 @@ public class StoreApiDescription {
 
 
                     "<h3>PaymentError Code</h3>" +
+                    "Order API 에서 Request Fail 시 발생할 수 있는 Code 입니다." + "<br>" +
                     "<dl>" +
 
                     "<dt>FAIL_CANCEL_REQUEST_TO_TOSS</dt>" +
