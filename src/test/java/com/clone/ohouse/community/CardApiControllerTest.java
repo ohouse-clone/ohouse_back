@@ -75,7 +75,6 @@ class CardApiControllerTest {
                         .name("jjh")
                         .phone("010-0000-0000")
                         .nickname("j3")
-                        .birthday("birth")
                         .password("0x00")
                         .build());
     }

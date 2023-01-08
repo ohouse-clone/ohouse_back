@@ -13,8 +13,8 @@ public class ProductDetailDto {
     private Long id;
     private Long itemId;
     private String productName;
-    private Integer price;
-    private Integer stock;
+    private Long price;
+    private Long stock;
     private Integer rateDiscount;
     private Long popular;
     private Long storePostId;

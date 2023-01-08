@@ -30,12 +30,12 @@ public class ProductUpdateRequestDto {
             value = "제품 가격",
             required = false
     )
-    private Integer price;
+    private Long price;
     @ApiModelProperty(
             value = "제품 수량",
             required = false
     )
-    private Integer stock;
+    private Long stock;
     @ApiModelProperty(
             value = "할인율",
             required = false
@@ -48,7 +48,7 @@ public class ProductUpdateRequestDto {
     private Long storePostId;
 
     @Builder
-    public ProductUpdateRequestDto(Long itemId, String productName, Integer price, Integer stock, Integer rateDiscount, Long storePostId) {
+    public ProductUpdateRequestDto(Long itemId, String productName, Long price, Long stock, Integer rateDiscount, Long storePostId) {
         this.itemId = itemId;
         this.productName = productName;
         this.price = price;

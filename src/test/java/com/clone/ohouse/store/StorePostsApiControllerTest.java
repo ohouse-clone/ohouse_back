@@ -165,9 +165,9 @@ class StorePostsApiControllerTest {
     void findByIdWithProduct() throws Exception{
         //given
         String url = "http://localhost:" + port + mappingUrl + "/productswith/";
-        Long saveProductId1 = productService.save(new ProductSaveRequestDto(null, "제품1", 1000, 100, 10, null));
-        Long saveProductId2 = productService.save(new ProductSaveRequestDto(null, "제품2", 2000, 200, 20, null));
-        Long saveProductId3 = productService.save(new ProductSaveRequestDto(null, "제품3", 3000, 300, 30, null));
+        Long saveProductId1 = productService.save(new ProductSaveRequestDto(null, "제품1", 1000L, 100L, 10, null));
+        Long saveProductId2 = productService.save(new ProductSaveRequestDto(null, "제품2", 2000L, 200L, 20, null));
+        Long saveProductId3 = productService.save(new ProductSaveRequestDto(null, "제품3", 3000L, 300L, 30, null));
         Long savePostId1 = boardService.save(new StorePostsSaveRequestDto("제목1", null, null, "jh1"));
         productService.updateWithStorePostId(new ProductStorePostIdUpdateRequestDto(savePostId1, new ArrayList<>(
                 List.of(saveProductId1, saveProductId2, saveProductId3)

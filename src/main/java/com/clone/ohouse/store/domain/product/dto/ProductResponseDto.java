@@ -13,8 +13,8 @@ import lombok.Getter;
 public class ProductResponseDto {
     private Long id;
     private String productName;
-    private Integer price;
-    private Integer stock;
+    private Long price;
+    private Long stock;
     private Integer rateDiscount;
 
     private Long itemId;

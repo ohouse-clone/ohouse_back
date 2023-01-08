@@ -18,12 +18,11 @@ public class StorePostsViewDto {
     private String title;
     private String previewImageUrl;
     private Long popular;
-    private Integer price;
+    private Long price;
     private Integer discountRate;
-
     private String brandName;
 
-    public StorePostsViewDto(StorePosts postEntity, Integer price, Integer discountRate, Long popular, String brandName) {
+    public StorePostsViewDto(StorePosts postEntity, Long price, Integer discountRate, Long popular, String brandName) {
         this.id = postEntity.getId();
         this.title = postEntity.getTitle();
         this.previewImageUrl = postEntity.getPreviewImageUrl();

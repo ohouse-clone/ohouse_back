@@ -1,5 +1,6 @@
 package com.clone.ohouse;
 
+import com.clone.ohouse.document.StoreApiDescription;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -13,7 +14,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 public class SwaggerConfig {
     @Bean
     public Docket apiShop(){
-        return new Docket(DocumentationType.OAS_30)
+        return new Docket(DocumentationType.SWAGGER_2)
                 .useDefaultResponseMessages(true)
                 .groupName("store")
                 .select()
@@ -24,7 +25,7 @@ public class SwaggerConfig {
     }
     @Bean
     public Docket apiCommunity(){
-        return new Docket(DocumentationType.OAS_30)
+        return new Docket(DocumentationType.SWAGGER_2)
                 .useDefaultResponseMessages(true)
                 .groupName("community")
                 .select()
@@ -36,7 +37,7 @@ public class SwaggerConfig {
     private ApiInfo apiShopInfo(){
         return new ApiInfoBuilder()
                 .title("swagger for ohouse clone project")
-                .description("store API")
+                .description(StoreApiDescription.description)
                 .version("0.20")
                 .build();
     }

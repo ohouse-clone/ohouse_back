@@ -75,4 +75,15 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom{
         em.flush();
         em.clear();
     }
+
+    @Override
+    public List<Product> findByIds(List<Long> ids) {
+        List<Product> fetch = queryFactory
+                .select(product)
+                .from(product)
+                .where(product.id.in(ids))
+                .fetch();
+
+        return fetch;
+    }
 }
