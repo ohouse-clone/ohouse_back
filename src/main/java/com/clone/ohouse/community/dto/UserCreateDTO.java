@@ -3,6 +3,8 @@ package com.clone.ohouse.community.dto;
 import com.clone.ohouse.community.entity.User;
 
 import lombok.*;
+import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -12,8 +14,10 @@ import javax.persistence.criteria.CriteriaBuilder;
 @Getter
 @Setter
 @ToString
-
-public class UserDto {
+@EqualsAndHashCode
+@Log
+@Slf4j
+public class UserCreateDTO {
     private Long id;
     private String email;
     private String password;
@@ -40,7 +44,7 @@ public class UserDto {
     }
 
     @Builder
-    public UserDto(Long id, String email, String password, String nickname, String phone, String birthday, Integer point) {
+    public UserCreateDTO(Long id, String email, String password, String nickname, String phone, String birthday, Integer point) {
 
         this.id = id;
         this.email = email;

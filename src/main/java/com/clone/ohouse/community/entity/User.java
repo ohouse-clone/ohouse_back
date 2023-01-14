@@ -4,6 +4,7 @@ import lombok.*;
 //import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,9 +33,10 @@ public class User {
     private Integer point;
     @Column(length = 1000)
     private String refreshToken;
-
+    @Column
+    private LocalDateTime regDate;
     @Builder
-    public User(Long id, String email, String password, String nickname, String phone, String birthday,String refreshToken,Integer point) {
+    public User(Long id, String email, String password, String nickname, String phone, String birthday,String refreshToken,Integer point,LocalDateTime regDate) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -43,6 +45,7 @@ public class User {
         this.birthday = birthday;
         this.refreshToken = refreshToken;
         this.point = point;
+        this.regDate = regDate;
     }
 
     public User(String email, String password){

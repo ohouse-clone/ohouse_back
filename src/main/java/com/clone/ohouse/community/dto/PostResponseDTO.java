@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 
-public class PostDto {
+public class PostResponseDTO {
     private Long id;
     private String title;
     private String content;
@@ -40,7 +40,7 @@ public class PostDto {
     }
 
     @Builder
-    public PostDto(Long id,String title, String content, String author, LocalDateTime createDate, Integer hit){
+    public PostResponseDTO(Long id, String title, String content, String author, LocalDateTime createDate, Integer hit){
         this.id = id;
         this.title = title;
         this.content = content;

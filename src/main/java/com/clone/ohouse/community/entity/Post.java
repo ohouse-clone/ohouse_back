@@ -1,15 +1,12 @@
 package com.clone.ohouse.community.entity;
 
-import com.clone.ohouse.community.dto.CommentDto;
-import com.clone.ohouse.community.dto.UserDto;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @NoArgsConstructor
+
 @Data
 @Getter
 @Setter
@@ -55,15 +52,10 @@ public class Post {
         this.modifiedDate = modifiedDate;
     }
 
-//    @Builder
-//    public Post(String title, String content, String author)
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-//
-//    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
-//    @OrderBy("id asc")
-//    private List<Comment> comments = new ArrayList<>();
 
     public void update(String title, String content) {
         this.title = title;

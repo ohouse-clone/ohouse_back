@@ -1,6 +1,6 @@
 package com.clone.ohouse.community.service;
 
-import com.clone.ohouse.community.dto.UserDto;
+import com.clone.ohouse.community.dto.UserModifyDTO;
 import com.clone.ohouse.community.entity.User;
 import com.clone.ohouse.community.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,30 +32,28 @@ public class UserService {
         Optional<User> user =  userRepository.findByEmail(email);
         return user;
     }
-    public Optional<User> findById(Long id){
-        Optional<User> user = userRepository.findById(id);
+    public User findById(Long id){
+        User user = userRepository.findOne(id);
         return user;
     }
 
-    public void deleteById(Long id){
-        userRepository.deleteById(id);
-
+    public boolean delete(Long id){
+        return userRepository.delete(id);
     }
 
-    public User save(User user){
+    public boolean save(User user){
 
-        userRepository.save(user);
-        return user;
+        return userRepository.store(user);
     }
 
-    public void update(Long id) {
-        Optional<User> user = userRepository.findById(id);
-        user.ifPresent(newUser->{
-                user.get().setEmail(newUser.getEmail());
-                user.get().setPassword(newUser.getPassword());
+    public boolean update(UserModifyDTO userModifyDTO, Long id) {
+        User user = userRepository.findOne(id);
+                user.setEmail(userModifyDTO.getEmail());
+                user.setPassword(userModifyDTO.getPassword());
+                user.setNickname(userModifyDTO.getNickname());
+                user.setPhone(userModifyDTO.getPhone());
 
-        });
-
+        return userRepository.store(user);
     }
 
 }
