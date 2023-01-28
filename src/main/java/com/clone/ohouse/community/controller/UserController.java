@@ -1,24 +1,22 @@
 package com.clone.ohouse.community.controller;
 
-import com.clone.ohouse.community.dto.UserCreateDTO;
-import com.clone.ohouse.community.dto.UserListResponseDTO;
-import com.clone.ohouse.community.dto.UserModifyDTO;
-import com.clone.ohouse.community.dto.UserResponseDTO;
+import com.clone.ohouse.community.dto.*;
 import com.clone.ohouse.community.entity.User;
-import com.clone.ohouse.community.repository.UserRepository;
 import com.clone.ohouse.community.service.UserService;
+import com.clone.ohouse.exception.DuplicatedEmailException;
+import com.clone.ohouse.exception.NoRegisteredArgumentsException;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 // 리소스 : 사용자 (User)
@@ -96,9 +94,9 @@ public class UserController {
     public ResponseEntity<?> getAllUser() {
         log.info("/users/api GET request");
         List<User> userList = userService.findAll();
-        List<UserResponseDTO> responseDTOList = userList.stream()
+        List<UserCreateResponseDTO> responseDTOList = userList.stream()
 
-                .map(UserResponseDTO::new)
+                .map(UserCreateResponseDTO::new)
                 .collect(Collectors.toList());
         UserListResponseDTO listResponseDTO = UserListResponseDTO.builder()
                 .count(responseDTOList.size())
@@ -117,7 +115,7 @@ public class UserController {
     public ResponseEntity<?> getOneUser(@ApiParam(value = "user id") @PathVariable Long id){
         log.info("/users/api/{} GET requests");
         User user = userService.findById(id);
-        UserResponseDTO dto = new UserResponseDTO(user);
+        UserCreateResponseDTO dto = new UserCreateResponseDTO(user);
         return ResponseEntity
                 .ok()
                 .body(dto);
@@ -126,5 +124,72 @@ public class UserController {
     public ResponseEntity<String> handleNoSuchElementFoundException(NoSuchElementException exception){
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
     }
+    // 회원가입 요청 처리
+    @PostMapping("/signup")
+    public ResponseEntity<?> signUp(
+            @Validated @RequestBody UserCreateDTO createDTO
+            , BindingResult result
+    ) {
+        log.info("/api/auth/signup POST! - {}", createDTO);
 
+        if (result.hasErrors()) {
+            log.warn(result.toString());
+            return ResponseEntity
+                    .badRequest()
+                    .body(result.toString());
+        }
+
+        try {
+            UserCreateResponseDTO responseDTO
+                    = userService.create(createDTO);
+            return ResponseEntity
+                    .ok()
+                    .body(responseDTO);
+        } catch (NoRegisteredArgumentsException e) {
+            // 예외 상황 2가지 (dto가 null인 문제, 이메일 중복문제)
+            log.warn("필수 가입 정보를 다시확인하세요.");
+            return ResponseEntity
+                    .badRequest()
+                    .body(e.getMessage());
+        } catch (DuplicatedEmailException e) {
+            log.warn("중복되었습니다. 다른 이메일을 작성해주세요.");
+            return ResponseEntity
+                    .badRequest()
+                    .body(e.getMessage());
+        }
+    }
+    // 이메일 중복확인 요청 처리
+    // GET : /api/auth/check?email=abc@bbb.com
+    @GetMapping("/check")
+    public ResponseEntity<?> checkEmail(String email) {
+        if (email == null || email.trim().equals("")) {
+            return ResponseEntity.badRequest().body("이메일을 전달해 주세요");
+        }
+        boolean flag = userService.isDuplicate(email);
+        log.info("{} 중복 여부?? - {}", email, flag);
+        return ResponseEntity.ok().body(flag);
+    }
+
+    // 로그인 요청 처리
+    @PostMapping("/signin")
+    public ResponseEntity<?> signIn(
+            @Validated @RequestBody LoginRequestDTO requestDTO) {
+
+        try {
+            LoginResponseDTO userInfo = userService.getByCredentials(
+                    requestDTO.getEmail(),
+                    requestDTO.getPassword()
+            );
+            return ResponseEntity
+                    .ok()
+                    .body(userInfo);
+        } catch (RuntimeException e) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(LoginResponseDTO.builder()
+                            .message(e.getMessage())
+                            .build()
+                    );
+        }
+    }
 }

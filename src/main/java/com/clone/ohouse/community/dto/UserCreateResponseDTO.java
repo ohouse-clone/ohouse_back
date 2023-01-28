@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @EqualsAndHashCode
 @Builder
-public class UserResponseDTO {
+public class UserCreateResponseDTO {
     private Long id;
     private String email;
     private String password;
@@ -20,7 +20,7 @@ public class UserResponseDTO {
     @JsonFormat(pattern = "yyyy/MM/dd")
     private LocalDateTime regDate;
 
-    public UserResponseDTO(User user){
+    public UserCreateResponseDTO(User user){
         this.id = user.getId();
         this.email = user.getEmail();
         this.password = user.getPassword();

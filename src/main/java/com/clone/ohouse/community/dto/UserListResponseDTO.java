@@ -11,5 +11,5 @@ import java.util.List;
 public class UserListResponseDTO {
 
     private Integer count;
-    private List<UserResponseDTO> users;
+    private List<UserCreateResponseDTO> users;
 }

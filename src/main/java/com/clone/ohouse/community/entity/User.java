@@ -1,6 +1,8 @@
 package com.clone.ohouse.community.entity;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GenericGenerator;
 //import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
@@ -17,6 +19,7 @@ import java.util.List;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GenericGenerator(name = "system-uuid", strategy = "uuid")
     @Column(name = "user_id")
     Long id;
     @Column(nullable = false, length = 100, unique = true)
@@ -34,6 +37,7 @@ public class User {
     @Column(length = 1000)
     private String refreshToken;
     @Column
+    @CreationTimestamp
     private LocalDateTime regDate;
     @Builder
     public User(Long id, String email, String password, String nickname, String phone, String birthday,String refreshToken,Integer point,LocalDateTime regDate) {

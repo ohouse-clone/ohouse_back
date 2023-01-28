@@ -56,6 +56,11 @@ dependencies {
 	
 	//scribejava
 	implementation group: 'com.github.scribejava', name: 'scribejava-apis', version: '8.3.3'
+	
+	// json web token 라이브러리
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+	implementation 'io.jsonwebtoken:jjwt-impl:0.11.2'
+	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
 
 }
 

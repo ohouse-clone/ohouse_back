@@ -17,6 +17,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 @EqualsAndHashCode
 @Log
 @Slf4j
+@Builder
 public class UserCreateDTO {
     private Long id;
     private String email;
@@ -38,20 +39,5 @@ public class UserCreateDTO {
                 .build();
         return user;
     }
-//암호화
-    public void encryptPassword(String BCryptpassword){
-        this.password = BCryptpassword;
-    }
 
-    @Builder
-    public UserCreateDTO(Long id, String email, String password, String nickname, String phone, String birthday, Integer point) {
-
-        this.id = id;
-        this.email = email;
-        this.password = (new BCryptPasswordEncoder().encode(password));
-        this.nickname = nickname;
-        this.phone = phone;
-        this.birthday = birthday;
-        this.point = point;
-    }
 }
