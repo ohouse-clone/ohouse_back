@@ -2,7 +2,7 @@ package com.clone.ohouse.store.domain.item.table;
 
 public enum DeskColor {
     WHITE("WHITE"),
-    BLACK("BLAKC"),
+    BLACK("BLACK"),
     ETC("ETC")
 
 
