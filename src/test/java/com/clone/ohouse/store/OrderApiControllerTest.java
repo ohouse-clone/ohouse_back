@@ -11,6 +11,8 @@ import com.clone.ohouse.store.domain.payment.PaymentRepository;
 import com.clone.ohouse.store.domain.payment.PaymentType;
 import com.clone.ohouse.store.domain.product.Product;
 import com.clone.ohouse.store.domain.product.ProductRepository;
+import com.clone.ohouse.store.domain.storeposts.StorePosts;
+import com.clone.ohouse.store.domain.storeposts.StorePostsRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
@@ -63,6 +65,8 @@ public class OrderApiControllerTest {
     UserRepository userRepository;
     @Autowired
     PaymentService paymentService;
+    @Autowired
+    StorePostsRepository storePostsRepository;
 
 
     User savedUser = null;
@@ -76,6 +80,9 @@ public class OrderApiControllerTest {
     Product savedProduct8 = null;
     Product savedProduct9 = null;
 
+    StorePosts savedStorePost1 = null;
+    StorePosts savedStorePost2 = null;
+
     @Transactional
     @BeforeEach
     void setup() {
@@ -88,16 +95,22 @@ public class OrderApiControllerTest {
                 .email("tester_1@cloneohouse.shop")
                 .build());
 
+        //Setup StorePost
+        StorePosts post1 = StorePosts.builder().title("게시글제목1").author("jjh").build();
+        StorePosts post2 = StorePosts.builder().title("게시글제목2").author("jjh").build();
+        savedStorePost1 = storePostsRepository.save(post1);
+        savedStorePost2 = storePostsRepository.save(post2);
+
         //Setup Product
-        Product product1 = Product.builder().productName("p1").price(1100L).stock(110L).rateDiscount(10).build();
-        Product product2 = Product.builder().productName("p2").price(1200L).stock(120L).rateDiscount(10).build();
-        Product product3 = Product.builder().productName("p3").price(1300L).stock(130L).rateDiscount(10).build();
-        Product product4 = Product.builder().productName("p4").price(1400L).stock(140L).rateDiscount(10).build();
-        Product product5 = Product.builder().productName("p5").price(1500L).stock(150L).rateDiscount(10).build();
-        Product product6 = Product.builder().productName("p6").price(1600L).stock(160L).rateDiscount(10).build();
-        Product product7 = Product.builder().productName("p7").price(1700L).stock(170L).rateDiscount(10).build();
-        Product product8 = Product.builder().productName("p8").price(1800L).stock(180L).rateDiscount(10).build();
-        Product product9 = Product.builder().productName("p9").price(1900L).stock(190L).rateDiscount(10).build();
+        Product product1 = Product.builder().productName("p1").price(1100L).stock(110L).rateDiscount(10).storePosts(savedStorePost1).build();
+        Product product2 = Product.builder().productName("p2").price(1200L).stock(120L).rateDiscount(10).storePosts(savedStorePost1).build();
+        Product product3 = Product.builder().productName("p3").price(1300L).stock(130L).rateDiscount(10).storePosts(savedStorePost1).build();
+        Product product4 = Product.builder().productName("p4").price(1400L).stock(140L).rateDiscount(10).storePosts(savedStorePost1).build();
+        Product product5 = Product.builder().productName("p5").price(1500L).stock(150L).rateDiscount(10).storePosts(savedStorePost1).build();
+        Product product6 = Product.builder().productName("p6").price(1600L).stock(160L).rateDiscount(10).storePosts(savedStorePost1).build();
+        Product product7 = Product.builder().productName("p7").price(1700L).stock(170L).rateDiscount(10).storePosts(savedStorePost1).build();
+        Product product8 = Product.builder().productName("p8").price(1800L).stock(180L).rateDiscount(10).storePosts(savedStorePost1).build();
+        Product product9 = Product.builder().productName("p9").price(1900L).stock(190L).rateDiscount(10).storePosts(savedStorePost1).build();
         savedProduct1 = productRepository.save(product1);
         savedProduct2 = productRepository.save(product2);
         savedProduct3 = productRepository.save(product3);
@@ -107,6 +120,8 @@ public class OrderApiControllerTest {
         savedProduct7 = productRepository.save(product7);
         savedProduct8 = productRepository.save(product8);
         savedProduct9 = productRepository.save(product9);
+
+
     }
     @AfterEach
     void clean() {
@@ -140,7 +155,7 @@ public class OrderApiControllerTest {
                 orderedProductDto4,
                 orderedProductDto5,
                 orderedProductDto6));
-        OrderRequestDto orderRequestDto = new OrderRequestDto(PaymentType.CARD, null,"티셔츠 외 1건", orderedProductList);
+        OrderRequestDto orderRequestDto = new OrderRequestDto(PaymentType.CARD, savedStorePost1.getId(),"티셔츠 외 1건", orderedProductList);
         DeliveryDto deliveryDto = new DeliveryDto("sender1", "receiver1", "200", "내집", "경기도", "서울시", "010-0000-0000", "빨리와주세요");
         StartOrderRequestDto startOrderRequestDto = new StartOrderRequestDto(orderRequestDto, deliveryDto);
 
