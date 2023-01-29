@@ -3,6 +3,7 @@ package com.clone.ohouse.community.domain.cardcollections;
 import com.clone.ohouse.account.domain.user.User;
 import com.clone.ohouse.community.domain.Post;
 import com.clone.ohouse.community.domain.PostType;
+import com.clone.ohouse.community.domain.comment.Comment;
 import com.clone.ohouse.utility.auditingtime.BaseTimeEntity;
 import lombok.*;
 
@@ -36,6 +37,9 @@ public class Card extends Post {
 
     @OneToMany(mappedBy = "card")
     private List<CardContent> cardContents = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post")
+    private List<Comment> comments = new ArrayList<>();
 
     public Card(PostType postType, HousingType housingType, HouseStyle houseStyle, Color color, User user) {
         super(postType);

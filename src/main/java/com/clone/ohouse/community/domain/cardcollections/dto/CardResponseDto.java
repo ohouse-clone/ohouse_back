@@ -3,6 +3,7 @@ package com.clone.ohouse.community.domain.cardcollections.dto;
 import com.clone.ohouse.community.domain.cardcollections.Color;
 import com.clone.ohouse.community.domain.cardcollections.HouseStyle;
 import com.clone.ohouse.community.domain.cardcollections.HousingType;
+import com.clone.ohouse.community.domain.comment.dto.CommentResponseDto;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,7 +28,9 @@ public class CardResponseDto {
     private LocalDateTime createDate;
     private LocalDateTime modifiedDate;
 
-    public CardResponseDto(Long id, Long hit, HousingType housingType, HouseStyle houseStyle, Color color, LocalDateTime createDate, LocalDateTime modifiedDate) {
+    private List<CommentResponseDto> comments = new ArrayList<>();
+
+    public CardResponseDto(Long id, Long hit, HousingType housingType, HouseStyle houseStyle, Color color, LocalDateTime createDate, LocalDateTime modifiedDate, List<CommentResponseDto> comments) {
         this.id = id;
         this.hit = hit;
         this.housingType = housingType;
@@ -35,6 +38,7 @@ public class CardResponseDto {
         this.color = color;
         this.createDate = createDate;
         this.modifiedDate = modifiedDate;
+        this.comments = comments;
     }
 
     public void setContentList(List<CardContentResponseDto> contentList) {
