@@ -8,6 +8,7 @@ import lombok.*;
 
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @Getter
@@ -21,10 +22,10 @@ public class Comment {
     @Column(nullable = false, length = 180)
     private String content;
     @Column
-    private boolean isDeleted = false;
-
-    @Column
     private Long likeNumber = 0L;
+
+    @Column (nullable = false)
+    private LocalDateTime createTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -34,10 +35,14 @@ public class Comment {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    public Comment(String content, Long likeNumber, User user, Post post) {
+    public Comment(String content, User user, Post post) {
         this.content = content;
-        this.likeNumber = likeNumber;
         this.user = user;
         this.post = post;
+        this.createTime = LocalDateTime.now();
+    }
+
+    public void like(Long number){
+        likeNumber += number;
     }
 }
