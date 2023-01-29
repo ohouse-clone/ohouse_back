@@ -1,46 +1,101 @@
 package com.clone.ohouse.community.domain;
 
+import com.clone.ohouse.account.auth.SessionUser;
+import com.clone.ohouse.account.domain.user.User;
+import com.clone.ohouse.account.domain.user.UserRepository;
+import com.clone.ohouse.community.domain.cardcollections.Card;
+import com.clone.ohouse.community.domain.cardcollections.CardRepository;
 import com.clone.ohouse.community.domain.comment.Comment;
 import com.clone.ohouse.community.domain.comment.CommentRepository;
+import com.clone.ohouse.community.domain.comment.dto.CommentListResponseDto;
+import com.clone.ohouse.community.domain.comment.dto.CommentResponseDto;
+import com.clone.ohouse.community.domain.comment.dto.CommentSaveDto;
+import com.clone.ohouse.error.comment.CommentError;
+import com.clone.ohouse.error.comment.CommentFailException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 @Transactional
-
 public class CommentService {
-    @Autowired
     private final CommentRepository commentRepository;
+    private final UserRepository userRepository;
+    private final CardRepository cardRepository;
 
-    public List<Comment> findAll() {
-        List<Comment> comments = new ArrayList<>();
-        commentRepository.findAll().forEach(s -> comments.add(s));
-        return comments;
+    public Long save(SessionUser sessionUser, CommentSaveDto saveDto) throws Exception {
+        //find user
+        User user = userRepository.findByEmail(sessionUser.getEmail()).orElseThrow(() -> new CommentFailException("찾으려는 user 없음, email : " + sessionUser.getEmail(), CommentError.WRONG_USER_ID));
+        //find post
+        Card card = cardRepository.findById(saveDto.getPostId()).orElseThrow(() -> new CommentFailException("card id가 잘못됨 ; " + saveDto.getPostId(), CommentError.WRONG_POST_ID));
+
+        return commentRepository.save(
+                new Comment(
+                        saveDto.getContent(),
+                        user,
+                        card)).getId();
     }
 
-    public Optional<Comment> findById(Long id) {
-        Optional<Comment> comment = commentRepository.findById(id);
-        return comment;
+    public void delete(Long commentId) throws Exception{
+        //find comment
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new CommentFailException("찾으려는 comment 가 없음,comment id : " + commentId, CommentError.WRONG_COMMENT_ID));
+
+        commentRepository.delete(comment);
     }
 
-    public void deleteById(Long id) {
-        commentRepository.deleteById(id);
+    public CommentResponseDto findByCommentId(Long commentId) throws Exception{
+        Comment comment = commentRepository.findByCommentId(commentId).orElseThrow(() -> new CommentFailException("찾으려는 comment 가 없음,comment id : " + commentId, CommentError.WRONG_COMMENT_ID));
+
+        return new CommentResponseDto(
+                comment.getId(),
+                comment.getPost().getId(),
+                comment.getContent(),
+                comment.getCreateTime().toString(),
+                comment.getUser().getNickname(),
+                comment.getLikeNumber());
     }
 
-//    public void updateComment(Long id) {
-//        Optional<Comment> comment = commentRepository.findById(id);
-//        comment.ifPresent(newComment -> {
-//            comment.get().setCommentAuthor(newComment.getCommentAuthor());
-//            comment.get().setCommentTitle(newComment.getCommentTitle());
-//            comment.get().setCommentContent(newComment.getCommentContent());
-//            comment.get().setId(newComment.getId());
-//        });
-//    }
+    public CommentListResponseDto findBundleByPostId(Long postId) {
+        List<Comment> comments = commentRepository.findByPostId(postId);
+
+        ArrayList<CommentResponseDto> collect = comments.stream()
+                .map((t) -> new CommentResponseDto(
+                        t.getId(),
+                        t.getPost().getId(),
+                        t.getContent(),
+                        t.getCreateTime().toString(),
+                        t.getUser().getNickname(),
+                        t.getLikeNumber()))
+                .collect(Collectors.toCollection(ArrayList<CommentResponseDto>::new));
+
+        return new CommentListResponseDto(Long.valueOf(collect.size()), collect);
+    }
+    public CommentListResponseDto findBundleByUserId(SessionUser sessionUser) throws Exception{
+        //find user
+        User user = userRepository.findByEmail(sessionUser.getEmail()).orElseThrow(() -> new CommentFailException("찾으려는 user 없음, email : " + sessionUser.getEmail(), CommentError.WRONG_USER_ID));
+
+        List<Comment> comments = commentRepository.findByUserId(user.getId());
+
+        ArrayList<CommentResponseDto> collect = comments.stream()
+                .map((t) -> new CommentResponseDto(
+                        t.getId(),
+                        t.getPost().getId(),
+                        t.getContent(),
+                        t.getCreateTime().toString(),
+                        t.getUser().getNickname(),
+                        t.getLikeNumber()))
+                .collect(Collectors.toCollection(ArrayList<CommentResponseDto>::new));
+        return new CommentListResponseDto(Long.valueOf(collect.size()), collect);
+    }
+
+    public void actLike(Long commentId) throws Exception{
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new CommentFailException("찾으려는 comment 가 없음,comment id : " + commentId, CommentError.WRONG_COMMENT_ID));
+        
+        comment.like(1L);
+    }
 }

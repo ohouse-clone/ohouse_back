@@ -5,6 +5,8 @@ import com.clone.ohouse.account.domain.user.User;
 import com.clone.ohouse.account.domain.user.UserRepository;
 import com.clone.ohouse.community.domain.cardcollections.*;
 import com.clone.ohouse.community.domain.cardcollections.dto.*;
+import com.clone.ohouse.community.domain.comment.CommentRepository;
+import com.clone.ohouse.community.domain.comment.dto.CommentResponseDto;
 import com.clone.ohouse.utility.s3.LocalFileService;
 import com.clone.ohouse.utility.s3.S3File;
 import com.clone.ohouse.utility.s3.S3Service;
@@ -32,6 +34,8 @@ public class CardService {
     private final UserRepository userRepository;
     private final S3Service s3Service;
     private final LocalFileService localFileService;
+
+    private final CommentRepository commentRepository;
 
     public Long save(
             CardSaveRequestHeaderDto headerDto,
@@ -152,7 +156,17 @@ public class CardService {
     public CardResponseDto findById(Long id) {
         Card card = cardRepository.findByIdWithContent(id).orElseThrow(() -> new NoSuchElementException("Fail to find, Nothing with id = " + id));
 
+
         card.addHit();
+        ArrayList<CommentResponseDto> commentLst = commentRepository.findByPostId(card.getId()).stream()
+                .map(t -> new CommentResponseDto(
+                        t.getId(),
+                        t.getPost().getId(),
+                        t.getContent(),
+                        t.getCreateTime().toString(),
+                        t.getUser().getNickname(),
+                        t.getLikeNumber()))
+                .collect(Collectors.toCollection(ArrayList<CommentResponseDto>::new));
 
         //TODO: Comment 추가되면, Response에도 추가되어야함
         CardResponseDto response = new CardResponseDto(
@@ -162,7 +176,9 @@ public class CardService {
                 card.getHouseStyle(),
                 card.getColor(),
                 card.getCreatedDate(),
-                card.getModifiedDate());
+                card.getModifiedDate(),
+                commentLst
+                );
         response.setContentList(card.getCardContents()
                 .stream().map((entity) -> new CardContentResponseDto(entity.getContent(), entity.getCardMediaFile().getS3Url()))
                 .collect(Collectors.toCollection(ArrayList<CardContentResponseDto>::new)));

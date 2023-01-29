@@ -3,8 +3,8 @@ package com.clone.ohouse.store.domain.order;
 import com.clone.ohouse.account.domain.user.User;
 import com.clone.ohouse.store.domain.payment.Payment;
 import com.clone.ohouse.store.domain.storeposts.StorePosts;
-import com.clone.ohouse.store.error.order.OrderError;
-import com.clone.ohouse.store.error.order.OrderFailException;
+import com.clone.ohouse.error.order.OrderError;
+import com.clone.ohouse.error.order.OrderFailException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

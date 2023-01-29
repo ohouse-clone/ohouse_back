@@ -1,4 +1,4 @@
-package com.clone.ohouse.store.error.order;
+package com.clone.ohouse.error.order;
 
 public class PaymentFailException extends RuntimeException{
     private final PaymentError paymentError;

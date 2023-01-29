@@ -1,9 +1,7 @@
-package com.clone.ohouse.store.error;
+package com.clone.ohouse.error;
 
-import com.clone.ohouse.store.error.order.OrderError;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
