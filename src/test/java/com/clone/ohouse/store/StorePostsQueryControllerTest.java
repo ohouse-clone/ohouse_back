@@ -142,9 +142,51 @@ class StorePostsQueryControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.totalNum").value(1))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.postsNum").value(1))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.previewPosts[0].title").value("제목10"));
-
     }
 
+    @Test
+    void getBundleView4() throws Exception {
+        //given
+        String url = "http://localhost:" + port + mappingUrl + "/";
+        String category = "30_41_31";
+
+        //when
+        ResultActions perform = mvc.perform(MockMvcRequestBuilders.get(url)
+                .queryParam("category", category)
+                .queryParam("recommendnumber", "P2")
+                .queryParam("page", "0")
+                .queryParam("size", "4"));
+
+        //then
+        perform
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.totalNum").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.postsNum").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.previewPosts[0].title").value("제목15"));
+    }
+    @Test
+    void getBundleView5() throws Exception {
+        //given
+        String url = "http://localhost:" + port + mappingUrl + "/";
+        String category = "30_41_31";
+
+        //when
+        ResultActions perform = mvc.perform(MockMvcRequestBuilders.get(url)
+                .queryParam("category", category)
+                .queryParam("recommendnumber", "P2", "P1")
+                .queryParam("page", "0")
+                .queryParam("size", "4"));
+
+        //then
+        perform
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.totalNum").value(2))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.postsNum").value(2))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.previewPosts[0].title").value("제목15"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.previewPosts[1].title").value("제목16"));
+    }
 
     private void saveData() throws Exception{
         Category c1 = new Category("가구",20L);
