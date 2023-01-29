@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -55,7 +56,7 @@ public class CommentService {
                 comment.getId(),
                 comment.getPost().getId(),
                 comment.getContent(),
-                comment.getCreateTime().toString(),
+                comment.getCreateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
                 comment.getUser().getNickname(),
                 comment.getLikeNumber());
     }
@@ -68,7 +69,7 @@ public class CommentService {
                         t.getId(),
                         t.getPost().getId(),
                         t.getContent(),
-                        t.getCreateTime().toString(),
+                        t.getCreateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
                         t.getUser().getNickname(),
                         t.getLikeNumber()))
                 .collect(Collectors.toCollection(ArrayList<CommentResponseDto>::new));
@@ -86,7 +87,7 @@ public class CommentService {
                         t.getId(),
                         t.getPost().getId(),
                         t.getContent(),
-                        t.getCreateTime().toString(),
+                        t.getCreateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
                         t.getUser().getNickname(),
                         t.getLikeNumber()))
                 .collect(Collectors.toCollection(ArrayList<CommentResponseDto>::new));

@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -163,7 +164,7 @@ public class CardService {
                         t.getId(),
                         t.getPost().getId(),
                         t.getContent(),
-                        t.getCreateTime().toString(),
+                        t.getCreateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
                         t.getUser().getNickname(),
                         t.getLikeNumber()))
                 .collect(Collectors.toCollection(ArrayList<CommentResponseDto>::new));
