@@ -10,10 +10,6 @@ import com.clone.ohouse.community.domain.comment.CommentRepository;
 import com.clone.ohouse.community.domain.comment.dto.CommentListResponseDto;
 import com.clone.ohouse.community.domain.comment.dto.CommentResponseDto;
 import com.clone.ohouse.community.domain.comment.dto.CommentSaveDto;
-import com.clone.ohouse.error.comment.CommentError;
-import com.clone.ohouse.error.comment.CommentFailException;
-import com.clone.ohouse.store.domain.storeposts.StorePosts;
-import com.clone.ohouse.store.domain.storeposts.StorePostsRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +20,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.transaction.Transactional;
-import java.util.NoSuchElementException;
 
 @Transactional
 @ExtendWith(SpringExtension.class)
