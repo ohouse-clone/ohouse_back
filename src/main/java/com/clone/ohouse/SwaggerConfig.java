@@ -1,5 +1,6 @@
 package com.clone.ohouse;
 
+import com.clone.ohouse.document.CommunityApiDescription;
 import com.clone.ohouse.document.StoreApiDescription;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,19 +37,17 @@ public class SwaggerConfig {
     }
     private ApiInfo apiShopInfo(){
         return new ApiInfoBuilder()
-                .title("swagger for ohouse clone project")
+                .title("Store API")
                 .description(StoreApiDescription.description)
-                .version("0.20")
+                .version("1.0")
                 .build();
     }
 
     private ApiInfo apiCommunityInfo(){
         return new ApiInfoBuilder()
-                .title("swagger for ohouse clone project")
-                .description("community API <br>" +
-                        "커뮤니티 - 사진 API <br>" +
-                        "사진, 사진 게시글, card 는 모두 같은 의미이며 이 문서에서 혼용될 수 있습니다.")
-                .version("0.10")
+                .title("Community API")
+                .description(CommunityApiDescription.description)
+                .version("1.0")
                 .build();
     }
 }
