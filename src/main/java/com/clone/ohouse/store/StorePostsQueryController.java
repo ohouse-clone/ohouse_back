@@ -7,7 +7,9 @@ import com.clone.ohouse.store.domain.category.CategoryRepository;
 import com.clone.ohouse.store.domain.category.CategorySearch;
 import com.clone.ohouse.store.domain.item.ItemSearchCondition;
 import com.clone.ohouse.store.domain.item.bed.*;
+import com.clone.ohouse.store.domain.item.digital.*;
 import com.clone.ohouse.store.domain.item.itemselector.ItemSelector;
+import com.clone.ohouse.store.domain.item.table.*;
 import com.clone.ohouse.store.domain.storeposts.dto.BundleVIewDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -63,10 +65,15 @@ public class StorePostsQueryController {
         if(category == null){
             return null;
         }
-        Optional<Class> type = new ItemSelector().selectTypeFrom(category.getName());
-        Class classType = type.orElse(null);
+        ItemSearchCondition condition = getItemSearchCondition(paramMap, category);
+        return storePostsQueryService.getBundleViewV3(categorySearch, pageable, condition);
+    }
+
+    private ItemSearchCondition getItemSearchCondition(MultiValueMap<String, Object> paramMap, Category category) throws Exception {
+        Class type =  new ItemSelector().selectTypeFrom(category.getName()).orElse(null);
         ItemSearchCondition condition = null;
-        if(classType == Bed.class){
+
+        if(type == Bed.class){
             condition = new BedSearchCondition();
             if(paramMap.containsKey("bedcolor")){
                 ArrayList<BedColor> bedColors = paramMap.get("bedcolor").stream().map(t -> BedColor.valueOf((String)t)).distinct().collect(Collectors.toCollection(ArrayList<BedColor>::new));
@@ -77,19 +84,58 @@ public class StorePostsQueryController {
                 ArrayList<BedSize> bedSizes = paramMap.get("bedsize").stream().map(t -> BedSize.valueOf((String) t)).distinct().collect(Collectors.toCollection(ArrayList<BedSize>::new));
                 for(int l = 0; l < bedSizes.size(); ++l) ((BedSearchCondition) condition).bedSize[l] = bedSizes.get(l);
             }
-
         }
-        else if(classType == StorageBed.class){
+        else if(type == StorageBed.class){
             condition = new StorageBedCondition();
             if(paramMap.containsKey("material")){
                 ArrayList<Material> materials = paramMap.get("material").stream().map(t -> Material.valueOf((String) t)).distinct().collect(Collectors.toCollection(ArrayList<Material>::new));
                 for(int l = 0; l < materials.size(); ++l) ((StorageBedCondition) condition).material[l] = materials.get(l);
             }
         }
+        else if(type == Desk.class){
+            condition = new DeskSearchCondition();
+            DeskSearchCondition newCon = (DeskSearchCondition)condition;
+            if(paramMap.containsKey("deskcolor")){
+                newCon.deskColors = paramMap.get("deskcolor").stream().map(t -> DeskColor.valueOf((String) t)).distinct().collect(Collectors.toCollection(ArrayList<DeskColor>::new));
+            }
+            if(paramMap.containsKey("framematerial")){
+                newCon.frameMaterials = paramMap.get("framematerial").stream().map(t -> FrameMaterial.valueOf((String) t)).distinct().collect(Collectors.toCollection(ArrayList<FrameMaterial>::new));
+            }
+            if(paramMap.containsKey("usagetype")){
+                newCon.usageTypes = paramMap.get("usagetype").stream().map(t -> UsageType.valueOf((String) t)).distinct().collect(Collectors.toCollection(ArrayList<UsageType>::new));
+            }
+        }
+        else if(type == DiningTable.class){
+            condition = new DiningTableSearchCondition();
+            DiningTableSearchCondition newCon = (DiningTableSearchCondition)condition;
+            if(paramMap.containsKey("tableshape")){
+                newCon.diningTableShapes = paramMap.get("tableshape").stream().map(t -> DiningTableShape.valueOf((String) t)).distinct().collect(Collectors.toCollection(ArrayList<DiningTableShape>::new));
+            }
+            if(paramMap.containsKey("framematerial")){
+                newCon.frameMaterials = paramMap.get("framematerial").stream().map(t -> FrameMaterial.valueOf((String) t)).distinct().collect(Collectors.toCollection(ArrayList<FrameMaterial>::new));
+            }
+            if(paramMap.containsKey("numberofuser")){
+                newCon.numberOfUsers = paramMap.get("numberofuser").stream().map(t -> NumberOfUsers.valueOf((String) t)).distinct().collect(Collectors.toCollection(ArrayList<NumberOfUsers>::new));
+            }
+        }
+        else if(type == Refrigerator.class){
+            condition = new RefrigeratorSearchCondition();
+            RefrigeratorSearchCondition newCon = (RefrigeratorSearchCondition)condition;
+            if(paramMap.containsKey("capacity")) {
+                newCon.refrigeratorCapacities = paramMap.get("capacity").stream().map(t -> RefrigeratorCapacity.valueOf((String) t)).distinct().collect(Collectors.toCollection(ArrayList<RefrigeratorCapacity>::new));
+            }
+        }
+        else if(type == WashingMachine.class){
+            condition = new WashingMachineSearchCondition();
+            WashingMachineSearchCondition newCon = (WashingMachineSearchCondition) condition;
+            if(paramMap.containsKey("recommendnumber")){
+                newCon.recommendNumbers = paramMap.get("recommendnumber").stream().map(t -> RecommendNumber.valueOf((String) t)).distinct().collect(Collectors.toCollection(ArrayList<RecommendNumber>::new));
+            }
+        }
         else {
             condition = new ItemSearchCondition();
         }
-        return storePostsQueryService.getBundleViewV3(categorySearch, pageable, condition);
+        return condition;
     }
 
 }
