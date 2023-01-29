@@ -39,7 +39,7 @@ public class CommentApiController {
         }
 
         try {
-            return new ResponseEntity(commentService.save(sessionUser, commentSaveDto), HttpStatus.OK);
+            return new ResponseEntity(commentService.save(sessionUser, commentSaveDto), HttpStatus.CREATED);
         }
         catch(CommentFailException e){
             log.info(e.getMessage());
@@ -56,7 +56,7 @@ public class CommentApiController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{commentId}")
     public HttpEntity findById(
             @PathVariable Long commentId) throws Exception {
         try {
@@ -70,7 +70,7 @@ public class CommentApiController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/bundle")
     public HttpEntity findBundleById(
             @RequestParam(required = false) Long postId
     ) throws Exception{
@@ -106,6 +106,18 @@ public class CommentApiController {
     public HttpEntity ActLike(
             @RequestParam Long commentId
     ) throws Exception {
+        //TODO: Temporary users, 추후 삭제 예정
+        SessionUser sessionUser = null;
+        if (sessionUser == null) {
+            sessionUser = new SessionUser(User.builder()
+                    .name("TESTER_1")
+                    .nickname("TSR_1")
+                    .phone("010-0000-0000")
+                    .password("1234")
+                    .email("tester_1@cloneohouse.shop")
+                    .build());
+        }
+
         try {
             commentService.actLike(commentId);
 
