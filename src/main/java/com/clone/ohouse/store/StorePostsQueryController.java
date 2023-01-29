@@ -38,16 +38,24 @@ public class StorePostsQueryController {
     @ApiOperation(
             value = "CategoryTab 게시글 조회",
             notes = "검색 조건과 함께 조회합니다. 검색 조건은 QueryParameter입니다.<br>" +
-                    "사용할 수 있는 검색 조건은 다음과 같습니다<br> + " +
+                    "1번과 2번은 검색을 위한 예제입니다. <br>" +
                     "1.필수조건<br>" +
                     "- category code XX_XX_XX_XX<br>" +
-                    "2.충분조건 (이 조건은 카테고리 코드가 오직 4개일 때만 사용 가능합니다)<br>" +
+                    "2.충분조건 <br>" +
                     "- category code == 20_22_20_20 일 경우, bedcolor, bedsize<br>" +
                     "- category code == 20_22_20_21 일 경우, material<br>" +
-                    "<br>" +
-                    "    bedcolor는 String이며 다음 중 하나입니다. RED, BLUE, WHITE<br>" +
-                    "    bedsize는 String이며 다음 중 하나입니다. MS, S, SS, D, Q, K, LK, CK<br>" +
-                    "    material는 String이며 다음 중 하나입니다. WOOD, STEEL, FAKE_LEATHER, FAKE_WOOD<br>" +
+                    "<br><br>" +
+                    "같은 복수개로 사용하는 것을 허락합니다. 예를 들어 bedcolor=RED & bedcolor=BLUE 식으로 계속 이어 쓸 수 있습니다. <br>" +
+                    "사용할 수 있는 검색 조건은 아래와 같습니다<br><br>" +
+                    "category : 이름 : 사용 가능 조건 순입니다.<br>" +
+                    "-    20_22_20_20 : 가구-침대-침대프레임-일반침대 : bedcolor(RED, BLUE, WHITE), bedsize(MS, S, SS, D, Q, K, LK, CK) <br>" +
+                    "-    20_22_20_21 : 가구-침대-침대프레임-수납침대 : material(WOOD, STEEL, FAKE_LEATHER, FAKE_WOOD),  <br>" +
+                    "-    20_35_25_25 : 가구-테이블-책상-일반책상 : deskcolor(BLACK, WHITE, ETC), framematerial(WOOD, GLASS, PLASTIC), usagetype(SITTING, NORMAL, STANDING) <br>" +
+                    "-    20_35_26_26 : 가구-테이블-식탁-식탁 : tableshape(SQUARE, RECTANGLE, CIRCLE, ELLIPSE), framematerial(WOOD, GLASS, PLASTIC), numberofuser(P1, P2, P3) <br>" +
+                    "-    30_40_30 : 디지털-냉장고-일반냉장고 : capacity( LESS_S50L, S51L_S100L, S101L_MORE) <br>" +
+                    "-    30_41_31 : 디지털-세탁기-일반세탁기  : recommendnumber(P1, P2, P3_MORE)  <br>" +
+                    "<br><br>" +
+                    "더 자세한 정보는 https://github.com/ohouse-clone/ohouse_back/blob/develop/src/main/java/com/clone/ohouse/store/category.txt 를 참조하세요. 한글명칭과 함께 기재했습니다. <br>" +
             "Response : BundleViewDto",
             code = 200)
     @ApiResponse(code = 500, message = "server error")
