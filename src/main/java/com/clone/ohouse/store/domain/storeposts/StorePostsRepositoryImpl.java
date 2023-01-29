@@ -2,10 +2,7 @@ package com.clone.ohouse.store.domain.storeposts;
 
 import com.clone.ohouse.store.domain.item.ItemSearchCondition;
 import com.clone.ohouse.store.domain.item.bed.*;
-import com.clone.ohouse.store.domain.item.digital.Refrigerator;
-import com.clone.ohouse.store.domain.item.digital.RefrigeratorSearchCondition;
-import com.clone.ohouse.store.domain.item.digital.WashingMachine;
-import com.clone.ohouse.store.domain.item.digital.WashingMachineSearchCondition;
+import com.clone.ohouse.store.domain.item.digital.*;
 import com.clone.ohouse.store.domain.item.table.*;
 import com.clone.ohouse.store.domain.product.Product;
 import com.clone.ohouse.store.domain.storeposts.dto.StorePostsViewDto;
@@ -29,9 +26,13 @@ import static com.clone.ohouse.store.domain.category.QItemCategory.itemCategory;
 import static com.clone.ohouse.store.domain.item.QItem.item;
 import static com.clone.ohouse.store.domain.item.bed.QBed.*;
 import static com.clone.ohouse.store.domain.item.bed.QStorageBed.*;
+import static com.clone.ohouse.store.domain.item.digital.QRefrigerator.refrigerator;
+import static com.clone.ohouse.store.domain.item.digital.QWashingMachine.washingMachine;
 import static com.clone.ohouse.store.domain.item.table.QDesk.desk;
+import static com.clone.ohouse.store.domain.item.table.QDiningTable.diningTable;
 import static com.clone.ohouse.store.domain.product.QProduct.product;
 import static com.clone.ohouse.store.domain.storeposts.QStorePosts.storePosts;
+import static org.springframework.data.jpa.domain.Specification.where;
 
 
 @RequiredArgsConstructor
@@ -165,20 +166,22 @@ public class StorePostsRepositoryImpl implements StorePostsRepositoryCustom {
         else if(classType == StorageBed.class && conditionType == StorageBedCondition.class) {
             prevQuery.join(storageBed).on(storageBed.eq(item))
                     .where(eqAll(categoryId, ((StorageBedCondition) condition).eqStorageBedCondition()));
-
         }
         else if(classType == Desk.class && conditionType == DeskSearchCondition.class){
             prevQuery.join(desk).on(desk.eq(item))
                     .where(eqAll(categoryId, ((DeskSearchCondition) condition).eqDeskCondition()));
         }
         else if(classType == DiningTable.class && conditionType == DiningTableSearchCondition.class){
-
+            prevQuery.join(diningTable).on(diningTable.eq(item))
+                    .where(eqAll(categoryId, ((DiningTableSearchCondition) condition).eqDiningTableCondition()));
         }
         else if(classType == Refrigerator.class && conditionType == RefrigeratorSearchCondition.class){
-
+            prevQuery.join(refrigerator).on(refrigerator.eq(item))
+                    .where(eqAll(categoryId, ((RefrigeratorSearchCondition) condition).eqRefrigeratorCondition()));
         }
         else if(classType == WashingMachine.class && conditionType == WashingMachineSearchCondition.class){
-
+            prevQuery.join(washingMachine).on(washingMachine.eq(item))
+                    .where(eqAll(categoryId, ((WashingMachineSearchCondition) condition).eqWashingMachineCondition()));
         }
 
 

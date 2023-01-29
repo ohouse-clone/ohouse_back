@@ -7,8 +7,7 @@ import com.clone.ohouse.store.domain.category.CategoryRepository;
 import com.clone.ohouse.store.domain.category.CategorySearch;
 import com.clone.ohouse.store.domain.item.ItemSearchCondition;
 import com.clone.ohouse.store.domain.item.bed.*;
-import com.clone.ohouse.store.domain.item.digital.Refrigerator;
-import com.clone.ohouse.store.domain.item.digital.WashingMachine;
+import com.clone.ohouse.store.domain.item.digital.*;
 import com.clone.ohouse.store.domain.item.itemselector.ItemSelector;
 import com.clone.ohouse.store.domain.item.table.*;
 import com.clone.ohouse.store.domain.storeposts.dto.BundleVIewDto;
@@ -107,13 +106,31 @@ public class StorePostsQueryController {
             }
         }
         else if(type == DiningTable.class){
-
+            condition = new DiningTableSearchCondition();
+            DiningTableSearchCondition newCon = (DiningTableSearchCondition)condition;
+            if(paramMap.containsKey("tableshape")){
+                newCon.diningTableShapes = paramMap.get("tableshape").stream().map(t -> DiningTableShape.valueOf((String) t)).distinct().collect(Collectors.toCollection(ArrayList<DiningTableShape>::new));
+            }
+            if(paramMap.containsKey("framematerial")){
+                newCon.frameMaterials = paramMap.get("framematerial").stream().map(t -> FrameMaterial.valueOf((String) t)).distinct().collect(Collectors.toCollection(ArrayList<FrameMaterial>::new));
+            }
+            if(paramMap.containsKey("numberofuser")){
+                newCon.numberOfUsers = paramMap.get("numberofuser").stream().map(t -> NumberOfUsers.valueOf((String) t)).distinct().collect(Collectors.toCollection(ArrayList<NumberOfUsers>::new));
+            }
         }
         else if(type == Refrigerator.class){
-
+            condition = new RefrigeratorSearchCondition();
+            RefrigeratorSearchCondition newCon = (RefrigeratorSearchCondition)condition;
+            if(paramMap.containsKey("capacity")) {
+                newCon.refrigeratorCapacities = paramMap.get("capacity").stream().map(t -> RefrigeratorCapacity.valueOf((String) t)).distinct().collect(Collectors.toCollection(ArrayList<RefrigeratorCapacity>::new));
+            }
         }
         else if(type == WashingMachine.class){
-
+            condition = new WashingMachineSearchCondition();
+            WashingMachineSearchCondition newCon = (WashingMachineSearchCondition) condition;
+            if(paramMap.containsKey("recommendnumber")){
+                newCon.recommendNumbers = paramMap.get("recommendnumber").stream().map(t -> RecommendNumber.valueOf((String) t)).distinct().collect(Collectors.toCollection(ArrayList<RecommendNumber>::new));
+            }
         }
         else {
             condition = new ItemSearchCondition();
