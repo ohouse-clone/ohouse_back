@@ -3,12 +3,14 @@ package com.clone.ohouse.community;
 import com.clone.ohouse.account.auth.SessionUser;
 import com.clone.ohouse.account.domain.user.User;
 import com.clone.ohouse.community.domain.CommentService;
+import com.clone.ohouse.community.domain.comment.Comment;
 import com.clone.ohouse.community.domain.comment.dto.CommentListResponseDto;
 import com.clone.ohouse.community.domain.comment.dto.CommentResponseDto;
 import com.clone.ohouse.community.domain.comment.dto.CommentSaveDto;
 import com.clone.ohouse.error.ErrorResponse;
 import com.clone.ohouse.error.comment.CommentFailException;
 import com.clone.ohouse.error.order.PaymentError;
+import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
@@ -23,9 +25,20 @@ import org.springframework.web.bind.annotation.*;
 public class CommentApiController {
     private final CommentService commentService;
 
+    @ApiOperation(
+            value = "댓글 저장",
+            code = 201,
+            response = Long.class,
+            notes = "댓글 저장에 사용합니다."
+    )
+    @ApiResponses({
+            @ApiResponse(code = 201, response = Long.class, message = "저장에 성공한 댓글의 id"),
+            @ApiResponse(code = 400, response = ErrorResponse.class, message = "CommentError 참조")
+    })
     @PostMapping
     public HttpEntity save(
-            @RequestBody CommentSaveDto commentSaveDto) throws Exception{
+           @ApiParam(value = "댓글 저장 요청 객체", required = true) @RequestBody CommentSaveDto commentSaveDto
+    ) throws Exception {
         //TODO: Temporary users, 추후 삭제 예정
         SessionUser sessionUser = null;
         if (sessionUser == null) {
@@ -40,40 +53,69 @@ public class CommentApiController {
 
         try {
             return new ResponseEntity(commentService.save(sessionUser, commentSaveDto), HttpStatus.CREATED);
-        }
-        catch(CommentFailException e){
+        } catch (CommentFailException e) {
             log.info(e.getMessage());
             return new ResponseEntity(new ErrorResponse(e.getCommentError().name(), e.getCommentError().getMessage()),
                     HttpStatus.BAD_REQUEST);
         }
     }
 
+    @ApiOperation(
+            value = "댓글 삭제",
+            code = 200,
+            notes = "댓글 삭제에 사용됩니다."
+    )
+    @ApiResponse(code = 200, message = "삭제 성공시 code 200, 리턴 객체 없음")
     @DeleteMapping("/{id}")
     public HttpEntity delete(
-            @PathVariable Long id) throws Exception{
+            @ApiParam(value = "comment 의 id", required = true) @PathVariable Long id) throws Exception {
         commentService.delete(id);
 
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @GetMapping("/{commentId}")
+    @ApiOperation(
+            value = "댓글 조회",
+            code = 200,
+            response = CommentResponseDto.class,
+            notes = "댓글을 한개를 조회합니다. <br>" +
+                    "성공시 CommentResponseDto.class 객체를, 실패시 ErrorResponse.class 객체를 반환합니다. <br>" +
+                    "실패시 ErrorResponse 는 errorCode 반환합니다. 코드에 대한 상세한 정보는 CommentError 를 참조하세요.")
+    @ApiResponses({
+            @ApiResponse(code = 200, response = CommentResponseDto.class, message = "댓글 한개의 상세 정보"),
+            @ApiResponse(code = 400, response = ErrorResponse.class, message = "CommentError 참조")
+    })
+    @GetMapping("/{id}")
     public HttpEntity findById(
-            @PathVariable Long commentId) throws Exception {
+          @ApiParam(value = "comment 의 id", required = true)  @PathVariable Long id) throws Exception {
         try {
-            CommentResponseDto response = commentService.findByCommentId(commentId);
+            CommentResponseDto response = commentService.findByCommentId(id);
 
             return new ResponseEntity(response, HttpStatus.OK);
-        } catch(CommentFailException e){
+        } catch (CommentFailException e) {
             log.info(e.getMessage());
             return new ResponseEntity(new ErrorResponse(e.getCommentError().name(), e.getCommentError().getMessage()),
                     HttpStatus.BAD_REQUEST);
         }
     }
 
+    @ApiOperation(
+            value = "댓글 다수 조회",
+            code = 200,
+            response = CommentResponseDto.class,
+            notes = "댓글을 여러개를 조회합니다. <br>" +
+                    "parameter 로 postId 를 사용하면 post id 별 댓글 다수가 조회됩니다. <br>" +
+                    "parameter 를 사용하지 않으면 user id 별 댓글 다수가 조회됩니다. <br>" +
+                    "성공시 CommentListResponseDto.class 객체를, 실패시 ErrorResponse.class 객체를 반환합니다. <br>" +
+                    "실패시 ErrorResponse 는 errorCode 반환합니다. 코드에 대한 상세한 정보는 CommentError 를 참조하세요.")
+    @ApiResponses({
+            @ApiResponse(code = 200, response = CommentListResponseDto.class, message = "댓글 한개의 상세 정보"),
+            @ApiResponse(code = 400, response = ErrorResponse.class, message = "CommentError 참조")
+    })
     @GetMapping("/bundle")
     public HttpEntity findBundleById(
-            @RequestParam(required = false) Long postId
-    ) throws Exception{
+            @ApiParam(value = "post 의 id", required = false) @RequestParam(required = false) Long postId
+    ) throws Exception {
 
         //TODO: Temporary users, 추후 삭제 예정
         SessionUser sessionUser = null;
@@ -87,24 +129,34 @@ public class CommentApiController {
                     .build());
         }
         try {
-            if(postId != null) {
+            if (postId != null) {
                 CommentListResponseDto response = commentService.findBundleByPostId(postId);
                 return new ResponseEntity(response, HttpStatus.OK);
-            }
-            else {
+            } else {
                 CommentListResponseDto response = commentService.findBundleByUserId(sessionUser);
                 return new ResponseEntity(response, HttpStatus.OK);
             }
-        } catch (CommentFailException e){
+        } catch (CommentFailException e) {
             log.info(e.getMessage());
             return new ResponseEntity(new ErrorResponse(e.getCommentError().name(), e.getCommentError().getMessage()),
                     HttpStatus.BAD_REQUEST);
         }
     }
 
+
+    @ApiOperation(
+            value = "댓글 좋아요 카운트 하나 증가",
+            code = 200,
+            notes = "댓글의 좋이요 키운트를 하나 증가시킵니다. <br>" +
+                    "성공시 객체 반환이 없으며, 실패시 ErrorResponse.class 객체를 반환합니다. <br>" +
+                    "실패시 ErrorResponse 는 errorCode 반환합니다. 코드에 대한 상세한 정보는 CommentError 를 참조하세요.")
+    @ApiResponses({
+            @ApiResponse(code = 200,  message = "성공시 별다른 반환 객체가 없습니다."),
+            @ApiResponse(code = 400, response = ErrorResponse.class,  message = "CommentError 참조")
+    })
     @PostMapping("/like")
     public HttpEntity ActLike(
-            @RequestParam Long commentId
+           @ApiParam(value = "댓글의 id", required = true) @RequestParam Long commentId
     ) throws Exception {
         //TODO: Temporary users, 추후 삭제 예정
         SessionUser sessionUser = null;
@@ -122,8 +174,7 @@ public class CommentApiController {
             commentService.actLike(commentId);
 
             return new ResponseEntity(HttpStatus.OK);
-        }
-        catch(CommentFailException e){
+        } catch (CommentFailException e) {
             log.info(e.getMessage());
             return new ResponseEntity(new ErrorResponse(e.getCommentError().name(), e.getCommentError().getMessage()),
                     HttpStatus.BAD_REQUEST);

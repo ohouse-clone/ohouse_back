@@ -2,7 +2,16 @@ package com.clone.ohouse.document;
 
 public class StoreApiDescription {
     public static final String description =
-            "<h3>OrderError Code</h3>" +
+            "<h3>Store API</h3>" + "<br>" +
+                    "API 는 다음 항목에 대해 구성됩니다." + "<br>" +
+                    "Category : 고유 분류 체계" + "<br>" +
+                    "Item : 상품" + "<br>" +
+                    "Product : 제품(상품을 포함하는 개념으로 가격과 재고 등이 반영)" + "<br>" +
+                    "StorePost : 제품 판매 게시글" + "<br>" +
+                    "StorePost Query : 제품 판매 게시글 여러개 조회" + "<br>" +
+                    "Order  : 결제" + "<br>" +
+                    "<hr>" +
+                    "<h3>OrderError Code</h3>" +
                     "Order API 에서 Request Fail 시 발생할 수 있는 Code 입니다." + "<br>" +
                     "<dl>" +
                     "<dt>CURRENT_STATE_CANT_CHANGE</dt>" +
@@ -44,8 +53,7 @@ public class StoreApiDescription {
                     "<dt>NO_ENOUGH_STOCK</dt>" +
                     "<dd> - 재고보다 많이 주문할 수 없습니다.</dd>" +
                     "</dl>" +
-
-
+                    "<hr>" +
                     "<h3>PaymentError Code</h3>" +
                     "Order API 에서 Request Fail 시 발생할 수 있는 Code 입니다." + "<br>" +
                     "<dl>" +
