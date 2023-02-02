@@ -1,5 +1,5 @@
 package com.clone.ohouse.store.domain.order;
 
 public enum OrderStatus {
-    CHARGED, CHECKING_SELLER, DELIVERY, FINISH, CANCEL
+    READY , CHARGED, CHECKING_SELLER, BEFORE_DELIVERY, DELIVERY, FINISH, CANCEL, REFUND
 }

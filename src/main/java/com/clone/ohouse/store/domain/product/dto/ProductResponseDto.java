@@ -6,14 +6,15 @@ import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 
 @ApiModel(
-        value = "item 정보를 포함한 product 상세"
+        description = "Product API(GET /store/api/v1/product/products)의 응답 중 하위 필드 <br>" +
+                "item 정보를 포함한 product 상세"
 )
 @Getter
 public class ProductResponseDto {
     private Long id;
     private String productName;
-    private Integer price;
-    private Integer stock;
+    private Long price;
+    private Long stock;
     private Integer rateDiscount;
 
     private Long itemId;

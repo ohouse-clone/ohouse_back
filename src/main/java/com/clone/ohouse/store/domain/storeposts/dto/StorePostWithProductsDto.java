@@ -10,9 +10,13 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @ApiModel(
-        value = "StorePost에 등록된 product를 함께 조회한 결과"
+        description =
+                "Store API (GET /store/api/v1/post/productswith/{id}) 응답 <br>" +
+                        "StorePost에 등록된 product를 함께 조회한 결과"
 )
+
 @Getter
 public class StorePostWithProductsDto {
     private Long id;

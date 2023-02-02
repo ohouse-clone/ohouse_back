@@ -1,19 +1,15 @@
 package com.clone.ohouse;
 
 
-import com.clone.ohouse.community.entity.User;
-import com.clone.ohouse.community.repository.UserRepository;
-import org.junit.jupiter.api.Assertions;
+import com.clone.ohouse.account.domain.user.User;
+import com.clone.ohouse.account.domain.user.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.embedded.undertow.UndertowWebServer;
 
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
-
-import org.junit.jupiter.api.Assertions.*;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -32,7 +28,6 @@ public class UserTest {
                 .password("12345")
                 .nickname("ceta")
                 .phone("012")
-                .birthday("950721")
                 .build();
         //저장
         User newUser = userRepository.save(user);
@@ -54,14 +49,12 @@ public class UserTest {
                 .password("pass1")
                 .nickname("cetta")
                 .phone("012-3456")
-                .birthday("950722")
                 .build();
         User user2 = User.builder()
                 .email("user2@gmail.com")
                 .password("pass2")
                 .nickname("junu")
                 .phone("123-4567")
-                .birthday("900716")
                 .build();
 
         userRepository.save(user1);

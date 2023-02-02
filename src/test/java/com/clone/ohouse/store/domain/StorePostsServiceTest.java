@@ -34,7 +34,7 @@ public class StorePostsServiceTest {
     }
 
     @Test
-    void save() {
+    void save() throws Exception{
         //given
         StorePostsSaveRequestDto dto = createProductBoardSaveRequest();
 
@@ -48,17 +48,15 @@ public class StorePostsServiceTest {
     }
 
     @Test
-    void update() {
+    void update() throws Exception{
         //given
         String title = "불행한 마을";
-        String contentUrl = "내용 없음";
         String modifiedUser = "쿼터";
 
         StorePostsSaveRequestDto dto = createProductBoardSaveRequest();
         Long savedId = boardService.save(dto);
         StorePostsUpdateRequestDto updateDto = StorePostsUpdateRequestDto.builder()
                 .title(title)
-                .contentUrl(contentUrl)
                 .modifiedUser(modifiedUser)
                 .isActive(true)
                 .isDeleted(false)
@@ -71,12 +69,11 @@ public class StorePostsServiceTest {
         StorePosts storePosts = storePostsRepository.findById(savedId).orElseThrow(() -> new NoSuchElementException("찾으려는 판매글이 없습니다."));
 
         Assertions.assertThat(storePosts.getTitle()).isEqualTo(title);
-        Assertions.assertThat(storePosts.getContentUrl()).isEqualTo(contentUrl);
         Assertions.assertThat(storePosts.getModifiedUser()).isEqualTo(modifiedUser);
     }
 
     @Test
-    void delete() {
+    void delete() throws Exception{
         //given
         StorePostsSaveRequestDto dto = createProductBoardSaveRequest();
         Long savedId = boardService.save(dto);
@@ -90,7 +87,7 @@ public class StorePostsServiceTest {
     }
 
     @Test
-    void findById() {
+    void findById() throws Exception{
         //given
         StorePostsSaveRequestDto dto = createProductBoardSaveRequest();
         Long savedId = boardService.save(dto);
@@ -105,10 +102,9 @@ public class StorePostsServiceTest {
 
     private StorePostsSaveRequestDto createProductBoardSaveRequest() {
         String title = "행복한 마을";
-        String contentUrl = "url";
         String author = "고순무";
 
-        return new StorePostsSaveRequestDto(title, contentUrl, null, author);
+        return new StorePostsSaveRequestDto(title, null, null, author);
     }
 
 

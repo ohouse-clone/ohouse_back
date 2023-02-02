@@ -1,6 +1,61 @@
+---------------------- 존재하는 카테고리 리스트 -------------------------
 LEVEL1: {20, "가구"}
+LEVEL1: {30, "디지털"}
+
 LEVEL2: {22, "침대"}
+LEVEL2: {35, "테이블"}
+LEVEL2: {40, "냉장고"}
+LEVEL2: {41, "세탁기"}
+
 LEVEL3: {20, "침대프레임"}
+LEVEL3: {25, "책상"}
+LEVEL3: {26, "식탁"}
+LEVEL3: {30, "일반냉장고"}
+LEVEL3: {31, "일반세탁기"}
+
 LEVEL4: {20, "일반침대"}
 LEVEL4: {21, "수납침대"}
-LEVEL4: {22, "저상형침대"}
+
+LEVEL4: {25, "일반책상}
+LEVEL4: {26, "식탁"}
+
+---------------------- 사용 가능한 아이템 -------------------------
+가구-침대-침대프레임-일반침대 (20_22_20_20)
+- 침대색상 : 레드, 블루, 화이트
+- 침대사이즈 : MS, S, SS, D, Q, K, LK, CK
+bedcolor : RED, BLUE, WHITE
+bedsize : MS, S, SS, D, Q, K, LK, CK
+
+
+가구-침대-침대프레임-수납침대 (20_22_20_21)
+- 재질 : 원목, 강철, 인조가죽, 인조원목
+material : WOOD, STEEL, FAKE_LEATHER, FAKE_WOOD
+
+
+가구-테이블-책상-일반책상 (20_35_25_25)
+- 색상 : 화이트, 블랙, 기타
+- 재질 : 목재, 유리, 플라스틱
+- 사용유형 : 좌식, 입식, 스탠딩
+deskcolor : WHITE, BLACK, ETC
+framematerial : WOOD, GLASS, PLASTIC
+usagetype : SITTING, NORMAL, STANDING
+
+
+가구-테이블-식탁-식탁 (20_35_26_26)
+- 상판형태 : 정사각형, 직사각형, 원형, 타원형, 기타
+- 재질 : 목재, 유리, 플라스틱
+- 사용인원 : 1명, 2명, 3명
+tableshape : SQUARE, RECTANGLE, CIRCLE, ELLIPSE, etc
+framematerial : WOOD, GLASS, PLASTIC
+numberofuser : P1, P2, P3
+
+
+디지털-냉장고-일반냉장고 (30_40_30)
+- 냉장고용량 : 50이하 , 51~100, 101 이상
+capacity : LESS_S50L, S51L_S100L, S101L_MORE
+
+
+디지털-세탁기-일반세탁기 (30_41_31)
+- 추천가구수 : 1명, 2명, 3명이상
+recommendnumber : P1, P2, P3_MORE
+

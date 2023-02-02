@@ -27,10 +27,11 @@ public class CategoryController {
 
     @ApiOperation(
             value = "카테고리 등록",
-            notes = "카테고리를 등록합니다."
+            notes = "카테고리를 등록합니다.<br>"+
+                    "Response : 저장된 category의 id"
     )
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/")
+    @PostMapping
     public Long save(@RequestBody CategoryRequestDto saveRequestDto) {
         Category category = new Category(saveRequestDto.getName(), saveRequestDto.getCode());
         if (saveRequestDto.getParentId() != null)
@@ -40,7 +41,8 @@ public class CategoryController {
 
     @ApiOperation(
             value = "등록된 카테고리 수정",
-            notes = "등록된 카테고리를 수정합니다."
+            notes = "등록된 카테고리를 수정합니다.<br>" +
+                    "Response : Nothing"
     )
     @ApiImplicitParam(name = "id", value = "수정할 카테고리의 id")
     @PutMapping("/{id}")
@@ -59,7 +61,8 @@ public class CategoryController {
 
     @ApiOperation(
             value = "카테고리 찾기",
-            notes = "ID를 아는 카테고리를 찾고 그 자식 카테고리들을 찾습니다"
+            notes = "ID를 아는 카테고리를 찾고 그 자식 카테고리들을 찾습니다 <br>" +
+                    "Response : CategoryRequestDto"
     )
     @ApiImplicitParam(name = "id", value = "찾을 카테고리의 id")
     @GetMapping("/{id}")
@@ -68,12 +71,23 @@ public class CategoryController {
         Category category = categoryRepository.findById(id).orElse(null);
         if (category == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-        return new ResponseEntity<>(new CategoryRequestDto(category), HttpStatus.OK);
+        CategoryRequestDto result = new CategoryRequestDto(category);
+        ArrayList<CategoryRequestDto> child = category.getChild().stream().map((o) -> {
+            CategoryRequestDto dto = new CategoryRequestDto(o);
+            dto.setParentId(category.getId());
+            return dto;
+        }).collect(Collectors.toCollection(ArrayList<CategoryRequestDto>::new));
+
+
+        if(category.getParent() != null) result.setParentId(category.getParent().getId());
+        result.setChild(child);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @ApiOperation(
             value = "카테고리 삭제",
-            notes = "카테고리를 삭제합니다"
+            notes = "카테고리를 삭제합니다 <br>" +
+                    "Response : Nothing"
     )
     @ApiImplicitParam(name = "id", value = "삭제할 카테고리 id")
     @DeleteMapping("/{id}")

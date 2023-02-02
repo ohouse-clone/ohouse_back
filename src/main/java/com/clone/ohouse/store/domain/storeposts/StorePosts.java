@@ -1,6 +1,6 @@
 package com.clone.ohouse.store.domain.storeposts;
 
-import com.clone.ohouse.store.utility.BaseTimeEntity;
+import com.clone.ohouse.utility.auditingtime.BaseTimeEntity;
 import com.clone.ohouse.store.domain.product.Product;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,9 +23,9 @@ public class StorePosts extends BaseTimeEntity {
     @Column(length = 200)
     private String title = "제목 없음";
 
-    @Column(length = 100)
+    @Column(length = 512)
     private String previewImageUrl;
-    @Column(length = 100)
+    @Column(length = 512)
     private String contentUrl;
 
     @Column(length = 45, nullable = false)
@@ -36,6 +36,9 @@ public class StorePosts extends BaseTimeEntity {
 
     private boolean isDeleted = false;
     private Integer hit = 0;
+
+    @OneToMany(mappedBy = "storePosts", fetch = FetchType.LAZY)
+    private List<StorePostPictures> storePostPictures = new ArrayList<>();
 
     @Column(name = "product_list")
     @OneToMany(mappedBy = "storePosts", fetch = FetchType.LAZY)
@@ -50,13 +53,14 @@ public class StorePosts extends BaseTimeEntity {
         this.previewImageUrl = previewImageUrl;
     }
 
-    public void update(boolean isActive, String title, String previewImage, String content, String modifiedUser, boolean isDeleted) {
+
+    public void update(boolean isActive, String title, String contentUrl, String modifiedUser, boolean isDeleted, String previewImageUrl) {
         this.isActive = isActive;
         this.isDeleted = isDeleted;
         if (title != null) this.title = title;
         if (modifiedUser != null) this.modifiedUser = modifiedUser;
-        if (content != null) this.contentUrl = content;
-        if (previewImage != null) this.previewImageUrl = previewImage;
+        if (contentUrl != null) this.contentUrl = contentUrl;
+        if (previewImageUrl != null) this.previewImageUrl = previewImageUrl;
     }
 
 }
