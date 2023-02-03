@@ -16,6 +16,7 @@ public class UserCreateResponseDTO {
     private Long id;
     private String email;
     private String password;
+    private String nickname;
 
     @JsonFormat(pattern = "yyyy/MM/dd")
     private LocalDateTime regDate;
@@ -24,6 +25,8 @@ public class UserCreateResponseDTO {
         this.id = user.getId();
         this.email = user.getEmail();
         this.password = user.getPassword();
+        this.nickname = user.getNickname();
         this.regDate = user.getRegDate();
+
     }
 }
