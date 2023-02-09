@@ -20,10 +20,10 @@ public class LoginResponseDTO {
     private String token; // 인증 토큰
 
     private String message; // 응답 메시지
-    public LoginResponseDTO(Optional<User> user, String token) {
-        this.email = user.get().getEmail();
-        this.nickName = user.get().getNickname();
-        this.joinDate = LocalDate.from(user.get().getRegDate());
+    public LoginResponseDTO(User user, String token) {
+        this.email = user.getEmail();
+        this.nickName = user.getNickname();
+        this.joinDate = LocalDate.from(user.getRegDate());
         this.token = token;
     }
 }

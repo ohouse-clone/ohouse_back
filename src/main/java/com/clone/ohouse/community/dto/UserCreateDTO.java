@@ -26,6 +26,8 @@ public class UserCreateDTO {
     private String phone;
     private String birthday;
     private Integer point;
+    private String name;
+    private String picture;
 
     public User toEntity(){
         User user = User.builder()
@@ -34,8 +36,8 @@ public class UserCreateDTO {
                 .password(password)
                 .nickname(nickname)
                 .phone(phone)
-                .birthday(birthday)
-                .point(point)
+                .name(name)
+                .picture(picture)
                 .build();
         return user;
     }

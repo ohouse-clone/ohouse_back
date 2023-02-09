@@ -1,8 +1,10 @@
 package com.clone.ohouse.community.entity;
 
+import lombok.Builder;
+
+import com.clone.ohouse.community.domain.cardcollections.Card;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.GenericGenerator;
 //import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
@@ -10,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Builder
 @Data
 @Getter
 @Setter
@@ -19,7 +22,6 @@ import java.util.List;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @GenericGenerator(name = "system-uuid", strategy = "uuid")
     @Column(name = "user_id")
     Long id;
     @Column(nullable = false, length = 100, unique = true)
@@ -30,32 +32,20 @@ public class User {
     private String nickname;
     @Column(nullable = false, length = 50)
     private String phone;
-    @Column(length = 30)
-    private String birthday;
     @Column
-    private Integer point;
+    private String birthday;
     @Column(length = 1000)
     private String refreshToken;
+
+    @Column(nullable = false ,length = 32)
+    private String name;
+
+    @Column(length = 512)
+    private String picture;
+
     @Column
     @CreationTimestamp
     private LocalDateTime regDate;
-    @Builder
-    public User(Long id, String email, String password, String nickname, String phone, String birthday,String refreshToken,Integer point,LocalDateTime regDate) {
-        this.id = id;
-        this.email = email;
-        this.password = password;
-        this.nickname = nickname;
-        this.phone = phone;
-        this.birthday = birthday;
-        this.refreshToken = refreshToken;
-        this.point = point;
-        this.regDate = regDate;
-    }
-
-    public User(String email, String password){
-        this.email = email;
-        this.password = password;
-    }
 
     public void updateNickname(String nickname) {
         this.nickname = nickname;
@@ -65,13 +55,26 @@ public class User {
         this.email = email;
         this.password = password;
     }
-    @OneToMany(mappedBy = "user",fetch = FetchType.EAGER)
-//    @OrderBy("id asc")
-    private List<Post> posts = new ArrayList<>();
-    //    public void encodePassword(PasswordEncoder passwordEncoder){
-//        this.password = passwordEncoder.encode(password);
-//    }
+
     public void destroyToken() {
         this.refreshToken = null;
     }
+    @Builder
+    public User(Long id,String email,String password,String nickname,String phone,LocalDateTime regDate, String name,String picture){
+
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.nickname = nickname;
+        this.phone = phone;
+        this.regDate = regDate;
+        this.name = name;
+        this.picture = picture;
+    }
+    public User(String email, String password){
+        this.email = email;
+        this.password = password;
+    }
+
+
 }

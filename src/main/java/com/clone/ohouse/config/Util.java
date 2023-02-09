@@ -1,4 +1,4 @@
-package com.clone.ohouse.community.entity;
+package com.clone.ohouse.config;
 
 import java.io.File;
 import java.io.FileInputStream;

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Setter
 @Getter @ToString
@@ -21,12 +22,20 @@ public class UserCreateResponseDTO {
     @JsonFormat(pattern = "yyyy/MM/dd")
     private LocalDateTime regDate;
 
-    public UserCreateResponseDTO(User user){
+    public UserCreateResponseDTO(Optional<User> user){
+        this.id = user.get().getId();
+        this.email = user.get().getEmail();
+        this.password = user.get().getPassword();
+        this.nickname = user.get().getNickname();
+        this.regDate = user.get().getRegDate();
+
+    }
+
+    public UserCreateResponseDTO(User user) {
         this.id = user.getId();
         this.email = user.getEmail();
         this.password = user.getPassword();
         this.nickname = user.getNickname();
         this.regDate = user.getRegDate();
-
     }
 }

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 // 리소스 : 사용자 (User)
@@ -40,50 +41,6 @@ import java.util.stream.Collectors;
 public class UserController {
     @Autowired
     UserService userService;
-    // 사용자 등록
-    @ApiOperation(
-            value = "사용자(User) 생성",
-            notes = "사용자를 생성한다"
-    )
-    @GetMapping
-    public ResponseEntity<?> create(@RequestBody UserCreateDTO createDTO){
-        log.info("/users/api GET request");
-        log.info("사용자 정보 : {}",createDTO);
-        User user = createDTO.toEntity();
-        boolean flag = userService.save(user);
-        return flag
-                ? ResponseEntity.ok().body("INSERT-SUCCESS")
-                : ResponseEntity.badRequest().body("INSERT-FAIL");
-    }
-    @ApiOperation(
-            value = "사용자(User) 삭제",
-            notes = "사용자를 삭제한다"
-    )
-    // 사용자 삭제
-    @DeleteMapping("{id}")
-    public ResponseEntity<?> delete(@ApiParam (value = "user id") @PathVariable Long id) {
-        log.info("/users/api/{} DELETE request",id);
-        boolean flag = userService.delete(id);
-        return flag
-                ? ResponseEntity.ok().body("DELETE-SUCCESS")
-                : ResponseEntity.badRequest().body("DELETE-FAIL");
-    }
-    @ApiOperation(
-            value = "사용자(User) 수정",
-            notes = "사용자를 수정한다"
-    )
-    // 사용자 수정
-    @ResponseStatus(HttpStatus.OK)
-    @PatchMapping("{id}")
-    public ResponseEntity<?> modify(@ApiParam(value = "user id") @PathVariable Long id
-    , @RequestBody UserModifyDTO userModifyDTO) {
-        // 수정 전 데이터 조회
-        User user = userService.findById(id);
-        boolean flag = userService.update(userModifyDTO, id);
-        return flag
-                ? ResponseEntity.ok().body("UPDATE-SUCCESS")
-                : ResponseEntity.badRequest().body("UPDATE-FAIL");
-    }
 
     // 모든 사용자 조회
     @ApiOperation(
@@ -93,19 +50,12 @@ public class UserController {
     @GetMapping
     public ResponseEntity<?> getAllUser() {
         log.info("/users/api GET request");
-        List<User> userList = userService.findAll();
-        List<UserCreateResponseDTO> responseDTOList = userList.stream()
-
-                .map(UserCreateResponseDTO::new)
-                .collect(Collectors.toList());
-        UserListResponseDTO listResponseDTO = UserListResponseDTO.builder()
-                .count(responseDTOList.size())
-                .users(responseDTOList)
-                .build();
+        UserListResponseDTO responseDTO = userService.findAll();
         return ResponseEntity
                 .ok()
-                .body(listResponseDTO);
+                .body(responseDTO);
     }
+
     // 개별 사용자 조회
     @ApiOperation(
             value = "개별 사용자(User) 조회",
@@ -114,7 +64,7 @@ public class UserController {
     @GetMapping("{id}")
     public ResponseEntity<?> getOneUser(@ApiParam(value = "user id") @PathVariable Long id){
         log.info("/users/api/{} GET requests");
-        User user = userService.findById(id);
+        Optional<User> user = userService.findById(id);
         UserCreateResponseDTO dto = new UserCreateResponseDTO(user);
         return ResponseEntity
                 .ok()
@@ -124,6 +74,11 @@ public class UserController {
     public ResponseEntity<String> handleNoSuchElementFoundException(NoSuchElementException exception){
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
     }
+
+    @ApiOperation(
+            value = "회원가임 요청",
+            notes = "회원 가입을 요청한다"
+    )
     // 회원가입 요청 처리
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(
