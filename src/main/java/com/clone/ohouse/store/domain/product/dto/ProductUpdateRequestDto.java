@@ -8,9 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @ApiModel(
-        description = "Product API(PUT /store/api/v1/product/{id})의 요청<br>" +
-                "등록된 제품을 수정하는데 사용합니다 <br>" +
-                "사용하지 않는 필드는 NULL을, 수정이 필요한 필드만 사용하세요. 모두를 채울 필요는 없습니다"
+        value = "product update에 대한 request",
+        description = "수정이 필요한 항목만 사용하세요. 모두를 채울 필요는 없습니다"
 )
 @NoArgsConstructor
 @Getter
@@ -30,12 +29,12 @@ public class ProductUpdateRequestDto {
             value = "제품 가격",
             required = false
     )
-    private Long price;
+    private Integer price;
     @ApiModelProperty(
             value = "제품 수량",
             required = false
     )
-    private Long stock;
+    private Integer stock;
     @ApiModelProperty(
             value = "할인율",
             required = false
@@ -48,7 +47,7 @@ public class ProductUpdateRequestDto {
     private Long storePostId;
 
     @Builder
-    public ProductUpdateRequestDto(Long itemId, String productName, Long price, Long stock, Integer rateDiscount, Long storePostId) {
+    public ProductUpdateRequestDto(Long itemId, String productName, Integer price, Integer stock, Integer rateDiscount, Long storePostId) {
         this.itemId = itemId;
         this.productName = productName;
         this.price = price;

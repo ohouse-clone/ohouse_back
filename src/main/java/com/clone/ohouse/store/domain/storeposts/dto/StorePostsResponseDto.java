@@ -9,8 +9,8 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 @ApiModel(
-        description = "Store API (GET /store/api/v1/post/{id}) 응답<br>" +
-        "게시글의 모든 내용을 담고 있습니다. 모든 내용이 ReadOnly입니다."
+        value = "store post response",
+        description = "게시글의 모든 내용을 담고 있습니다. 모든 내용이 ReadOnly입니다."
 )
 @AllArgsConstructor
 @Getter

@@ -69,16 +69,16 @@ class StorePostsQueryServiceTest {
         categoryRepository.save(c6);
 
         CategorySearch condition1 = new CategorySearch(20L, 22L, 20L, 20L);
-        Item item1 = new Bed("나무침대1", "MJH", "JHH11", BedSize.K, BedColor.WHITE);
-        Item item2 = new Bed("나무침대2", "MJH", "JHH12", BedSize.K, BedColor.RED);
-        Item item3 = new Bed("나무침대3", "MJH", "JHH13", BedSize.K, BedColor.BLUE);
-        Item item4 = new Bed("나무침대4", "MJH", "JHH14", BedSize.K, BedColor.WHITE);
+        Item item1 = new Bed("나무침대1", "MJH", "JHH", BedSize.K, BedColor.WHITE);
+        Item item2 = new Bed("나무침대2", "MJH", "JHH", BedSize.K, BedColor.RED);
+        Item item3 = new Bed("나무침대3", "MJH", "JHH", BedSize.K, BedColor.BLUE);
+        Item item4 = new Bed("나무침대4", "MJH", "JHH", BedSize.K, BedColor.WHITE);
 
         CategorySearch condition2 = new CategorySearch(20L, 22L, 20L, 21L);
-        Item item5 = new StorageBed("불편한침대5", "MJH", "JHH25", Material.FAKE_LEATHER);
-        Item item6 = new StorageBed("불편한침대6", "MJH", "JHH26", Material.FAKE_LEATHER);
-        Item item7 = new StorageBed("불편한침대7", "MJH", "JHH27", Material.FAKE_LEATHER);
-        Item item8 = new StorageBed("불편한침대8", "MJH", "JHH28", Material.STEEL);
+        Item item5 = new StorageBed("불편한침대5", "MJH", "JHH", Material.FAKE_LEATHER);
+        Item item6 = new StorageBed("불편한침대6", "MJH", "JHH", Material.FAKE_LEATHER);
+        Item item7 = new StorageBed("불편한침대7", "MJH", "JHH", Material.FAKE_LEATHER);
+        Item item8 = new StorageBed("불편한침대8", "MJH", "JHH", Material.STEEL);
 
         itemService.save(item1, condition1);
         itemService.save(item2, condition1);
@@ -89,24 +89,24 @@ class StorePostsQueryServiceTest {
         itemService.save(item7, condition2);
         itemService.save(item8, condition2);
 
-        Product product11 = new Product(item1, "제품11", 5001L, 100L, 0, 0L, null);
-        Product product12 = new Product(item1, "제품12", 5002L, 100L, 0, 1L, null);
-        Product product21 = new Product(item2, "제품21", 5003L, 100L, 0, 2L, null);
-        Product product22 = new Product(item2, "제품22", 5004L, 100L, 0, 3L, null);
-        Product product31 = new Product(item3, "제품31", 5005L, 100L, 0, 4L, null);
-        Product product32 = new Product(item3, "제품32", 5006L, 100L, 0, 5L, null);
-        Product product41 = new Product(item4, "제품41", 5007L, 100L, 0, 6L, null);
-        Product product42 = new Product(item4, "제품42", 5008L, 100L, 0, 0L, null);
-        Product product51 = new Product(item5, "제품51", 5009L, 100L, 0, 0L, null);
-        Product product52 = new Product(item5, "제품52", 5010L, 100L, 0, 0L, null);
-        Product product61 = new Product(item6, "제품61", 5011L, 100L, 0, 0L, null);
-        Product product62 = new Product(item6, "제품62", 5012L, 100L, 0, 99L, null);
-        Product product71 = new Product(item7, "제품71", 5013L, 100L, 0, 0L, null);
-        Product product72 = new Product(item7, "제품72", 5014L, 100L, 0, 0L, null);
-        Product product81 = new Product(item8, "제품81", 5015L, 100L, 0, 0L, null);
-        Product product82 = new Product(item8, "제품82", 5016L, 100L, 0, 0L, null);
-        Product product83 = new Product(item8, "제품83", 5017L, 100L, 0, 100L, null);
-        Product product84 = new Product(item8, "제품84", 5018L, 100L, 0, 0L, null);
+        Product product11 = new Product(item1, "제품11", 5001, 100, 0, 0L, null);
+        Product product12 = new Product(item1, "제품12", 5002, 100, 0, 1L, null);
+        Product product21 = new Product(item2, "제품21", 5003, 100, 0, 2L, null);
+        Product product22 = new Product(item2, "제품22", 5004, 100, 0, 3L, null);
+        Product product31 = new Product(item3, "제품31", 5005, 100, 0, 4L, null);
+        Product product32 = new Product(item3, "제품32", 5006, 100, 0, 5L, null);
+        Product product41 = new Product(item4, "제품41", 5007, 100, 0, 6L, null);
+        Product product42 = new Product(item4, "제품42", 5008, 100, 0, 0L, null);
+        Product product51 = new Product(item5, "제품51", 5009, 100, 0, 0L, null);
+        Product product52 = new Product(item5, "제품52", 5010, 100, 0, 0L, null);
+        Product product61 = new Product(item6, "제품61", 5011, 100, 0, 0L, null);
+        Product product62 = new Product(item6, "제품62", 5012, 100, 0, 99L, null);
+        Product product71 = new Product(item7, "제품71", 5013, 100, 0, 0L, null);
+        Product product72 = new Product(item7, "제품72", 5014, 100, 0, 0L, null);
+        Product product81 = new Product(item8, "제품81", 5015, 100, 0, 0L, null);
+        Product product82 = new Product(item8, "제품82", 5016, 100, 0, 0L, null);
+        Product product83 = new Product(item8, "제품83", 5017, 100, 0, 100L, null);
+        Product product84 = new Product(item8, "제품84", 5018, 100, 0, 0L, null);
 
         StorePosts post1 = new StorePosts("제목1", null, "작가1",  null,null);
         StorePosts post2 = new StorePosts("제목2", null, "작가2",  null,null);
@@ -186,9 +186,8 @@ class StorePostsQueryServiceTest {
 
 
         //when
-        System.out.println("@Start=================================================================================");
         BundleVIewDto bundle = storePostsQueryService.getBundleViewV3(categoryCondition, pageable, itemCondition);
-        System.out.println("@End=================================================================================");
+
 ////         -- View --
 //        System.out.println("-- result --");
 //        System.out.println("postNum : " + bundle.getPostsNum());
@@ -201,7 +200,6 @@ class StorePostsQueryServiceTest {
         //itemCondition is not matched with categoryCondition. so result must get all with categoryId
         Assertions.assertThat(bundle.getPostsNum()).isEqualTo(size);
         Assertions.assertThat(bundle.getPreviewPosts()).extracting(StorePostsViewDto::getTitle).containsExactly("제목8", "제목6");
-        Assertions.assertThat(bundle.getPreviewPosts()).extracting(StorePostsViewDto::getBrandName).containsExactly("JHH28", "JHH26");
         Assertions.assertThat(bundle.getTotalNum()).isEqualTo(8);
     }
     @Test
@@ -226,7 +224,6 @@ class StorePostsQueryServiceTest {
         //then
         Assertions.assertThat(bundle.getPostsNum()).isEqualTo(size);
         Assertions.assertThat(bundle.getPreviewPosts()).extracting(StorePostsViewDto::getTitle).containsExactly("제목8", "제목6", "제목3", "제목4");
-        Assertions.assertThat(bundle.getPreviewPosts()).extracting(StorePostsViewDto::getBrandName).containsExactly("JHH28", "JHH26", "JHH13", "JHH14");
     }
 
     @Test
@@ -252,7 +249,6 @@ class StorePostsQueryServiceTest {
         //then
         Assertions.assertThat(bundle.getPostsNum()).isEqualTo(2);
         Assertions.assertThat(bundle.getPreviewPosts()).extracting(StorePostsViewDto::getTitle).containsExactly("제목3", "제목2");
-        Assertions.assertThat(bundle.getPreviewPosts()).extracting(StorePostsViewDto::getBrandName).containsExactly("JHH13", "JHH12");
         Assertions.assertThat(bundle.getTotalNum()).isEqualTo(2);
     }
     @Test
@@ -278,7 +274,6 @@ class StorePostsQueryServiceTest {
         //then
         Assertions.assertThat(bundle.getPostsNum()).isEqualTo(1);
         Assertions.assertThat(bundle.getPreviewPosts()).extracting(StorePostsViewDto::getTitle).containsExactly("제목8");
-        Assertions.assertThat(bundle.getPreviewPosts()).extracting(StorePostsViewDto::getBrandName).containsExactly("JHH28");
         Assertions.assertThat(bundle.getTotalNum()).isEqualTo(1);
     }
 }

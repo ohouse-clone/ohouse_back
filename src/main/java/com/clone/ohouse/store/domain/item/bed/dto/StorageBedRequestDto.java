@@ -9,8 +9,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 @ApiModel(
-        description = "Item(storagebed) API(/store/api/v1/item/ storagebed) 공통 Request/Response<br>" +
-                "저장, 수정, 조회 등에서 다양하게 사용됩니다<br>" +
+        value = "StorageBed 에 대한 request",
+        description = "저장, 수정, 조회 등에서 다양하게 사용됩니다<br>" +
                 "수정의 경우는 수정이 필요한 일부분만 수정하세요. 전체 property를 모두 채울 필요는 없습니다."
 )
 @NoArgsConstructor

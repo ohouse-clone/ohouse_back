@@ -12,13 +12,13 @@ public class BedSearchCondition extends ItemSearchCondition {
     public BooleanExpression eqBedCondition() {
         BooleanExpression sizeExpr = eqBedConditionSize();
         BooleanExpression colorExpr = eqBedConditionColor();
-
         if(sizeExpr == null && colorExpr == null) return null;
         else if(sizeExpr != null && colorExpr != null) return sizeExpr.and(colorExpr);
         else if(sizeExpr == null) return colorExpr;
         else if(colorExpr == null) return sizeExpr;
 
         return null;
+
     }
 
     private BooleanExpression eqBedConditionSize() {

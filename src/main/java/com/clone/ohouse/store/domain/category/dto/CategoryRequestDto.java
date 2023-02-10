@@ -11,9 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @ApiModel(
-        description = "Category API(/store/api/v1/category?) 공통 Request/Response <br>" +
-                "카테고리를 등록, 수정, 삭제, 찾을때 DTO 로 사용됩니다. <br>" +
-                "찾을 때(Get)을 제외하고 id field를 사용하지 않습니다 <br>" +
+        value = "Category API Request",
+        description = "카테고리를 등록, 수정, 삭제, 찾을때 DTO 로 사용됩니다. <br>" +
                 "수정의 경우에는 수정할 부분만 사용하세요, 전체 프로퍼티를 결정할 필요는 없습니다."
 )
 @NoArgsConstructor
@@ -43,7 +42,7 @@ public class CategoryRequestDto {
     @ApiModelProperty(
             value = "카테고리의 자식 카테고리들입니다. 하지만 자식들의 카테고리의 자식까지 모두 가져오지않습니다."
     )
-    private List<CategoryRequestDto> child = new ArrayList<>();
+    private List<Category> child = new ArrayList<>();
 
     public CategoryRequestDto(String name, Long code) {
         this.name = name;
@@ -60,13 +59,8 @@ public class CategoryRequestDto {
         this.id = entity.getId();
         this.name = entity.getName();
         this.code = entity.getCode();
-    }
-
-    public void setChild(List<CategoryRequestDto> child) {
-        this.child = child;
-    }
-    public void setParentId(Long id){
-        this.parentId = id;
+        this.parentId = entity.getParent().getId();
+        this.child = entity.getChild();
     }
 
     public Category toEntity(){

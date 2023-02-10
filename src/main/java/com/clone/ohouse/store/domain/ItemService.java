@@ -74,11 +74,11 @@ public class ItemService {
     }
 
     private void attachCategoryTagWith(CategorySearch condition , Item item) throws Exception {
-        if(condition.getCode1() == null ) throw new IllegalAccessException();
+        if(condition.getCode1() == null || condition.getCode2() == null || condition.getCode3() == null || condition.getCode4() == null) throw new IllegalAccessException();
 
         List<Category> categories = categoryRepository.findCategories(condition);
 
-        for(int i = 0; i < categories.size(); ++i){
+        for(int i = 0; i < Category.CATEGORY_SIZE; ++i){
             ItemCategory itemCategory = new ItemCategory(categories.get(i), item);
             itemCategoryRepository.save(itemCategory);
             item.getItemCategories().add(itemCategory);

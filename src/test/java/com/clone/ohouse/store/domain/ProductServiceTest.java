@@ -98,8 +98,8 @@ class ProductServiceTest {
         ProductSaveRequestDto dto1 = new ProductSaveRequestDto(
                 saveItemId1,
                 "제품1",
-                1000L,
-                100L,
+                1000,
+                100,
                 50,
                 null);
         //when
@@ -120,12 +120,12 @@ class ProductServiceTest {
         ProductSaveRequestDto dto1 = new ProductSaveRequestDto(
                 saveItemId1,
                 "제품1",
-                1000L,
-                100L,
+                1000,
+                100,
                 50,
                 null);
         Long saveProductId1 = productService.save(dto1);
-        ProductUpdateRequestDto requestDto = new ProductUpdateRequestDto(saveItemId2, "바뀐제품1", 2000l, 50l, 0, null);
+        ProductUpdateRequestDto requestDto = new ProductUpdateRequestDto(saveItemId2, "바뀐제품1", 2000, 50, 0, null);
 
         //when
         productService.update(saveProductId1, requestDto);
@@ -144,8 +144,8 @@ class ProductServiceTest {
         ProductSaveRequestDto dto1 = new ProductSaveRequestDto(
                 saveItemId1,
                 "제품1",
-                1000L,
-                100L,
+                1000,
+                100,
                 50,
                 null);
         Long saveProductId1 = productService.save(dto1);
@@ -165,8 +165,8 @@ class ProductServiceTest {
         ProductSaveRequestDto dto1 = new ProductSaveRequestDto(
                 saveItemId1,
                 "제품1",
-                1000L,
-                100L,
+                1000,
+                100,
                 50,
                 null);
         Long saveProductId1 = productService.save(dto1);
@@ -187,12 +187,12 @@ class ProductServiceTest {
     @Test
     void findByItem() throws Exception{
         //given
-        ProductSaveRequestDto dto1_1 = new ProductSaveRequestDto(saveItemId1, "제품1-1", 1100L, 110L, 50, null);
-        ProductSaveRequestDto dto1_2 = new ProductSaveRequestDto(saveItemId1, "제품1-2", 1200L, 120L, 55, null);
-        ProductSaveRequestDto dto1_3 = new ProductSaveRequestDto(saveItemId1, "제품1-2", 1300L, 130L, 55, null);
-        ProductSaveRequestDto dto2_1 = new ProductSaveRequestDto(saveItemId2, "제품2-1", 2100L, 210L, 55, null);
-        ProductSaveRequestDto dto2_2 = new ProductSaveRequestDto(saveItemId2, "제품2-2", 2200L, 220L, 55, null);
-        ProductSaveRequestDto dto2_3 = new ProductSaveRequestDto(saveItemId2, "제품2-3", 2300L, 230L, 55, null);
+        ProductSaveRequestDto dto1_1 = new ProductSaveRequestDto(saveItemId1, "제품1-1", 1100, 110, 50, null);
+        ProductSaveRequestDto dto1_2 = new ProductSaveRequestDto(saveItemId1, "제품1-2", 1200, 120, 55, null);
+        ProductSaveRequestDto dto1_3 = new ProductSaveRequestDto(saveItemId1, "제품1-2", 1300, 130, 55, null);
+        ProductSaveRequestDto dto2_1 = new ProductSaveRequestDto(saveItemId2, "제품2-1", 2100, 210, 55, null);
+        ProductSaveRequestDto dto2_2 = new ProductSaveRequestDto(saveItemId2, "제품2-2", 2200, 220, 55, null);
+        ProductSaveRequestDto dto2_3 = new ProductSaveRequestDto(saveItemId2, "제품2-3", 2300, 230, 55, null);
         Long saveProductId1_1 = productService.save(dto1_1);
         Long saveProductId1_2 = productService.save(dto1_2);
         Long saveProductId1_3 = productService.save(dto1_3);
@@ -214,12 +214,12 @@ class ProductServiceTest {
     @Test
     void findByItemWithProductCondition() throws Exception{
         //given
-        ProductSaveRequestDto dto1_1 = new ProductSaveRequestDto(saveItemId1, "제품1-1", 1100L, 110L, 50, null);
-        ProductSaveRequestDto dto1_2 = new ProductSaveRequestDto(saveItemId1, "제품1-2", 1200L, 120L, 55, null);
-        ProductSaveRequestDto dto1_3 = new ProductSaveRequestDto(saveItemId1, "제품1-2", 1300L, 130L, 55, null);
-        ProductSaveRequestDto dto2_1 = new ProductSaveRequestDto(saveItemId2, "제품2-1", 2100L, 210L, 55, null);
-        ProductSaveRequestDto dto2_2 = new ProductSaveRequestDto(saveItemId2, "제품2-2", 2200L, 220L, 55, null);
-        ProductSaveRequestDto dto2_3 = new ProductSaveRequestDto(saveItemId2, "제품2-3", 2300L, 230L, 55, null);
+        ProductSaveRequestDto dto1_1 = new ProductSaveRequestDto(saveItemId1, "제품1-1", 1100, 110, 50, null);
+        ProductSaveRequestDto dto1_2 = new ProductSaveRequestDto(saveItemId1, "제품1-2", 1200, 120, 55, null);
+        ProductSaveRequestDto dto1_3 = new ProductSaveRequestDto(saveItemId1, "제품1-2", 1300, 130, 55, null);
+        ProductSaveRequestDto dto2_1 = new ProductSaveRequestDto(saveItemId2, "제품2-1", 2100, 210, 55, null);
+        ProductSaveRequestDto dto2_2 = new ProductSaveRequestDto(saveItemId2, "제품2-2", 2200, 220, 55, null);
+        ProductSaveRequestDto dto2_3 = new ProductSaveRequestDto(saveItemId2, "제품2-3", 2300, 230, 55, null);
         Long saveProductId1_1 = productService.save(dto1_1);
         Long saveProductId1_2 = productService.save(dto1_2);
         Long saveProductId1_3 = productService.save(dto1_3);
@@ -243,12 +243,12 @@ class ProductServiceTest {
     @Test
     void findByItemWithProductConditionWithConditionDetail1() throws Exception{
         //given
-        ProductSaveRequestDto dto1_1 = new ProductSaveRequestDto(saveItemId1, "제품1-1", 1100L, 110L, 50, null);
-        ProductSaveRequestDto dto1_2 = new ProductSaveRequestDto(saveItemId1, "제품1-2", 1200L, 120L, 55, null);
-        ProductSaveRequestDto dto1_3 = new ProductSaveRequestDto(saveItemId1, "제품1-2", 1300L, 130L, 55, null);
-        ProductSaveRequestDto dto2_1 = new ProductSaveRequestDto(saveItemId2, "제품2-1", 2100L, 210L, 55, null);
-        ProductSaveRequestDto dto2_2 = new ProductSaveRequestDto(saveItemId2, "제품2-2", 2200L, 220L, 55, null);
-        ProductSaveRequestDto dto2_3 = new ProductSaveRequestDto(saveItemId2, "제품2-3", 2300L, 230L, 55, null);
+        ProductSaveRequestDto dto1_1 = new ProductSaveRequestDto(saveItemId1, "제품1-1", 1100, 110, 50, null);
+        ProductSaveRequestDto dto1_2 = new ProductSaveRequestDto(saveItemId1, "제품1-2", 1200, 120, 55, null);
+        ProductSaveRequestDto dto1_3 = new ProductSaveRequestDto(saveItemId1, "제품1-2", 1300, 130, 55, null);
+        ProductSaveRequestDto dto2_1 = new ProductSaveRequestDto(saveItemId2, "제품2-1", 2100, 210, 55, null);
+        ProductSaveRequestDto dto2_2 = new ProductSaveRequestDto(saveItemId2, "제품2-2", 2200, 220, 55, null);
+        ProductSaveRequestDto dto2_3 = new ProductSaveRequestDto(saveItemId2, "제품2-3", 2300, 230, 55, null);
         Long saveProductId1_1 = productService.save(dto1_1);
         Long saveProductId1_2 = productService.save(dto1_2);
         Long saveProductId1_3 = productService.save(dto1_3);
@@ -273,12 +273,12 @@ class ProductServiceTest {
     @Test
     void findByItemWithProductConditionWithConditionDetail2() throws Exception{
         //given
-        ProductSaveRequestDto dto1_1 = new ProductSaveRequestDto(saveItemId1, "제품1-1", 1100L, 110L, 50, null);
-        ProductSaveRequestDto dto1_2 = new ProductSaveRequestDto(saveItemId1, "제품1-2", 1200L, 120L, 55, null);
-        ProductSaveRequestDto dto1_3 = new ProductSaveRequestDto(saveItemId1, "제품1-2", 1300L, 130L, 55, null);
-        ProductSaveRequestDto dto2_1 = new ProductSaveRequestDto(saveItemId2, "제품2-1", 2100L, 210L, 55, null);
-        ProductSaveRequestDto dto2_2 = new ProductSaveRequestDto(saveItemId2, "제품2-2", 2200L, 220L, 55, null);
-        ProductSaveRequestDto dto2_3 = new ProductSaveRequestDto(saveItemId2, "제품2-3", 2300L, 230L, 55, null);
+        ProductSaveRequestDto dto1_1 = new ProductSaveRequestDto(saveItemId1, "제품1-1", 1100, 110, 50, null);
+        ProductSaveRequestDto dto1_2 = new ProductSaveRequestDto(saveItemId1, "제품1-2", 1200, 120, 55, null);
+        ProductSaveRequestDto dto1_3 = new ProductSaveRequestDto(saveItemId1, "제품1-2", 1300, 130, 55, null);
+        ProductSaveRequestDto dto2_1 = new ProductSaveRequestDto(saveItemId2, "제품2-1", 2100, 210, 55, null);
+        ProductSaveRequestDto dto2_2 = new ProductSaveRequestDto(saveItemId2, "제품2-2", 2200, 220, 55, null);
+        ProductSaveRequestDto dto2_3 = new ProductSaveRequestDto(saveItemId2, "제품2-3", 2300, 230, 55, null);
         Long saveProductId1_1 = productService.save(dto1_1);
         Long saveProductId1_2 = productService.save(dto1_2);
         Long saveProductId1_3 = productService.save(dto1_3);
@@ -302,12 +302,12 @@ class ProductServiceTest {
     @Test
     void findByItemWithProductConditionWithConditionDetail3() throws Exception{
         //given
-        ProductSaveRequestDto dto1_1 = new ProductSaveRequestDto(saveItemId1, "제품1-1", 1100L, 110L, 50, null);
-        ProductSaveRequestDto dto1_2 = new ProductSaveRequestDto(saveItemId1, "제품1-2", 1200L, 120L, 55, null);
-        ProductSaveRequestDto dto1_3 = new ProductSaveRequestDto(saveItemId1, "제품1-2", 1300L, 130L, 55, null);
-        ProductSaveRequestDto dto2_1 = new ProductSaveRequestDto(saveItemId2, "제품2-1", 2100L, 210L, 55, null);
-        ProductSaveRequestDto dto2_2 = new ProductSaveRequestDto(saveItemId2, "제품2-2", 2200L, 220L, 55, null);
-        ProductSaveRequestDto dto2_3 = new ProductSaveRequestDto(saveItemId2, "제품2-3", 2300L, 230L, 55, null);
+        ProductSaveRequestDto dto1_1 = new ProductSaveRequestDto(saveItemId1, "제품1-1", 1100, 110, 50, null);
+        ProductSaveRequestDto dto1_2 = new ProductSaveRequestDto(saveItemId1, "제품1-2", 1200, 120, 55, null);
+        ProductSaveRequestDto dto1_3 = new ProductSaveRequestDto(saveItemId1, "제품1-2", 1300, 130, 55, null);
+        ProductSaveRequestDto dto2_1 = new ProductSaveRequestDto(saveItemId2, "제품2-1", 2100, 210, 55, null);
+        ProductSaveRequestDto dto2_2 = new ProductSaveRequestDto(saveItemId2, "제품2-2", 2200, 220, 55, null);
+        ProductSaveRequestDto dto2_3 = new ProductSaveRequestDto(saveItemId2, "제품2-3", 2300, 230, 55, null);
         Long saveProductId1_1 = productService.save(dto1_1);
         Long saveProductId1_2 = productService.save(dto1_2);
         Long saveProductId1_3 = productService.save(dto1_3);
@@ -330,12 +330,12 @@ class ProductServiceTest {
     @Test
     void updateWithStorePostId() throws Exception{
         //given
-        ProductSaveRequestDto dto1_1 = new ProductSaveRequestDto(saveItemId1, "제품1-1", 1100L, 110L, 50, null);
-        ProductSaveRequestDto dto1_2 = new ProductSaveRequestDto(saveItemId1, "제품1-2", 1200L, 120L, 55, null);
-        ProductSaveRequestDto dto1_3 = new ProductSaveRequestDto(saveItemId1, "제품1-2", 1300L, 130L, 55, null);
-        ProductSaveRequestDto dto2_1 = new ProductSaveRequestDto(saveItemId2, "제품2-1", 2100L, 210L, 55, null);
-        ProductSaveRequestDto dto2_2 = new ProductSaveRequestDto(saveItemId2, "제품2-2", 2200L, 220L, 55, null);
-        ProductSaveRequestDto dto2_3 = new ProductSaveRequestDto(saveItemId2, "제품2-3", 2300L, 230L, 55, null);
+        ProductSaveRequestDto dto1_1 = new ProductSaveRequestDto(saveItemId1, "제품1-1", 1100, 110, 50, null);
+        ProductSaveRequestDto dto1_2 = new ProductSaveRequestDto(saveItemId1, "제품1-2", 1200, 120, 55, null);
+        ProductSaveRequestDto dto1_3 = new ProductSaveRequestDto(saveItemId1, "제품1-2", 1300, 130, 55, null);
+        ProductSaveRequestDto dto2_1 = new ProductSaveRequestDto(saveItemId2, "제품2-1", 2100, 210, 55, null);
+        ProductSaveRequestDto dto2_2 = new ProductSaveRequestDto(saveItemId2, "제품2-2", 2200, 220, 55, null);
+        ProductSaveRequestDto dto2_3 = new ProductSaveRequestDto(saveItemId2, "제품2-3", 2300, 230, 55, null);
         Long saveProductId1_1 = productService.save(dto1_1);
         Long saveProductId1_2 = productService.save(dto1_2);
         Long saveProductId1_3 = productService.save(dto1_3);

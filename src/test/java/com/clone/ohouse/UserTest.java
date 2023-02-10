@@ -1,8 +1,8 @@
 package com.clone.ohouse;
 
 
-import com.clone.ohouse.account.domain.user.User;
-import com.clone.ohouse.account.domain.user.UserRepository;
+import com.clone.ohouse.community.entity.User;
+import com.clone.ohouse.community.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

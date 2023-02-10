@@ -11,6 +11,4 @@ public interface ProductRepositoryCustom {
     Long countByItemId(Long itemId, ProductSearchCondition productSearchCondition);
 
     void updateBulkWithStorePostId(Long storePostId, List<Long> productIds);
-
-    List<Product> findByIds(List<Long> ids);
 }

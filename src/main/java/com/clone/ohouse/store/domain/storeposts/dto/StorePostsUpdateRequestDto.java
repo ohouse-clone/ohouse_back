@@ -8,10 +8,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@Api
 @ApiModel(
-        description =
-                "Store API (PUT /store/api/v1/post/{id}) 요청<br>" +
-                "modifiedUser를 제외하고 모든 properties가 채워질 필요가 없습니다, 수정하지 않을 필드는 NULL, 수정할 것만 채우면 됩니다. modifiedUser는 반드시 채워져야합니다."
+        value = "store post update request",
+        description = "modifiedUser를 제외하고 모든 properties가 채워질 필요가 없습니다, 수정할 것만 채우면 됩니다. modifiedUser는 반드시 채워져야합니다."
 )
 @NoArgsConstructor
 @Getter
@@ -25,13 +25,13 @@ public class StorePostsUpdateRequestDto {
     private String title;
 
     @ApiModelProperty(
-            value = "내용, image id"
+            value = "내용, image url"
     )
-    private Long contentImageId;
+    private String contentUrl;
     @ApiModelProperty(
-            value = "preview image id"
+            value = "preview image url"
     )
-    private Long previewImageId;
+    private String previewImageUrl;
     @ApiModelProperty(
             value = "수정한 자",
             required = true,
@@ -53,10 +53,10 @@ public class StorePostsUpdateRequestDto {
     private boolean isDeleted = false;
 
     @Builder
-    public StorePostsUpdateRequestDto(String title, Long contentImageId, Long previewImageId, String modifiedUser, boolean isActive, boolean isDeleted) {
+    public StorePostsUpdateRequestDto(String title, String contentUrl, String previewImageUrl, String modifiedUser, boolean isActive, boolean isDeleted) {
         this.title = title;
-        this.contentImageId = contentImageId;
-        this.previewImageId = previewImageId;
+        this.contentUrl = contentUrl;
+        this.previewImageUrl = previewImageUrl;
         this.modifiedUser = modifiedUser;
         this.isActive = isActive;
         this.isDeleted = isDeleted;

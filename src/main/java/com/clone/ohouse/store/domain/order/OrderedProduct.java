@@ -1,7 +1,6 @@
 package com.clone.ohouse.store.domain.order;
 
 import com.clone.ohouse.store.domain.product.Product;
-import com.clone.ohouse.store.domain.storeposts.StorePosts;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -15,17 +14,18 @@ public class OrderedProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
-    private Long price;
-    private Long amount;
 
-    public OrderedProduct(Product product, Order order, Long price, Long amount) {
+    private Integer price;
+    private Integer amount;
+
+    public OrderedProduct(Product product, Order order, Integer price, Integer amount) {
         this.product = product;
         this.order = order;
         this.price = price;
@@ -34,5 +34,6 @@ public class OrderedProduct {
 
     public void cancelOrdered() throws Exception{
         product.returnAmount(amount);
+        amount = 0;
     }
 }

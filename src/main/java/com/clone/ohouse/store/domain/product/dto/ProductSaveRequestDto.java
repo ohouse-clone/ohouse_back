@@ -9,8 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @ApiModel(
-        description = "Product API(POST /store/api/v1/product)의 요청 <br>"
-        + "제품 등록에 대한 request"
+        value = "제품 등록에 대한 request"
 )
 @NoArgsConstructor
 @Getter
@@ -29,12 +28,12 @@ public class ProductSaveRequestDto {
             value = "제품 가격",
             required = true
     )
-    private Long price;
+    private Integer price;
     @ApiModelProperty(
             value = "제품 재고",
             required = true
     )
-    private Long stock;
+    private Integer stock;
 
     @ApiModelProperty(
             value = "할인율",
@@ -49,7 +48,7 @@ public class ProductSaveRequestDto {
     private Long storePostId;
 
     @Builder
-    public ProductSaveRequestDto(Long itemId, String productName, Long price, Long stock, Integer rateDiscount, Long storePostId) {
+    public ProductSaveRequestDto(Long itemId, String productName, Integer price, Integer stock, Integer rateDiscount, Long storePostId) {
         this.itemId = itemId;
         this.productName = productName;
         this.price = price;

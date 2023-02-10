@@ -90,81 +90,27 @@ public class CategoryRepositoryImpl implements CategoryRepositoryCustom {
         qCategories.add(category3);
         qCategories.add(category4);
 
+        Tuple tuple = queryFactory
+                .select(
+                        category1,
+                        category2,
+                        category3,
+                        category4
+                )
+                .from(category4)
+                .join(category4.parent, category3)
+                .join(category3.parent, category2)
+                .join(category2.parent, category1)
+                .where(
+                        category1.parent.isNull()
+                                .and(category1.code.eq(condition.code1))
+                                .and(category2.code.eq(condition.code2))
+                                .and(category3.code.eq(condition.code3))
+                                .and(category4.code.eq(condition.code4)))
+                .fetchOne();
 
-        if(condition.code2 == null){
-            Category category = queryFactory
-                    .select(
-                            category1
-                    )
-                    .from(category1)
-                    .where(
-                            category1.parent.isNull()
-                                    .and(category1.code.eq(condition.code1)))
-                    .fetchOne();
-            for(int i = 0; i < 1; ++i)
-                result.add(category);
-        }
-        else if(condition.code3 == null){
-            Tuple tuple = queryFactory
-                    .select(
-                            category1,
-                            category2
-                    )
-                    .from(category2)
-                    .join(category2.parent, category1)
-                    .where(
-                            category1.parent.isNull()
-                                    .and(category1.code.eq(condition.code1))
-                                    .and(category2.code.eq(condition.code2)))
-                    .fetchOne();
-            for(int i = 0; i < Category.CATEGORY_SIZE - 2; ++i)
-                result.add(tuple.get(qCategories.get(i)));
-        }
-        else if(condition.code4 == null){
-            Tuple tuple = queryFactory
-                    .select(
-                            category1,
-                            category2,
-                            category3
-                    )
-                    .from(category3)
-                    .join(category3.parent, category2)
-                    .join(category2.parent, category1)
-                    .where(
-                            category1.parent.isNull()
-                                    .and(category1.code.eq(condition.code1))
-                                    .and(category2.code.eq(condition.code2))
-                                    .and(category3.code.eq(condition.code3)))
-                    .fetchOne();
-            for(int i = 0; i < Category.CATEGORY_SIZE - 1; ++i)
-                result.add(tuple.get(qCategories.get(i)));
-        }
-        else{
-            Tuple tuple = queryFactory
-                    .select(
-                            category1,
-                            category2,
-                            category3,
-                            category4
-                    )
-                    .from(category4)
-                    .join(category4.parent, category3)
-                    .join(category3.parent, category2)
-                    .join(category2.parent, category1)
-                    .where(
-                            category1.parent.isNull()
-                                    .and(category1.code.eq(condition.code1))
-                                    .and(category2.code.eq(condition.code2))
-                                    .and(category3.code.eq(condition.code3))
-                                    .and(category4.code.eq(condition.code4)))
-                    .fetchOne();
-
-            for(int i = 0; i < Category.CATEGORY_SIZE; ++i)
-                result.add(tuple.get(qCategories.get(i)));
-        }
-
-
-
+        for(int i = 0; i < Category.CATEGORY_SIZE; ++i)
+            result.add(tuple.get(qCategories.get(i)));
         return result;
     }
 }
