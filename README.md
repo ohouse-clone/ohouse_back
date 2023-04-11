@@ -42,7 +42,7 @@ Rest API를 통한 프론트와 백엔드의 협업 경험
 
 ### 구조
 다음은 Layer 구조입니다.  
-대부분의 경우, 기본 구조는 퍼사드 패턴을 사용한 Service Layer를 포함하는 MVC 구조를 따릅니다. 각 레이어 간에는 DTo를 이용해 데이터를 주고 받습니다.  
+대부분의 경우, 기본 구조는 퍼사드 패턴을 사용한 Service Layer를 포함하는 MVC 구조를 따릅니다. 각 레이어 간에는 DTO를 이용해 데이터를 주고 받습니다.  
 
 ![layer](https://user-images.githubusercontent.com/62828810/231026697-5bc2b97b-c88b-433f-a9cd-4b943ec5bf18.svg)
 
@@ -50,12 +50,12 @@ Rest API를 통한 프론트와 백엔드의 협업 경험
 ---
 ### 상품 파트 설계
 
-##### ERD
+#### ERD
 상품 파트의 ERD 설계  
 ![ERD drawio](https://user-images.githubusercontent.com/62828810/231026711-00114be2-58cc-48be-92bd-0fdebaeaf2d5.svg)
 
 
-##### Sequence Diagram
+#### Sequence Diagram
 상품 조회 핵심 파트 Sequence Diagram  
 가장 중요한 상품 게시글 조회 로직에 대한 시퀸스 다이어그램입니다. 사용자는 GET ‘/store/category’ 를 이용해서 상품 게시글을을 조회합니다.  
 
